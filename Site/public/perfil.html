@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Home</title>
+</head>
+
+<body>
+    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                        <span class="nav-bar-name" id="home">Home</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="mapa">Mapas</span>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+    <div class="banner">
+        <div class="img-container" style="height: 40%;">
+            <img src="./assets/img/bsbg.jpg" class="background-image">
+        </div>
+        <div class="perfil-banner">
+            <div class="perfil-container">
+                <div class="player-info-container">
+                    <img class="perfil-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
+                        onerror="this.src='./assets/img/oculus.png'"> <!-- Mudar Imagem para local -->
+                    <div class="player-info">
+                        <span class="player-name">Shiro</span>
+                        <div id="flag-country">
+                            <!-- <span id="contry-name"></span> -->
+                        </div>
+                    </div>
+                    <div class="hide-background-container">
+                        <div class="hide-background">
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-chart-container">
+                    <canvas id="myChart" width="" height="60"></canvas>
+                </div>
+                <div class="labels-player">
+                    <span class="player-label chosen">eu!</span>
+                    <span class="player-label">Recente</span>
+                    <span class="player-label">Mapas Jogados</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    document.getElementById('search-user').placeholder = '...';
+    setPlayerInformations();
+    function setPlayerInformations() {
+        setPlayerCountry();
+        playerPositionChart();
+    }
+
+    function setPlayerCountry() {
+        let countryFlagUnicode = 'U+1F1E7 U+1F1F7'.split(' ');
+
+        countryFlagUnicode.forEach((unicode) => {
+            let convert = twemoji.convert.fromCodePoint(unicode.substring(2));
+            document.getElementById('flag-country').textContent += convert;
+        })
+
+        twemoji.parse(document.body);
+        let countryName = 'Brasil';
+        let spanElement = document.createElement('span');
+        spanElement.innerHTML = countryName;
+        spanElement.classList.add('contry-name');
+        document.getElementById('flag-country').appendChild(spanElement);
+    }
+    function showMenu() {
+        document.getElementById('perfil-menu').style.width = '20vw';
+        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
+        search.style.left = '50px';
+        home.classList.add('nav-bar-name-opacity');
+        mapa.classList.add('nav-bar-name-opacity');
+        ranking.classList.add('nav-bar-name-opacity');
+        ultimos.classList.add('nav-bar-name-opacity');
+        login.classList.add('nav-bar-name-opacity');
+        cadastro.classList.add('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = 'Pesquisar...';
+        }, 500)
+    }
+
+    function hideMenu() {
+        document.getElementById('perfil-menu').style.width = '5vw';
+        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
+        search.style.left = '30px';
+        home.classList.remove('nav-bar-name-opacity');
+        mapa.classList.remove('nav-bar-name-opacity');
+        ranking.classList.remove('nav-bar-name-opacity');
+        ultimos.classList.remove('nav-bar-name-opacity');
+        login.classList.remove('nav-bar-name-opacity');
+        cadastro.classList.remove('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = '...';
+        }, 500)
+    }
+
+    function playerPositionChart() {
+        let labels = [];
+        for (let i = 50; i > 0; i--) {
+            let msg;
+            if (i == 1) {
+                msg = 'Agora';
+            } else if (i == 2) {
+                msg = 'Ontem';
+            } else {
+                msg = `${i} Dias atrás`;
+            }
+            labels.push(msg);
+        }
+        
+        let positionsData = ['444', '449', '451', '454', '455', '457', '457', '457', '456', '457', '464', '465', '463', '465', '465', '464', '465', '465', '466', '467', '469', '470', '468', '470', '470', '473', '473', '474', '475', '475', '475', '491', '491', '491', '493', '494', '495', '497', '498', '501', '503', '503', '504', '504', '505', '506', '506', '493', '493', '490']
+        console.log(labels.length)
+        positionsData = positionsData.map((numString) => { 
+            let num = parseInt(numString);
+            return num; 
+        });
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Rank:',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: positionsData,
+                tension: 0.2,
+                pointRadius: 0,
+                hoverPointRadius: 0
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    yAxis: {
+                        reverse: true,
+                        ticks: {
+                            min: Math.min(...positionsData),
+                            max: Math.max(...positionsData),
+                            stepSize: 50,
+                        }
+                    }
+                },
+                plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+            }
+        };
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    }
+</script>
+
+</html>

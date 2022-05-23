@@ -50,7 +50,6 @@ create table Score (
                     foreign key (fkDificuldade) references Dificuldade(idDificuldade),
                     fkMapa int,
                     foreign key (fkMapa) references Mapa(idMapa),
-                    precisao decimal(5,2),
                     pontuacao int,
                     dataScore datetime,
                     scoreFavorito bool
