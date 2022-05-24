@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+body, html {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 a {
     text-decoration: none;
     color: #73717d;
@@ -25,15 +31,16 @@ input {
 /* Inicio Banner */
 .img-container {
     width: 100%;
-    height: 40%;
+    height: 250px   ;
     overflow: hidden;
 }
 
 .banner {
     width: 100vw;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     max-width: 100%;
-    max-height: 100%;
 }
 
 .background-image {
@@ -41,7 +48,7 @@ input {
 }
 
 .main-banner {
-    height: 60%;
+    height: 100%;
     background-color: #1f2229;
     border-top: 4px solid #2d3e5f;
     padding: 20px;
@@ -50,6 +57,7 @@ input {
     align-items: center;
     padding-left: 100px;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 
 .welcome-msg-container {
@@ -340,7 +348,8 @@ input {
 }
 
 .user-container #username {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 .user-container i {
@@ -351,6 +360,7 @@ input {
 .user-container #global,
 .user-container #nacional {
     color: #b3afc7;
+    font-size: 13px;
 }
 #logOut {
     color: #9b2525;
@@ -359,7 +369,7 @@ input {
 /* Fim Perfil-Menu */
 /* Inicio Mapa  */
 .mapa-banner {
-    height: 60%;
+    height: 100%;
     background-color: #1f2229;
     border-top: 4px solid #2d3e5f;
     padding: 20px;
@@ -367,6 +377,7 @@ input {
     display: flex;
     justify-content: space-evenly;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 
 .container {
@@ -516,7 +527,7 @@ input {
 /* Fim Procurar Mapa */
 /* Inicio Ranking */
 .ranking-banner {
-    height: 60%;
+    height: 100%;
     background-color: #1f2229;
     border-top: 4px solid #2d3e5f;
     padding: 20px;
@@ -524,6 +535,7 @@ input {
     display: flex;
     justify-content: space-evenly;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 
 .ranking-table {
@@ -650,7 +662,7 @@ input {
 /* Fim Ranking */
 /* Inicio Perfil */
 .perfil-banner {
-    height: 60%;
+    height: 100%;
     background-color: #1f2229;
     border-top: 4px solid #2d3e5f;
     padding: 20px;
@@ -658,6 +670,7 @@ input {
     display: flex;
     justify-content: space-evenly;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 .perfil-container {
     width: 80%;
@@ -735,9 +748,12 @@ img.emoji {
 }
 
 .position-chart-container {
-    width: 100%;
+    width: 95%;
     height: fit-content;
     margin-top: 40px;
+    background-color: #262935;
+    border-radius: 10px;
+    padding: 20px 5px 20px 5px;
 }
 
 .labels-player {
@@ -746,7 +762,6 @@ img.emoji {
     display: flex;
     color: #2d3e5f;
     margin-top: 20px;
-    background-color: #262935;
     padding: 10px 0px 10px 0px;
     list-style: none;
 }
@@ -760,4 +775,27 @@ img.emoji {
     font-weight: 900;
     font-size: 15px;
 }
+
+.player-label-container {
+    background-color: #262935;
+    width: 97%;
+    height: 200px;
+    border-radius: 10px;
+}
+
+.player-label-title-container {
+    width: fit-content;
+    height: fit-content;
+    margin-top: 10px;
+    border-bottom: 2px solid #2d3e5f;
+    margin-left: 20px;
+    padding: 0 2px 5px 2px;
+    text-align: center
+}
+
+.player-label-title {
+    color: white;
+    font-weight: 600;
+}
+
 /* Fim Perfil */

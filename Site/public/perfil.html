@@ -72,7 +72,7 @@
 
     </div>
     <div class="banner">
-        <div class="img-container" style="height: 40%;">
+        <div class="img-container">
             <img src="./assets/img/bsbg.jpg" class="background-image">
         </div>
         <div class="perfil-banner">
@@ -100,6 +100,12 @@
                     <li class="player-label">Recente</li>
                     <li class="player-label">Mapas Jogados</li>
                 </ul>
+
+                <div class="player-label-container">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">eu!</h3>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -131,7 +137,7 @@
     function showMenu() {
         document.getElementById('perfil-menu').style.width = '20vw';
         document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
-        search.style.left = '50px';
+        search.style.left = '35px';
         home.classList.add('nav-bar-name-opacity');
         mapa.classList.add('nav-bar-name-opacity');
         ranking.classList.add('nav-bar-name-opacity');
