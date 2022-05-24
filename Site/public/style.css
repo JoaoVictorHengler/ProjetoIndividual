@@ -690,7 +690,7 @@ input {
     margin-top: 50px;
 }
 
-.player-info-container {
+.player-header-container {
     width: 100%;
     height: 70px;
     background-color: #262935;
@@ -706,12 +706,12 @@ input {
     margin-left: 50px;
 }
 
-.player-info-container .player-info {
+.player-header-container .player-name-container {
     color: white;
     margin-left: 20px;
 }
 
-.player-info-container .player-info .player-name {
+.player-header-container .player-name-container .player-name {
     font-weight: 400;
     font-size: 24px;
 }
@@ -728,6 +728,27 @@ img.emoji {
 .contry-name {
     font-size: 18px;
     margin-left: 10px;
+}
+
+.player-position-info {
+    color: white;
+    margin-left: 10px;
+    display: flex;
+    padding: 0px 10px 0px 10px;
+}
+
+.global-container, .nacional-container {
+    display: flex;
+    flex-direction: column;
+    font-size: 22px;
+}
+
+.nacional-container {
+    margin-left: 20px;
+}
+
+.player-position-info #posicaoGlobal, .player-position-info #posicaoNacional  {
+    font-size: 16px;
 }
 
 .hide-background-container {
@@ -754,13 +775,47 @@ img.emoji {
     background-color: #212e48;
 }
 
-.position-chart-container {
-    width: 95%;
-    height: fit-content;
+.position-info-chart-container {
+    width: 97%;
+    height: 100%;
+    display: flex;
     margin-top: 40px;
     background-color: #262935;
     border-radius: 10px;
-    padding: 20px 5px 20px 5px;
+}
+
+.position-info-chart-container .player-info {
+    color: white;
+}
+
+.fa-youtube {
+    color: red;
+}
+
+.fa-twitch {
+    color: #6441a5;
+}
+
+.fa-twitter {
+    color: #1da1f2;
+}
+
+.position-chart {
+    width: 70%;
+    height: fit-content;
+    padding: 20px 5px 20px 5px; 
+}
+
+.round-border {
+    background-color: #2d3e5f;
+    height: auto;
+    width: 4px;
+    margin: 10px 0px 10px 10px;
+    border-radius: 10px;
+}
+
+.position-info-chart-container {
+
 }
 
 .labels-player {

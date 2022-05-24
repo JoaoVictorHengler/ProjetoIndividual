@@ -77,13 +77,23 @@
         </div>
         <div class="perfil-banner">
             <div class="perfil-container">
-                <div class="player-info-container">
+                <div class="player-header-container">
                     <img class="perfil-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
                         onerror="this.src='./assets/img/oculus.png'"> <!-- Mudar Imagem para local -->
-                    <div class="player-info">
+                    <div class="player-name-container">
                         <span class="player-name">Shiro</span>
                         <div id="flag-country">
-                            <!-- <span id="contry-name"></span> -->
+                        </div>
+                    </div>
+                    <div class="player-position-info">
+
+                        <div class="global-container">
+                            <span>Posição Global:</span>
+                            <span id="posicaoGlobal">#150</span>
+                        </div>
+                        <div class="nacional-container">
+                            <span>Posição Nacional:</span>
+                            <span id="posicaoNacional">#1</span>
                         </div>
                     </div>
                     <div class="hide-background-container">
@@ -92,18 +102,38 @@
                         </div>
                     </div>
                 </div>
-                <div class="position-chart-container">
-                    <canvas id="myChart" width="" height="60"></canvas>
+                <div class="position-info-chart-container">
+                    <div class="position-chart">
+                        <canvas id="myChart" width="" height="90"></canvas>
+                    </div>
+                    <div class="round-border"></div>
+
+                    <div class="player-info">
+                        <div>
+                            <span>Pontuação Total:</span>
+                            <span>0</span>
+                        </div>
+                        <div>
+                            <span>Vr Utilizado:</span>
+                            <span>Oculus</span>
+                        </div>
+
+                        <i class="fa-brands fa-youtube"></i>
+                        <i class="fa-brands fa-twitch"></i>
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
                 </div>
                 <ul class="labels-player">
                     <li class="player-label">
                         <a href="#eu_section" class="player-label-name" onclick="changeLabelColor(this)">eu!</a>
                     </li>
                     <li class="player-label">
-                        <a href="#recentes_section" class="player-label-name" onclick="changeLabelColor(this)">Recentes</a>
+                        <a href="#recentes_section" class="player-label-name"
+                            onclick="changeLabelColor(this)">Recentes</a>
                     </li>
                     <li class="player-label">
-                        <a href="#mapas_jogados_section" class="player-label-name" onclick="changeLabelColor(this)">Mapas Jogados</a>
+                        <a href="#mapas_jogados_section" class="player-label-name"
+                            onclick="changeLabelColor(this)">Mapas Jogados</a>
                     </li>
                 </ul>
 
@@ -118,7 +148,7 @@
                         <h3 class="player-label-title">Recentes</h3>
                     </div>
                 </section>
-                
+
                 <section class="player-label-container" id="mapas_jogados_section">
                     <div class="player-label-title-container">
                         <h3 class="player-label-title">Mapas Jogados</h3>
@@ -152,7 +182,7 @@
         spanElement.classList.add('contry-name');
         document.getElementById('flag-country').appendChild(spanElement);
     }
-    
+
     function showMenu() {
         document.getElementById('perfil-menu').style.width = '20vw';
         document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
@@ -196,12 +226,12 @@
             }
             labels.push(msg);
         }
-        
+
         let positionsData = ['444', '449', '451', '454', '455', '457', '457', '457', '456', '457', '464', '465', '463', '465', '465', '464', '465', '465', '466', '467', '469', '470', '468', '470', '470', '473', '473', '474', '475', '475', '475', '491', '491', '491', '493', '494', '495', '497', '498', '501', '503', '503', '504', '504', '505', '506', '506', '493', '493', '490']
         console.log(labels.length)
-        positionsData = positionsData.map((numString) => { 
+        positionsData = positionsData.map((numString) => {
             let num = parseInt(numString);
-            return num; 
+            return num;
         });
 
         const data = {
@@ -232,10 +262,10 @@
                     }
                 },
                 plugins: {
-                        legend: {
-                            display: false
-                        }
+                    legend: {
+                        display: false
                     }
+                }
             }
         };
         const myChart = new Chart(

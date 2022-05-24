@@ -8,7 +8,6 @@ create table Jogador (
                       senha char(128) NOT NULL,
                       rankGlobal int,
                       ranknacional int,
-                      pontosDePerformace decimal(7,2),
                       mediaPrecisao decimal(5,2),
                       OculosDeVrUsado varchar(45),
                       youtubeLink varchar(90),
@@ -50,7 +49,6 @@ create table Score (
                     foreign key (fkDificuldade) references Dificuldade(idDificuldade),
                     fkMapa int,
                     foreign key (fkMapa) references Mapa(idMapa),
-                    precisao decimal(5,2),
                     pontuacao int,
                     dataScore datetime,
                     scoreFavorito bool
