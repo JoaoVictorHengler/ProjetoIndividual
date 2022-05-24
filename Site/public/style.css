@@ -737,7 +737,7 @@ img.emoji {
 .position-chart-container {
     width: 100%;
     height: fit-content;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .labels-player {
@@ -745,6 +745,10 @@ img.emoji {
     height: fit-content;
     display: flex;
     color: #2d3e5f;
+    margin-top: 20px;
+    background-color: #262935;
+    padding: 10px 0px 10px 0px;
+    list-style: none;
 }
 
 .chosen {
