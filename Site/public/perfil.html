@@ -96,16 +96,34 @@
                     <canvas id="myChart" width="" height="60"></canvas>
                 </div>
                 <ul class="labels-player">
-                    <li class="player-label chosen">eu!</li>
-                    <li class="player-label">Recente</li>
-                    <li class="player-label">Mapas Jogados</li>
+                    <li class="player-label">
+                        <a href="#eu_section" class="player-label-name" onclick="changeLabelColor(this)">eu!</a>
+                    </li>
+                    <li class="player-label">
+                        <a href="#recentes_section" class="player-label-name" onclick="changeLabelColor(this)">Recentes</a>
+                    </li>
+                    <li class="player-label">
+                        <a href="#mapas_jogados_section" class="player-label-name" onclick="changeLabelColor(this)">Mapas Jogados</a>
+                    </li>
                 </ul>
 
-                <div class="player-label-container">
+                <section class="player-label-container" id="eu_section">
                     <div class="player-label-title-container">
                         <h3 class="player-label-title">eu!</h3>
                     </div>
-                </div>
+                </section>
+
+                <section class="player-label-container" id="recentes_section">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">Recentes</h3>
+                    </div>
+                </section>
+                
+                <section class="player-label-container" id="mapas_jogados_section">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">Mapas Jogados</h3>
+                    </div>
+                </section>
             </div>
         </div>
 
@@ -134,6 +152,7 @@
         spanElement.classList.add('contry-name');
         document.getElementById('flag-country').appendChild(spanElement);
     }
+    
     function showMenu() {
         document.getElementById('perfil-menu').style.width = '20vw';
         document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
@@ -188,11 +207,11 @@
         const data = {
             labels: labels,
             datasets: [{
-                label: 'Rank:',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
+                label: 'Rank',
+                backgroundColor: 'rgb(58, 82, 125)',
+                borderColor: 'rgb(58, 82, 125)',
                 data: positionsData,
-                tension: 0.2,
+                tension: 0.4,
                 pointRadius: 0,
                 hoverPointRadius: 0
             }]
@@ -223,6 +242,16 @@
             document.getElementById('myChart'),
             config
         );
+    }
+
+    function changeLabelColor(thisElement) {
+        let documentLabel = document.getElementsByClassName('player-label-name');
+        console.log(documentLabel)
+        for (let i = 0; i < documentLabel.length; i++) {
+            let label = documentLabel[i];
+            label.classList.remove('chosen');
+        }
+        thisElement.classList.add('chosen');
     }
 </script>
 
