@@ -97,8 +97,8 @@
                         </div>
                     </div>
                     <div class="hide-background-container">
-                        <div class="hide-background">
-                            <i class="fa-solid fa-chevron-up"></i>
+                        <div class="hide-background"  onclick="hideBackground()">
+                            <i id='hide-bk' class="fa-solid fa-chevron-up"></i>
                         </div>
                     </div>
                 </div>
@@ -109,18 +109,23 @@
                     <div class="round-border"></div>
 
                     <div class="player-info">
-                        <div>
-                            <span>Pontuação Total:</span>
-                            <span>0</span>
-                        </div>
-                        <div>
+                        <div class="player-info-label">
                             <span>Vr Utilizado:</span>
+                            <span>Precisão:</span>
+                            <span>Pontuação Total:</span>
+                            <span>Replays Assistidos por Outros:</span>
+                        </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
+                        <div class="player-info-label">
+                            
                             <span>Oculus</span>
+                            <span>100.00%</span>
+                            <span>32891489124712</span>
+                            <span>31231312312</span>
                         </div>
 
-                        <i class="fa-brands fa-youtube"></i>
-                        <i class="fa-brands fa-twitch"></i>
-                        <i class="fa-brands fa-twitter"></i>
+                        <!-- <i class="fa-brands fa-youtube"></i> -->
+                        <!-- <i class="fa-brands fa-twitch"></i> -->
+                        <!-- <i class="fa-brands fa-twitter"></i> -->
                     </div>
                 </div>
                 <ul class="labels-player">
@@ -282,6 +287,22 @@
             label.classList.remove('chosen');
         }
         thisElement.classList.add('chosen');
+    }
+    
+    function hideBackground() {
+        let container = document.getElementsByClassName('img-container');
+        let arrow = document.getElementById('hide-bk');
+
+        if (arrow.classList[1] === 'fa-chevron-up') {
+            arrow.classList.remove('fa-chevron-up');
+            arrow.classList.add('fa-chevron-down');
+            container[0].style.height = '0px';
+        } else {
+            arrow.classList.remove('fa-chevron-down');
+            arrow.classList.add('fa-chevron-up');
+            container[0].style.height = '250px';
+
+        }
     }
 </script>
 

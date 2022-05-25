@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+@font-face {
+    font-family: 'Hugme';
+    src: url('./assets/font/Hug\ Me\ Tight\ -\ OTF.otf') format('opentype'), url('./assets/font/Hug\ Me\ Tight\ -\ OT.ttf') format('truetype');
+}
+
 body,
 html {
     height: 100%;
@@ -21,7 +26,7 @@ a {
 
     margin: 0;
     padding: 0;
-    font-family: Torus, Inter, "Helvetica Neue", Tahoma, Arial, "Hiragino Kaku Gothic ProN", Meiryo, "Microsoft YaHei", "Apple SD Gothic Neo", sans-serif;
+    font-family: 'Hugme';
 }
 
 input {
@@ -34,6 +39,7 @@ input {
     width: 100%;
     height: 250px;
     overflow: hidden;
+    transition: height 1s ease;
 }
 
 .banner {
@@ -737,7 +743,8 @@ img.emoji {
     padding: 0px 10px 0px 10px;
 }
 
-.global-container, .nacional-container {
+.global-container,
+.nacional-container {
     display: flex;
     flex-direction: column;
     font-size: 22px;
@@ -747,7 +754,8 @@ img.emoji {
     margin-left: 20px;
 }
 
-.player-position-info #posicaoGlobal, .player-position-info #posicaoNacional  {
+.player-position-info #posicaoGlobal,
+.player-position-info #posicaoNacional {
     font-size: 16px;
 }
 
@@ -773,6 +781,7 @@ img.emoji {
     color: white;
     font-size: 25px;
     background-color: #212e48;
+    cursor: pointer;
 }
 
 .position-info-chart-container {
@@ -786,8 +795,24 @@ img.emoji {
 
 .position-info-chart-container .player-info {
     color: white;
+    padding: 10px;
+    width: 40%;
+    display: flex;
+    justify-content: space-around
 }
 
+
+.player-info .player-info-label {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    font-weight: 400;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.player-info-label span {
+    margin-top: 2px;
+}
 .fa-youtube {
     color: red;
 }
@@ -801,9 +826,9 @@ img.emoji {
 }
 
 .position-chart {
-    width: 70%;
+    width: 60%;
     height: fit-content;
-    padding: 20px 5px 20px 5px; 
+    padding: 20px 5px 20px 5px;
 }
 
 .round-border {
@@ -814,15 +839,11 @@ img.emoji {
     border-radius: 10px;
 }
 
-.position-info-chart-container {
-
-}
-
 .labels-player {
     width: 100%;
     height: fit-content;
     display: flex;
-    
+
     margin-top: 20px;
     padding: 10px 0px 10px 0px;
     list-style: none;
@@ -833,9 +854,11 @@ img.emoji {
     font-weight: 600;
     font-size: 15px;
 }
+
 .player-label-name {
     color: #3a527d;
 }
+
 .chosen {
     color: hsl(333, 40%, 100%);
 }
