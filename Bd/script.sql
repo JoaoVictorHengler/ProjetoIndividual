@@ -1,9 +1,9 @@
--- drop database bssc;
+drop database bssc;
 create database bssc;
 use bssc;
 
 -- dificuldade.tipoDificuldade+0
-select Mapa.*, dificuldade.* from Mapa join dificuldade on fkMapa = idMapa;
+
 create table Jogador (
 					  idJogador int primary key auto_increment,
                       nome varchar(90) NOT NULL,
@@ -62,8 +62,7 @@ create table Score (
 create table Historico (
     fkJogador int,
     foreign key (fkJogador) references Jogador(idJogador),
-    idHistorico int,
-    primary key(fkJogador, idHistorico),
+    idHistorico int primary key auto_increment,
     rankGlobal int NOT NULL,
-    diaRank datetime NOT NULL
+    diaRank int
 );

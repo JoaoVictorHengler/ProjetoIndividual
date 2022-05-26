@@ -6,6 +6,9 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
+const limitePlayers = 1;
+const limiteScoresPlayer = 20;
+
 async function search(link) {
     return new Promise((resolve, reject) => {
         https.get(link, (resp) => {
@@ -32,7 +35,7 @@ async function search(link) {
 async function main() {
 
     var players = (await search('https://scoresaber.com/api/players?countries=br&withMetadata=true')).players;
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < limitePlayers; i++) {
         getPlayerInfo(players[i].id)
     }
     setInterval(() => {
@@ -47,13 +50,13 @@ async function getPlayerInfo(playerID) {
 
 
     let playerInfoPromise = search(`https://scoresaber.com/api/player/${playerID}/full`);
-    let playerScorePromise = search(`https://scoresaber.com/api/player/${playerID}/scores?limit=20&sort=top&withMetadata=true`);
+    let playerScorePromise = search(`https://scoresaber.com/api/player/${playerID}/scores?limit=${limiteScoresPlayer}&sort=top&withMetadata=true`);
     allPromises.push(Promise.all([playerInfoPromise, playerScorePromise]));
 
     Promise.all(allPromises).then(async (player) => {
         let playerInfo = player[0][0];
         let playerScores = player[0][1].playerScores;
-        console.log('a')
+
         for (let i = 0; i < playerScores.length; i++) {
             let level = await search(`https://api.beatsaver.com/maps/hash/${playerScores[i].leaderboard.songHash}`);
 
@@ -63,9 +66,10 @@ async function getPlayerInfo(playerID) {
                 inserirDificuldade(idMapa, level.versions[0].diffs[i]);
             }
         }
-        /* inserirPlayer(playerInfo.id, playerInfo.name, playerInfo.country) */
-        /* inserirHistorico(playerInfo.histories)
-        inserirScores(); */
+        
+        let idPlayer = await inserirPlayer(playerInfo)
+        inserirHistorico(idPlayer, playerInfo.histories)
+        inserirScores(idPlayer, playerScores);
     });
 }
 
@@ -78,24 +82,28 @@ var mySqlConfig = {
     database: "bssc",
     password: "Ruaadele210",
 };
-
+/* Feito */
 var numId = 0;
-async function inserirPlayer(name) {
-    await executar(
-        `INSERT INTO Jogador (nome, email, senha) SELECT ('${name}', 'Teste${numId}', SHA2('teste', 512)) from Scores join Jogador on fkJogador = idJogador;`
+async function inserirPlayer(player) {
+    let resp = await executar(
+        `INSERT INTO Jogador values (null, '${player.name.replaceAll("'", '')}', 'Teste@${numId}', SHA2('teste', 512), 0, 0, 0, null, null, null, null, '${player.id}', '${player.country}' );`
     );
     numId++;
+    console.log('Player adicionado')
+    return resp.insertId;
 }
-
-async function inserirHistorico(historico) {
-    for (let i = 0; i < historico; i++) {
-        await poolBancoDados.execute(
-            'INSERT INTO Historico (dht11_umidade, dht11_temperatura, luminosidade, lm35_temperatura, chave) VALUES (?, ?, ?, ?, ?)',
-            [dht11Umidade, dht11Temperatura, luminosidade, lm35Temperatura, chave]
-        );
+/* Feito, Mas subtrair datas*/
+async function inserirHistorico(fkPlayer, historico) {
+    let j = 50;
+    for (let i = 0; i < historico.length; i++) {
+        await executar(
+            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, ${j});`
+        )
+        j--;
     }
+    console.log('Historico adicionado')
 }
-
+/* Feito */
 async function inserirMapa(mapa) {
     let resp = await executar(
         `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES 
@@ -106,20 +114,36 @@ async function inserirMapa(mapa) {
     console.log('Mapa Adicionado Com Sucesso.')
     return resp.insertId;
 }
-
+/* Feito */
 async function inserirDificuldade(fkMapa, diff) {
-    await await executar(
+    await executar(
         `INSERT INTO Dificuldade values (null, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
     );
     console.log('Diff Adicionada Com Sucesso.')
 }
 
-async function inserirScores(historico) {
-    for (let i = 0; i < historico; i++) {
-        await poolBancoDados.execute(
-            'INSERT INTO Historico (dht11_umidade, dht11_temperatura, luminosidade, lm35_temperatura, chave) VALUES (?, ?, ?, ?, ?)',
-            [dht11Umidade, dht11Temperatura, luminosidade, lm35Temperatura, chave]
-        );
+async function inserirScores(fkJogador, scores) {
+    let diff = (diffNumber) => {
+        switch (diffNumber) {
+            case "Easy":
+                return 1;
+            case "Normal":
+                return 3;
+            case "Hard":
+                return 5;
+            case "Expert":
+                return 7;
+            case "ExpertPlus":
+                return 9;
+        }
+    }
+    for (let i = 0; i < scores.length; i++) {
+        let nomeDificuldade = diff(scores[i].leaderboard.difficulty.difficulty);
+        
+        await executar (
+            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = ${scores[i].leaderboard.songHash} and nomeDificuldade = '${nomeDificuldade}';` 
+        )
+        console.log('Score Adicionado')
     }
 }
 
