@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Home</title>
+</head>
+
+<body>
+    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                        <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="mapa">Mapas</span>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+    <div class="banner">
+        <div class="img-container">
+            <img src="./assets/img/bsbg.jpg" class="background-image">
+        </div>
+        <div class="perfil-banner">
+            <div class="perfil-container">
+                <div class="player-header-container">
+                    <img class="perfil-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
+                        onerror="this.src='./assets/img/oculus.png'"> <!-- Mudar Imagem para local -->
+                    <div class="player-name-container">
+                        <span class="player-name">Shiro</span>
+                        <div id="flag-country">
+                        </div>
+                    </div>
+                    <div class="player-position-info">
+
+                        <div class="global-container">
+                            <span>Posição Global:</span>
+                            <span id="posicaoGlobal">#150</span>
+                        </div>
+                        <div class="nacional-container">
+                            <span>Posição Nacional:</span>
+                            <span id="posicaoNacional">#1</span>
+                        </div>
+                    </div>
+                    <div class="hide-background-container">
+                        <div class="hide-background" onclick="hideBackground()">
+                            <i id='hide-bk' class="fa-solid fa-chevron-up"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-info-chart-container">
+                    <div class="position-chart">
+                        <canvas id="myChart" width="" height="90"></canvas>
+                    </div>
+                    <div class="round-border"></div>
+
+                    <div class="player-info">
+                        <div class="player-info-label">
+                            <span>Vr Utilizado:</span>
+                            <span>Precisão:</span>
+                            <span>Pontuação Total:</span>
+                            <span>Replays Assistidos por Outros:</span>
+                        </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
+                        <div class="player-info-label">
+
+                            <span>Oculus</span>
+                            <span>100.00%</span>
+                            <span>32891489124712</span>
+                            <span>31231312312</span>
+                        </div>
+
+                        <!-- <i class="fa-brands fa-youtube"></i> -->
+                        <!-- <i class="fa-brands fa-twitch"></i> -->
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
+                </div>
+                <ul class="labels-player">
+                    <li class="player-label">
+                        <a href="#eu_section" class="player-label-name" onclick="changeLabelColor(this)">eu!</a>
+                    </li>
+                    <li class="player-label">
+                        <a href="#recentes_section" class="player-label-name"
+                            onclick="changeLabelColor(this)">Recentes</a>
+                    </li>
+                    <li class="player-label">
+                        <a href="#mapas_jogados_section" class="player-label-name"
+                            onclick="changeLabelColor(this)">Mapas Jogados</a>
+                    </li>
+                </ul>
+
+                <section class="player-label-container" id="eu_section">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">eu!</h3>
+                    </div>
+                    <div class="editor-box-container">
+                        <div style="width: 97%; height: fit-content;">
+                            <div id="editor-box"></div>
+                        </div>
+                    </div>
+                    <button class="button-login" style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Cancelar</button>
+                    <button onclick="enviarDescricao()" class="button-login" style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Feito</button>
+                </section>
+
+                <section class="player-label-container" id="recentes_section">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">Recentes</h3>
+                    </div>
+                </section>
+
+                <section class="player-label-container" id="mapas_jogados_section">
+                    <div class="player-label-title-container">
+                        <h3 class="player-label-title">Mapas Jogados</h3>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    document.getElementById('search-user').placeholder = '...';
+    setPlayerInformations();
+
+    var editorElement;
+
+    ClassicEditor
+        .create(document.querySelector('#editor-box'))
+        .then(editor => {
+            /* editor.setData( '<p>Some text.</p>' ); */
+            console.log(editor.config.width)
+            editorElement = editor;
+            /* var editInterval = setInterval(() => {
+                console.log('Enviar para o servidor')
+            }, 20000)
+            editor.model.document.on('change:data', () => {
+                Enviar para o servidor a data
+                console.log(editor.getData())
+            }); */
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    function setPlayerInformations() {
+        setPlayerCountry();
+        playerPositionChart();
+    }
+
+    function setPlayerCountry() {
+        let countryFlagUnicode = 'U+1F1E7 U+1F1F7'.split(' ');
+
+        countryFlagUnicode.forEach((unicode) => {
+            let convert = twemoji.convert.fromCodePoint(unicode.substring(2));
+            document.getElementById('flag-country').textContent += convert;
+        })
+
+        twemoji.parse(document.body);
+        let countryName = 'Brasil';
+        let spanElement = document.createElement('span');
+        spanElement.innerHTML = countryName;
+        spanElement.classList.add('contry-name');
+        document.getElementById('flag-country').appendChild(spanElement);
+    }
+
+    function showMenu() {
+        document.getElementById('perfil-menu').style.width = '20vw';
+        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
+        search.style.left = '35px';
+        home.classList.add('nav-bar-name-opacity');
+        mapa.classList.add('nav-bar-name-opacity');
+        ranking.classList.add('nav-bar-name-opacity');
+        ultimos.classList.add('nav-bar-name-opacity');
+        login.classList.add('nav-bar-name-opacity');
+        cadastro.classList.add('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = 'Pesquisar...';
+        }, 500)
+    }
+
+    function hideMenu() {
+        document.getElementById('perfil-menu').style.width = '5vw';
+        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
+        search.style.left = '30px';
+        home.classList.remove('nav-bar-name-opacity');
+        mapa.classList.remove('nav-bar-name-opacity');
+        ranking.classList.remove('nav-bar-name-opacity');
+        ultimos.classList.remove('nav-bar-name-opacity');
+        login.classList.remove('nav-bar-name-opacity');
+        cadastro.classList.remove('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = '...';
+        }, 500)
+    }
+
+    function playerPositionChart() {
+        let labels = [];
+        for (let i = 50; i > 0; i--) {
+            let msg;
+            if (i == 1) {
+                msg = 'Agora';
+            } else if (i == 2) {
+                msg = 'Ontem';
+            } else {
+                msg = `${i} Dias atrás`;
+            }
+            labels.push(msg);
+        }
+
+        let positionsData = ['444', '449', '451', '454', '455', '457', '457', '457', '456', '457', '464', '465', '463', '465', '465', '464', '465', '465', '466', '467', '469', '470', '468', '470', '470', '473', '473', '474', '475', '475', '475', '491', '491', '491', '493', '494', '495', '497', '498', '501', '503', '503', '504', '504', '505', '506', '506', '493', '493', '490']
+        console.log(labels.length)
+        positionsData = positionsData.map((numString) => {
+            let num = parseInt(numString);
+            return num;
+        });
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Rank',
+                backgroundColor: 'rgb(58, 82, 125)',
+                borderColor: 'rgb(58, 82, 125)',
+                data: positionsData,
+                tension: 0.4,
+                pointRadius: 0,
+                hoverPointRadius: 0
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    yAxis: {
+                        reverse: true,
+                        ticks: {
+                            min: Math.min(...positionsData),
+                            max: Math.max(...positionsData),
+                            stepSize: 50,
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        };
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    }
+
+    function changeLabelColor(thisElement) {
+        let documentLabel = document.getElementsByClassName('player-label-name');
+        console.log(documentLabel)
+        for (let i = 0; i < documentLabel.length; i++) {
+            let label = documentLabel[i];
+            label.classList.remove('chosen');
+        }
+        thisElement.classList.add('chosen');
+    }
+
+    function hideBackground() {
+        let container = document.getElementsByClassName('img-container');
+        let arrow = document.getElementById('hide-bk');
+
+        if (arrow.classList[1] === 'fa-chevron-up') {
+            arrow.classList.remove('fa-chevron-up');
+            arrow.classList.add('fa-chevron-down');
+            container[0].style.height = '0px';
+        } else {
+            arrow.classList.remove('fa-chevron-down');
+            arrow.classList.add('fa-chevron-up');
+            container[0].style.height = '250px';
+
+        }
+    }
+
+    function enviarDescricao() {
+        let data = editorElement.getData();
+        data = data.substring(3, data.length - 4)
+        console.log(typeof data)
+    }
+</script>
+
+</html>

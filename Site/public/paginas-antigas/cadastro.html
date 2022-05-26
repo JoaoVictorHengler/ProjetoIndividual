@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/js/validacoes.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Cadastro</title>
+</head>
+
+<body>
+    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./mapas.html">
+                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="mapa">Mapas</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+
+    <div class="login-main-banner">
+        <div class="banner-img-container"></div>
+        <div class="login-banner">
+            <div class="login-container">
+                <span>Cadastro</span>
+                <div class="login-input-container">
+                    <div class="username-password-container">
+                        <label for="user">Username:</label>
+                        <input type="text" id="user" placeholder="Username">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="username-password-container">
+                        <label for="email">Email:</label>
+                        <input type="text" id="email" placeholder="Email">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="username-password-container">
+                        <label for="senha">Senha:</label>
+                        <input type="password" id="senha" placeholder="Password">
+                        <i class="fa-solid fa-lock password senha" id="cadeado" onclick="showPassword()"></i>
+                    </div>
+                    <div class="username-password-container">
+                        <label for="reescreverSenha ">Reescreva a Senha:</label>
+                        <input type="password" id="reescreverSenha" placeholder="Password">
+                        <i class="fa-solid fa-lock password reescrever" id="cadeadoReescrever"
+                            onclick="showRewritePassword()"></i>
+                    </div>
+                </div>
+                <button class="button-login" onclick="cadastrar()">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    document.getElementById('search-user').placeholder = '...';
+    function showMenu() {
+        document.getElementById('perfil-menu').style.width = '20vw';
+        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
+        search.style.left = '35px';
+        home.classList.add('nav-bar-name-opacity');
+        mapa.classList.add('nav-bar-name-opacity');
+        ranking.classList.add('nav-bar-name-opacity');
+        ultimos.classList.add('nav-bar-name-opacity');
+        login.classList.add('nav-bar-name-opacity');
+        cadastro.classList.add('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = 'Pesquisar...';
+        }, 500)
+    }
+
+    function hideMenu() {
+        document.getElementById('perfil-menu').style.width = '5vw';
+        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
+        search.style.left = '30px';
+        home.classList.remove('nav-bar-name-opacity');
+        mapa.classList.remove('nav-bar-name-opacity');
+        ranking.classList.remove('nav-bar-name-opacity');
+        ultimos.classList.remove('nav-bar-name-opacity');
+        login.classList.remove('nav-bar-name-opacity');
+        cadastro.classList.remove('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = '...';
+        }, 500)
+    }
+
+    function showPassword() {
+        if ((document.getElementsByClassName("senha")).length == 0) {
+            cadeado.classList.add("fa-lock");
+            cadeado.classList.remove("fa-unlock");
+            cadeado.classList.add("senha");
+            senha.type = "password";
+        } else {
+            cadeado.classList.add("fa-unlock");
+            cadeado.classList.remove("fa-lock");
+            cadeado.classList.remove("senha");
+            senha.type = "text";
+        }
+    }
+
+    function showRewritePassword() {
+        if ((document.getElementsByClassName("reescrever")).length == 0) {
+            cadeadoReescrever.classList.add("fa-lock");
+            cadeadoReescrever.classList.remove("fa-unlock");
+            cadeadoReescrever.classList.add("reescrever");
+            reescreverSenha.type = "password";
+        } else {
+            cadeadoReescrever.classList.add("fa-unlock");
+            cadeadoReescrever.classList.remove("fa-lock");
+            cadeadoReescrever.classList.remove("reescrever");
+            reescreverSenha.type = "text";
+        }
+    }
+
+    function cadastrar() {
+        let nomeJogador = user.value;
+        let emailJogador = email.value;
+        let senhaJogador = senha.value;
+        let reescreverSenhaJogador = reescreverSenha.value;
+
+        if (
+            nomeJogador == '' || emailJogador == ''
+            || senhaJogador == '' || reescreverSenhaJogador == ''
+        ) {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Todos os campos são obrigatórios',
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        }
+
+        let validacaoEmail = validarEmail(emailJogador);
+        let validacaoSenha = validarSenha(senhaJogador);
+
+        if (validacaoEmail != 'OK') {
+            Swal.fire({
+                title: 'Erro',
+                text: validacaoEmail,
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        }
+        if (validacaoSenha != 'OK') {
+            Swal.fire({
+                title: 'Erro',
+                text: validacaoSenha,
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        }
+        if (senhaJogador != reescreverSenhaJogador) {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Escreva a senha semelhante!',
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        }
+        
+        fetch('/user/cadastrar', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nomeServer: nomeJogador,
+          emailServer: emailJogador,
+          senhaServer: senhaJogador
+        })
+      }).then(function (response) {
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+          Swal.fire({
+            title: 'Suceso',
+            text: 'Login realizado com sucesso',
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            confirmButtonColor: '#34e269',
+            willClose: () => {
+              window.location = './login.html';
+            }
+          });
+
+        } else {
+          Swal.fire({
+            title: 'Erro',
+            text: 'Houve um erro ao realizar o cadastro!',
+            icon: 'error',
+            showConfirmButton: false,
+            showDenyButton: true,
+            denyButtonText: 'OK'
+          });
+          throw ('Houve um erro ao realizar o cadastro!');
+        }
+      }).catch(function (response) {
+        console.log(`ERRO: ${response}`);
+      })
+
+      return;
+    }
+</script>
+
+</html>

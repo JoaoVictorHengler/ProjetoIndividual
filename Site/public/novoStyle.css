@@ -23,6 +23,32 @@
     #E39000
     #0BE3A9
 */
+
+body,
+html {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: #73717d;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+* {
+
+    margin: 0;
+    padding: 0;
+    font-family: Torus, Inter, "Helvetica Neue", Tahoma, Arial, "Hiragino Kaku Gothic ProN", Meiryo, "Microsoft YaHei", "Apple SD Gothic Neo", sans-serif;;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------------------------- */
+/* Inicio Index */
 /* Primeiro Container */
 @keyframes gradient {
     0% {
@@ -166,15 +192,285 @@
     border-radius: 10px;
 }
 
-.mini-list {
-    list-style: none;
+.reveal {
+    position: relative;
+    transform: translateY(130px);
+    opacity: 0;
+    transition: all 2s ease;
 }
 
-.mini-list il {
-    background-color: white;
-    width: 100%;
-    height: 32px;
+.reveal-table {
+    position: relative;
+    transform: translateY(50px);
+    opacity: 0;
+    transition: all 2s ease;
 }
+
+.reveal.active, .reveal-table.active {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.mini-mapa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+}
+
+.mini-mapa-table {
+    width: 50%;
+    height: 50%;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+.mini-mapa-table th {
+    height: fit-content;
+    font-size: 20px;
+}
+
+.left {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-right: 3px solid purple;
+}
+
+.right {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.left, .right {
+    padding: 5px;
+}
+
+.mini-mapa-container {
+    width: 100%;
+    height: 40px;
+    background-image: url("https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-size: 17px;
+    font-weight: 600;
+    color: #e3ebed;
+    text-shadow:
+        -2px -2px 0 #000,
+        0 -2px 0 #000,
+        2px -2px 0 #000,
+        2px 0 0 #000,
+        2px 2px 0 #000,
+        0 2px 0 #000,
+        -2px 2px 0 #000,
+        -2px 0 0 #000;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.mini-mapa-container .mini-mapa-title-container {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+}
+
+.mini-mapa-title {
+    text-align: center;
+}
+
+.title-mapa {
+    color: #7eb2ff;
+    cursor: pointer;
+    transition: color .5s ease;
+}
+.title-mapa:hover {
+    color: #FAAE2A;
+}
+
+.map-creator {
+    font-size: 13px;
+}
+/* Fim Index */
+/* ------------------------------------------------------------------------------------------------------------------------------------- */
+/* Inicio Perfil-Menu */
+#perfil-menu {
+    z-index: 4;
+    height: -webkit-fill-available;
+    width: 2vw;
+    position: fixed;
+    background-color: #11101c;
+    border-right: 4px solid #2B72C0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+    transition: width 1s ease;
+}
+
+.menu-usuario {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0px 5px 0px 5px;
+    height: fit-content;
+    margin-top: 15px;
+}
+
+#perfil-menu:hover {
+    width: 20vw;
+}
+
+#perfil-menu .menu-icon {
+    font-size: 28px;
+}
+
+#search-user {
+    height: 35px;
+    width: 100%;
+    border-radius: 10px;
+    background-color: #414049;
+    color: #7f7d88;
+    font-weight: 900;
+    font-size: 17px;
+    text-indent: 35px;
+}
+
+#search-user:focus {
+    outline: none;
+    border-bottom: 3px solid #212e48;
+}
+
+#search-user::placeholder {
+    color: white;
+    opacity: 0.5;
+}
+
+#perfil-menu .search-icon {
+    font-size: 20px;
+    position: absolute;
+    top: 27px;
+    left: 15px;
+    color: #67666f;
+    transition: left 1.2s ease;
+    /*     transition-delay: 0.4s; */
+}
+
+.nav-bar {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    color: #484652;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.nav-bar-item {
+    height: 40px;
+    width: 100%;
+    padding: 5px 0px 5px 0px;
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    margin-top: 10px;
+    color: #484652;
+    cursor: pointer;
+}
+
+.nav-bar-item:hover {
+
+    background-color: #1d1b2e;
+}
+
+.nav-bar-item i {
+    margin-left: 15px;
+}
+
+.nav-bar-name,
+.nav-bar-name-opacity {
+    margin-left: 10px;
+}
+
+.nav-bar-name {
+    width: 0px;
+    opacity: 0;
+    transition: opacity 1s ease;
+    transition-delay: .2s;
+}
+
+.nav-bar-name-opacity {
+    width: fit-content;
+    opacity: 1;
+}
+
+.here {
+    color: #b4b2c4;
+    cursor: default;
+}
+
+.user-container {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: #73717d;
+    font-weight: 500;
+}
+
+.user-container i:hover {
+    cursor: pointer;
+    background-color: #1d1b2e;
+}
+
+.user-container #userImg {
+    height: 70%;
+}
+
+.user-container .user-info {
+    width: 0%;
+    opacity: 0;
+    transition: opacity 2s ease;
+    transition-delay: .4s;
+}
+
+.user-container .user-info-show {
+    width: 40%;
+    opacity: 1;
+}
+
+.user-container #username {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.user-container i {
+    font-size: 25px;
+    padding: 10px;
+}
+
+.user-container #global,
+.user-container #nacional {
+    color: #b3afc7;
+    font-size: 13px;
+}
+
+#logOut {
+    color: #9b2525;
+}
+
+/* Fim Perfil-Menu */
+/* ------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------- */
 /* Inicio Modificar Barra */
 ::-webkit-scrollbar {
     width: 2px;

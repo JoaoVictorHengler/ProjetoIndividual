@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Home</title>
+</head>
+
+<body>
+    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                        <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="mapa">Mapas</span>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+    <div class="banner">
+        <div class="img-container">
+            <img src="./assets/img/bsbg.jpg" class="background-image">
+        </div>
+        <div class="mapa-banner">
+            <div class="container">
+
+                <table class="mapa-table">
+                    <tr>
+                        <th></th>
+                        <th class="mapa-table-title"><span>Plays</span></th>
+                    </tr>
+                    <tr class="mapa">
+                        <td class="mapa-container">
+                            <div class="mapa-img-container">
+                                <img class="mapa-img"
+                                    src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
+                            </div>
+                            <div class="mapa-creator-name-container">
+                                <div class="mapa-name-container">
+                                    <span class="mapa-name">Titulo</span>
+                                    <span class="mapa-creator">Mapeado por João </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="mapa-plays-container">
+                            <span class="mapa-plays">1,504</span>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="search-mapa">
+                <input type="text" id="search-mapa" placeholder="Pesquisar...">
+                <i class="fa-solid fa-magnifying-glass search-mapa-icon"></i>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    document.getElementById('search-user').placeholder = '...';
+    function showMenu() {
+        document.getElementById('perfil-menu').style.width = '20vw';
+        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
+        search.style.left = '35px';
+        home.classList.add('nav-bar-name-opacity');
+        mapa.classList.add('nav-bar-name-opacity');
+        ranking.classList.add('nav-bar-name-opacity');
+        ultimos.classList.add('nav-bar-name-opacity');
+        login.classList.add('nav-bar-name-opacity');
+        cadastro.classList.add('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = 'Pesquisar...';
+        }, 500)
+    }
+
+    function hideMenu() {
+        document.getElementById('perfil-menu').style.width = '5vw';
+        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
+        search.style.left = '30px';
+        home.classList.remove('nav-bar-name-opacity');
+        mapa.classList.remove('nav-bar-name-opacity');
+        ranking.classList.remove('nav-bar-name-opacity');
+        ultimos.classList.remove('nav-bar-name-opacity');
+        login.classList.remove('nav-bar-name-opacity');
+        cadastro.classList.remove('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = '...';
+        }, 500)
+    }
+</script>
+
+</html>

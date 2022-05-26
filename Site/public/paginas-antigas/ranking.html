@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Ranking</title>
+</head>
+
+<body>
+    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                        <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./mapas.html">
+                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="mapa">Mapas</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="ranking">Ranking</span>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+    <div class="banner">
+        <div class="img-container">
+            <img src="./assets/img/bsbg.jpg" class="background-image">
+        </div>
+        <div class="ranking-banner">
+            <div class="container">
+                <table class="ranking-table">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="ranking-table-title acc-title"><span>Mapas Jogados</span></th>
+                        <th class="ranking-table-title acc-title"><span>Precisão Média</span></th>
+                    </tr>
+                    <tr class="player-container">
+                        <td class="position-global">
+                            <span>#1</span>
+                        </td>
+                        <td class="player-info">
+                            <div>
+                                <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                <span class="player-name">Shiro</span>
+                            </div>
+                        </td>
+                        <td class="scores">
+                            <span>1.500</span>
+                        </td>
+                        <td class="precisao">
+                            <span>95.00%</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="search-player">
+                <input type="text" id="search-player" placeholder="Pesquisar...">
+                <i class="fa-solid fa-magnifying-glass search-player-icon"></i>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    document.getElementById('search-user').placeholder = '...';
+    function showMenu() {
+        document.getElementById('perfil-menu').style.width = '20vw';
+        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
+        search.style.left = '35px';
+        home.classList.add('nav-bar-name-opacity');
+        mapa.classList.add('nav-bar-name-opacity');
+        ranking.classList.add('nav-bar-name-opacity');
+        ultimos.classList.add('nav-bar-name-opacity');
+        login.classList.add('nav-bar-name-opacity');
+        cadastro.classList.add('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = 'Pesquisar...';
+        }, 500)
+    }
+
+    function hideMenu() {
+        document.getElementById('perfil-menu').style.width = '5vw';
+        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
+        search.style.left = '30px';
+        home.classList.remove('nav-bar-name-opacity');
+        mapa.classList.remove('nav-bar-name-opacity');
+        ranking.classList.remove('nav-bar-name-opacity');
+        ultimos.classList.remove('nav-bar-name-opacity');
+        login.classList.remove('nav-bar-name-opacity');
+        cadastro.classList.remove('nav-bar-name-opacity');
+        setTimeout(() => {
+            document.getElementById('search-user').placeholder = '...';
+        }, 500)
+    }
+</script>
+
+</html>
