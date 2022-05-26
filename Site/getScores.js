@@ -7,7 +7,7 @@ var requestNum = 0;
 var allPromises = [];
 
 const limitePlayers = 1;
-const limiteScoresPlayer = 20;
+const limiteScoresPlayer = 5;
 
 async function search(link) {
     return new Promise((resolve, reject) => {
@@ -80,7 +80,7 @@ var mySqlConfig = {
     port: "3306",
     user: "root",
     database: "bssc",
-    password: "Ruaadele210",
+    password: "XXXXXXXXX",
 };
 /* Feito */
 var numId = 0;
@@ -94,12 +94,11 @@ async function inserirPlayer(player) {
 }
 /* Feito, Mas subtrair datas*/
 async function inserirHistorico(fkPlayer, historico) {
-    let j = 50;
     for (let i = 0; i < historico.length; i++) {
+        let diaHistorico = subDate(new Date().toISOString().slice(0, 10), i + 1)
         await executar(
-            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, ${j});`
+            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, ${diaHistorico});`
         )
-        j--;
     }
     console.log('Historico adicionado')
 }
@@ -165,6 +164,12 @@ function executar(instrucao) {
         });
     });
 }
+
+function subDate(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() - days);
+    return result.toISOString().substring(0, 10);
+  }
 
 /* await poolBancoDados.execute(
     'INSERT INTO sensores (dht11_umidade, dht11_temperatura, luminosidade, lm35_temperatura, chave) VALUES (?, ?, ?, ?, ?)',
