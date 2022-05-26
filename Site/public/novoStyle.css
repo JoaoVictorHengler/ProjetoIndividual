@@ -36,23 +36,38 @@
     }
   }
 
-.container-index {
-    height: 900px;
+.complementar-triple-colors {
     background: linear-gradient(-45deg, #0BE3A9, #00966E, #17C8E3, #2B72C0, #227FE3, #2B72C0);  
+}
+
+.complementar-five-colors {
+    background: linear-gradient(-45deg, #0BE3A9, #E39000, #17C8E3, #E3572D, #2B72C0);  
+}
+
+.complementar-colors {
+    background: linear-gradient(-45deg, #AD6E00, #FAAE2A, #2A8FFA, #459FFF, #2B72C0);  
+}
+
+.gura-colors {
+    background: linear-gradient(-45deg, #e3ebed, #7eb2ff, #2b72c0);  
+}
+
+.container-index {
+    height: fit-content;
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;  
     display: flex;
-    padding: 10px 10px 10px 100px;
-    
 }
 
 .pattern-dots-regular {
     width: 100%;
-    height: 100%;
+    height: 520px;
     background-image: radial-gradient(currentColor 0.5px, transparent 0.5px);
     background-size: calc(10 * 1px) calc(10 * 1px);
     color: white;
-  }
+    padding: 10px 10px 30px 100px;
+    display: flex;
+}
 
 .background-container {
     width: 60%;
@@ -89,9 +104,57 @@
 .container-index-title-container {
     height: 100%;
     width: 100%;
-    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 10px 20px 30px;
 }
 
+.container-index-title {
+    width: 80%;
+    font-size: 29px;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.paragraph-container {
+    width: 92%;
+    margin-top: 50px
+}
+
+.paragraph {
+    font-size: 20px;
+    text-align: center;
+}
+
+.container-index .container-index-button {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 60px;
+}
+
+.container-index .container-index-button button {
+    width: 45%;
+    height: 65px;
+    border-radius: 30px;
+    outline: none;
+    /* background-color: #7eb2ff; */
+    border: 2px solid #2B72C0;
+    cursor: pointer;
+    text-align: center;
+    font-size: 30px;
+    color: #d5dfe2;
+    font-weight: 600;
+}
+
+.container-index .container-index-button .login {
+    background-color: #2A8FFA;
+}
+
+.container-index .container-index-button .cadastro {
+    background-color: #7eb2ff   ;
+}
 /* Fim Primeiro Container */
 
 
@@ -112,4 +175,13 @@
     width: 100%;
     height: 32px;
 }
-
+/* Inicio Modificar Barra */
+::-webkit-scrollbar {
+    width: 2px;
+    background: #2b72c0;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #17C8E3;
+  }
+/* Fim Modificar Barra */
