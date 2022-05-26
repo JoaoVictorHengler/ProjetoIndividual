@@ -1,0 +1,18 @@
+
+.background-gif-container {
+    width: 90%;
+    height: 400px;
+    border: 2px solid;
+    overflow: hidden;
+    position: relative;
+}
+
+.background-gif {
+    width: 100%;
+}
+
+.gura-gif {
+    position: absolute;
+    left: 100px;
+    bottom: 10px;
+}

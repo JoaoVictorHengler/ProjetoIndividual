@@ -6,8 +6,8 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 30;
-const limiteScoresPlayer = 20;
+const limitePlayers = 3;
+const limiteScoresPlayer = 5;
 
 async function search(link) {
     return new Promise((resolve, reject) => {
@@ -33,44 +33,45 @@ async function search(link) {
 
 
 async function main() {
-
     var players = (await search('https://scoresaber.com/api/players?countries=br&withMetadata=true')).players;
     for (let i = 0; i < limitePlayers; i++) {
-        getPlayerInfo(players[i].id)
+        console.log(`Carregando id: ${players[i].id}`)
+        let playerInfoPromise = search(`https://scoresaber.com/api/player/${players[i].id}/full`);
+        let playerScoresPromise = search(`https://scoresaber.com/api/player/${players[i].id}/scores?limit=${limiteScoresPlayer}&sort=top&withMetadata=true`);
+        allPromises.push(Promise.all([playerInfoPromise, playerScoresPromise]));
     }
     setInterval(() => {
         requestNum = 0;
     }, 60000)
+    await getPlayerInfo();
 }
-async function getPlayerInfo(playerID) {
+async function getPlayerInfo() {
     if (requestNum >= 400) {
         while (requestNum >= 400) {
         }
     }
 
-
-    let playerInfoPromise = search(`https://scoresaber.com/api/player/${playerID}/full`);
-    let playerScorePromise = search(`https://scoresaber.com/api/player/${playerID}/scores?limit=${limiteScoresPlayer}&sort=top&withMetadata=true`);
-    allPromises.push(Promise.all([playerInfoPromise, playerScorePromise]));
-
     Promise.all(allPromises).then(async (player) => {
-        let playerInfo = player[0][0];
-        let playerScores = player[0][1].playerScores;
+        for (let i = 0; i< player.length; i++) {
+            let playerInfo = player[i][0];
+            let playerScores = player[i][1].playerScores;
 
-        for (let i = 0; i < playerScores.length; i++) {
-            let level = await search(`https://api.beatsaver.com/maps/hash/${playerScores[i].leaderboard.songHash}`);
+            for (let i = 0; i < playerScores.length; i++) {
+                let level = await search(`https://api.beatsaver.com/maps/hash/${playerScores[i].leaderboard.songHash}`);
 
-            let idMapa = await inserirMapa(level);
+                let idMapa = await inserirMapa(level);
 
-            for (let i = 0; i < level.versions[0].diffs.length; i++) {
-                await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
+                for (let i = 0; i < level.versions[0].diffs.length; i++) {
+                    await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
+                }
             }
+            
+            let idPlayer = await inserirPlayer(playerInfo)
+            await inserirHistorico(idPlayer, playerInfo.histories.split(","));
+            console.log("Inserir Historico finalizado")
+            await inserirScores(idPlayer, playerScores);
         }
         
-        let idPlayer = await inserirPlayer(playerInfo)
-        await inserirHistorico(idPlayer, playerInfo.histories.split(","));
-        console.log("Inserir Historico finalizado")
-        await inserirScores(idPlayer, playerScores);
     });
 }
 
@@ -79,9 +80,9 @@ main();
 var mySqlConfig = {
     host: "localhost",
     port: "3306",
-    user: "root",
-    database: "XXXXXX",
-    password: "XXXXXX",
+    user: "XXXXXXX",
+    database: "XXXXXXXX",
+    password: "XXXXXXXX",
 };
 /* Feito */
 var numId = 0;
@@ -105,21 +106,49 @@ async function inserirHistorico(fkPlayer, historico) {
 }
 /* Feito */
 async function inserirMapa(mapa) {
-    let resp = await executar(
-        `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES 
-        ('${mapa.metadata.songName.replaceAll("'", '')}', '${mapa.metadata.songSubName.replaceAll("'", '')}', '${mapa.metadata.levelAuthorName}','${mapa.metadata.songAuthorName}',
-        '${mapa.versions[0].hash}', '${mapa.metadata.bpm}', '${mapa.metadata.duration}', '${mapa.createdAt.substring(0, 10) + ' ' + mapa.createdAt.substring(11, 19)}'
-        )`
+    let mapas = await executar(
+        `select idMapa from Mapa where hashMapa = '${mapa.versions[0].hash.toLowerCase()}'`
     );
-    console.log('Mapa Adicionado Com Sucesso.')
-    return resp.insertId;
+    if (mapas.length == 0) {
+        let resp = await executar(
+            `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES 
+            ('${mapa.metadata.songName.replaceAll("'", '')}', '${mapa.metadata.songSubName.replaceAll("'", '')}', '${mapa.metadata.levelAuthorName}','${mapa.metadata.songAuthorName}',
+            '${mapa.versions[0].hash.toLowerCase()}', '${mapa.metadata.bpm}', '${mapa.metadata.duration}', '${mapa.createdAt.substring(0, 10) + ' ' + mapa.createdAt.substring(11, 19)}'
+            )`
+        );
+        console.log('Mapa ' + mapa.metadata.songName.replaceAll("'", '') + ' Adicionado Com Sucesso.')
+        return resp.insertId;
+    } else {
+        console.log('Mapa ' + mapa.metadata.songName.replaceAll("'", '') +' Adicionado Com Sucesso.')
+        return mapas[0].idMapa;
+    }
+    
+    
+    
 }
 /* Feito */
 async function inserirDificuldade(fkMapa, diff, i) {
-    await executar(
-        `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
+    let dificuldades = await executar(
+        `select nomeDificuldade from Dificuldade join Mapa on idMapa = ${parseInt(fkMapa)} and idMapa = fkMapa;`
     );
-    console.log('Diff Adicionada Com Sucesso.')
+    if (dificuldades.length == 0) {
+        await executar(
+            `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
+        );
+        console.log('Diff ' + diff.difficulty + 'Adicionada Com Sucesso.')
+    } else {
+        let diffsExiste = dificuldades.filter((diffBd) => {
+            return diffBd.nomeDificuldade == diff.difficulty
+        })
+        if (diffsExiste.length == 0) {
+            await executar(
+                `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
+            );
+            console.log('Diff ' + diff.difficulty + 'Adicionada Com Sucesso.')
+        }
+    }
+    
+    
 }
 
 async function inserirScores(fkJogador, scores) {
@@ -157,7 +186,7 @@ function executar(instrucao) {
             if (erro) {
                 reject(erro);
             }
-            console.log(resultados);
+            /* console.log(resultados); */
             resolve(resultados);
         });
         conexao.on('error', function (erro) {
