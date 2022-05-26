@@ -1,4 +1,5 @@
 drop database bssc;
+
 create database bssc;
 use bssc;
 
@@ -33,7 +34,7 @@ create table Mapa (
 );
 
 create table Dificuldade (
-						  idDificuldade int primary key auto_increment,
+						  idDificuldade int,
                           nomeDificuldade varchar(45),
                           tipoDificuldade enum('Easy', 'Normal', 'Hard', 'Expert', 'ExpertPlus'),
                           njs decimal(4,2),
@@ -44,7 +45,8 @@ create table Dificuldade (
                           notasPSegundo decimal(5,2),
                           maxScore int,
 						  fkMapa int,
-                          foreign key (fkMapa) references Mapa(idMapa)
+                          foreign key (fkMapa) references Mapa(idMapa),
+                          primary key(idDificuldade, fkMapa)
 );
 
 create table Score (
@@ -66,3 +68,10 @@ create table Historico (
     rankGlobal int NOT NULL,
     diaRank Date
 );
+select * from dificuldade join Mapa on idMapa = fkMapa;
+select * from dificuldade order by fkMapa;
+select * from Mapa where hashMapa = '621487b366d4793a095bc2e2fcf542845e325b38';
+select * from Score 
+					join mapa on idMapa = fkMapa;
+select * from score;
+INSERT INTO Score SELECT 1, idDificuldade, idMapa, 10000, '2022-10-10', false FROM Dificuldade JOIN Mapa ON hashMapa = '621487b366d4793a095bc2e2fcf542845e325b38' and nomeDificuldade = 'Easy';

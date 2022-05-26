@@ -6,8 +6,8 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 1;
-const limiteScoresPlayer = 5;
+const limitePlayers = 30;
+const limiteScoresPlayer = 20;
 
 async function search(link) {
     return new Promise((resolve, reject) => {
@@ -63,13 +63,14 @@ async function getPlayerInfo(playerID) {
             let idMapa = await inserirMapa(level);
 
             for (let i = 0; i < level.versions[0].diffs.length; i++) {
-                inserirDificuldade(idMapa, level.versions[0].diffs[i]);
+                await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
             }
         }
         
         let idPlayer = await inserirPlayer(playerInfo)
-        inserirHistorico(idPlayer, playerInfo.histories)
-        inserirScores(idPlayer, playerScores);
+        await inserirHistorico(idPlayer, playerInfo.histories.split(","));
+        console.log("Inserir Historico finalizado")
+        await inserirScores(idPlayer, playerScores);
     });
 }
 
@@ -79,8 +80,8 @@ var mySqlConfig = {
     host: "localhost",
     port: "3306",
     user: "root",
-    database: "bssc",
-    password: "XXXXXXXXX",
+    database: "XXXXXX",
+    password: "XXXXXX",
 };
 /* Feito */
 var numId = 0;
@@ -97,7 +98,7 @@ async function inserirHistorico(fkPlayer, historico) {
     for (let i = 0; i < historico.length; i++) {
         let diaHistorico = subDate(new Date().toISOString().slice(0, 10), i + 1)
         await executar(
-            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, ${diaHistorico});`
+            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, '${diaHistorico}');`
         )
     }
     console.log('Historico adicionado')
@@ -114,9 +115,9 @@ async function inserirMapa(mapa) {
     return resp.insertId;
 }
 /* Feito */
-async function inserirDificuldade(fkMapa, diff) {
+async function inserirDificuldade(fkMapa, diff, i) {
     await executar(
-        `INSERT INTO Dificuldade values (null, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
+        `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
     );
     console.log('Diff Adicionada Com Sucesso.')
 }
@@ -124,23 +125,23 @@ async function inserirDificuldade(fkMapa, diff) {
 async function inserirScores(fkJogador, scores) {
     let diff = (diffNumber) => {
         switch (diffNumber) {
-            case "Easy":
-                return 1;
-            case "Normal":
-                return 3;
-            case "Hard":
-                return 5;
-            case "Expert":
-                return 7;
-            case "ExpertPlus":
-                return 9;
+            case 1:
+                return "Easy";
+            case 3:
+                return "Normal";
+            case 5:
+                return "Hard";
+            case 7:
+                return "Expert";
+            case 9:
+                return "ExpertPlus";
         }
     }
     for (let i = 0; i < scores.length; i++) {
         let nomeDificuldade = diff(scores[i].leaderboard.difficulty.difficulty);
-        
+        // console.log(`INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}';`)
         await executar (
-            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = ${scores[i].leaderboard.songHash} and nomeDificuldade = '${nomeDificuldade}';` 
+            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;` 
         )
         console.log('Score Adicionado')
     }
