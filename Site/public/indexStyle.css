@@ -1,41 +1,99 @@
 /* 
+    Cores Gura
+    #e3ebed Cabelo
+    #7eb2ff Sombra Cabelo
+    #2b72c0 Roupa, Rabo
+    #fff0e7 Pele
     Cores complementares
     #2B72C0
     #459FFF
     #2A8FFA
     #AD6E00
     #FAAE2A
+    Cores triplas Complementares
+    #2B72C0
+    #227FE3
+    #17C8E3
+    #00966E
+    #0BE3A9
+    Cinco Complementares
+    #2B72C0
+    #E3572D
+    #17C8E3
+    #E39000
+    #0BE3A9
 */
+/* Primeiro Container */
+@keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }   
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 
 .container-index {
-    width: 100vw;
-    background-color: #FAAE2A;
+    height: 900px;
+    background: linear-gradient(-45deg, #0BE3A9, #00966E, #17C8E3, #2B72C0, #227FE3, #2B72C0);  
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;  
     display: flex;
-    justify-content: center;
-    padding-left: 100px;
+    padding: 10px 10px 10px 100px;
+    
+}
+
+.pattern-dots-regular {
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(currentColor 0.5px, transparent 0.5px);
+    background-size: calc(10 * 1px) calc(10 * 1px);
+    color: white;
+  }
+
+.background-container {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .background-gif-container {
-    width: 90%;
-    height: 400px;
+    width: fit-content;
+    height: 70%;
     overflow: hidden;
     position: relative;
+    border: 4px solid #e3ebed; 
+    border-radius: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
 }
 
 .background-gif {
-    width: 100%;
     height: 100%;
     padding: 0;
     margin: 0;
-    filter: blur(5px);
+    filter: blur(2px);
 }
 
 .gura-gif {
-    width: 150px;
+    width: 100px;
     position: absolute;
-    left: 100px;
+    right: 10px;
     bottom: 10px;
 }
+
+.container-index-title-container {
+    height: 100%;
+    width: 100%;
+    border: 2px solid;
+}
+
+/* Fim Primeiro Container */
+
 
 .mini-home {
     border: 2px solid;
@@ -54,3 +112,4 @@
     width: 100%;
     height: 32px;
 }
+
