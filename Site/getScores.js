@@ -87,7 +87,7 @@ var mySqlConfig = {
 var numId = 0;
 async function inserirPlayer(player) {
     let resp = await executar(
-        `INSERT INTO Jogador values (null, '${player.name.replaceAll("'", '')}', 'Teste@${numId}', SHA2('teste', 512), 0, 0, 0, null, null, null, null, '${player.id}', '${player.country}' );`
+        `INSERT INTO Jogador values (null, '${player.name.replaceAll("'", '')}', 'Teste@${numId}.com', SHA2('teste', 512), 0, 0, 0, null, null, null, null, '${player.id}', '${player.country}' );`
     );
     numId++;
     console.log('Player adicionado')
@@ -98,7 +98,7 @@ async function inserirHistorico(fkPlayer, historico) {
     for (let i = 0; i < historico.length; i++) {
         let diaHistorico = subDate(new Date().toISOString().slice(0, 10), i + 1)
         await executar(
-            `INSERT INTO Historico values (${fkPlayer}, null, ${historico[i]}, '${diaHistorico}');`
+            `INSERT INTO Historico values (${fkPlayer}, ${i + 1}, ${historico[i]}, '${diaHistorico}');`
         )
     }
     console.log('Historico adicionado')

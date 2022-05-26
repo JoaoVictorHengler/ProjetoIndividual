@@ -64,7 +64,8 @@ create table Score (
 create table Historico (
     fkJogador int,
     foreign key (fkJogador) references Jogador(idJogador),
-    idHistorico int primary key auto_increment,
+    idHistorico int,
+    primary key(fkJogador, idHistorico),
     rankGlobal int NOT NULL,
     diaRank Date
 );
