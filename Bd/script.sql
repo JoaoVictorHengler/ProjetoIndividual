@@ -1,6 +1,9 @@
+-- drop database bssc;
 create database bssc;
 use bssc;
 
+-- dificuldade.tipoDificuldade+0
+select Mapa.*, dificuldade.* from Mapa join dificuldade on fkMapa = idMapa;
 create table Jogador (
 					  idJogador int primary key auto_increment,
                       nome varchar(90) NOT NULL,
@@ -12,7 +15,9 @@ create table Jogador (
                       OculosDeVrUsado varchar(45),
                       youtubeLink varchar(90),
                       twitchLink varchar(90),
-                      twitterLink varchar(90)
+                      twitterLink varchar(90),
+                      idScoresaber varchar(20),
+                      pais varchar(30)
 );
 
 create table Mapa (
@@ -30,9 +35,9 @@ create table Mapa (
 create table Dificuldade (
 						  idDificuldade int primary key auto_increment,
                           nomeDificuldade varchar(45),
-                          tipoDificuldade enum('easy', 'normal', 'hard', 'expert', 'expertPlus'),
+                          tipoDificuldade enum('Easy', 'Normal', 'Hard', 'Expert', 'ExpertPlus'),
                           njs decimal(4,2),
-                          offset decimal(4,2),
+                          offsetDificuldade decimal(4,2),
                           notas int,
                           bombas int,
                           obstaculos int,
@@ -54,3 +59,11 @@ create table Score (
                     scoreFavorito bool
 );
 
+create table Historico (
+    fkJogador int,
+    foreign key (fkJogador) references Jogador(idJogador),
+    idHistorico int,
+    primary key(fkJogador, idHistorico),
+    rankGlobal int NOT NULL,
+    diaRank datetime NOT NULL
+);

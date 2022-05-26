@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-@font-face {
+/* @font-face {
     font-family: 'Hugme';
     src: url('./assets/font/Hug\ Me\ Tight\ -\ OTF.otf') format('opentype'), url('./assets/font/Hug\ Me\ Tight\ -\ OT.ttf') format('truetype');
-}
+} */
 
 body,
 html {
@@ -26,7 +26,7 @@ a {
 
     margin: 0;
     padding: 0;
-    font-family: 'Hugme';
+    font-family: Torus, Inter, "Helvetica Neue", Tahoma, Arial, "Hiragino Kaku Gothic ProN", Meiryo, "Microsoft YaHei", "Apple SD Gothic Neo", sans-serif;;
 }
 
 input {
@@ -866,9 +866,10 @@ img.emoji {
 .player-label-container {
     background-color: #262935;
     width: 97%;
-    height: 200px;
+    height: fit-content;
     border-radius: 10px;
     margin-top: 15px;
+    position: relative;
 }
 
 .player-label-title-container {
@@ -886,4 +887,14 @@ img.emoji {
     font-weight: 600;
 }
 
+.editor-box-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ck-editor__editable {
+    min-height: 300px;
+}
 /* Fim Perfil */

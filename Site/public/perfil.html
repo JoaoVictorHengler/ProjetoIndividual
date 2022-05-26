@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
     <link rel="stylesheet" href="style.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -97,7 +98,7 @@
                         </div>
                     </div>
                     <div class="hide-background-container">
-                        <div class="hide-background"  onclick="hideBackground()">
+                        <div class="hide-background" onclick="hideBackground()">
                             <i id='hide-bk' class="fa-solid fa-chevron-up"></i>
                         </div>
                     </div>
@@ -116,7 +117,7 @@
                             <span>Replays Assistidos por Outros:</span>
                         </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
                         <div class="player-info-label">
-                            
+
                             <span>Oculus</span>
                             <span>100.00%</span>
                             <span>32891489124712</span>
@@ -146,6 +147,13 @@
                     <div class="player-label-title-container">
                         <h3 class="player-label-title">eu!</h3>
                     </div>
+                    <div class="editor-box-container">
+                        <div style="width: 97%; height: fit-content;">
+                            <div id="editor-box"></div>
+                        </div>
+                    </div>
+                    <button class="button-login" style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Cancelar</button>
+                    <button onclick="enviarDescricao()" class="button-login" style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Feito</button>
                 </section>
 
                 <section class="player-label-container" id="recentes_section">
@@ -167,6 +175,27 @@
 <script>
     document.getElementById('search-user').placeholder = '...';
     setPlayerInformations();
+
+    var editorElement;
+
+    ClassicEditor
+        .create(document.querySelector('#editor-box'))
+        .then(editor => {
+            /* editor.setData( '<p>Some text.</p>' ); */
+            console.log(editor.config.width)
+            editorElement = editor;
+            /* var editInterval = setInterval(() => {
+                console.log('Enviar para o servidor')
+            }, 20000)
+            editor.model.document.on('change:data', () => {
+                Enviar para o servidor a data
+                console.log(editor.getData())
+            }); */
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     function setPlayerInformations() {
         setPlayerCountry();
         playerPositionChart();
@@ -288,7 +317,7 @@
         }
         thisElement.classList.add('chosen');
     }
-    
+
     function hideBackground() {
         let container = document.getElementsByClassName('img-container');
         let arrow = document.getElementById('hide-bk');
@@ -303,6 +332,12 @@
             container[0].style.height = '250px';
 
         }
+    }
+
+    function enviarDescricao() {
+        let data = editorElement.getData();
+        data = data.substring(3, data.length - 4)
+        console.log(typeof data)
     }
 </script>
 
