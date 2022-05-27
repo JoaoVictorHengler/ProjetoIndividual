@@ -76,7 +76,7 @@
             <div class="pattern-dots-regular">
                 <div class="background-container">
                     <div class="background-gif-container">
-                        <video class="background-gif" src="./assets/img/videoplayback.mp4" autoplay loop style="filter: blur(2px);"></video>
+                        <video class="background-gif" src="./assets/img/videoplayback.mp4" autoplay loop muted></video>
                         <img class="gura-gif" src="assets/img/gura-jogando.webp">
                     </div>
                 </div>
@@ -104,69 +104,85 @@
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
                     </div> -->
                 </div>
-                <div class="mini-mapa reveal">
-                    <table class="mini-mapa-table">
+                <div class="mini-ranking reveal">
+                    <table class="mini-ranking-table">
                         <tr>
                             <th></th>
-                            <th style=" font-size: 25px;">Scores</th>
+                            <th style=" font-size: 25px;">Mapas Jogados</th>
+                            <th style=" font-size: 25px;">Precisão Média</th>
                         </tr>
-                        <tr class="mini-mapa-container reveal-table">
+                        <tr class="mini-ranking-container reveal-table">
                             <td class="left">
-                                <div class="mini-mapa-title-container">
-                                    <a class="mini-mapa-title title-mapa">Nome</a>
-                                    <span class="mini-mapa-title map-creator">Mapeado por Shiro</span>
+                                <div class="mini-ranking-title-container">
+                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
-                            <td class="right mini-mapa-title">
+                            <td class="mini-ranking-title">
                                 <span>
-                                    300
+                                    1.500
                                 </span>
                             </td>
-                            
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
                         </tr>
-                        <tr class="mini-mapa-container reveal-table">
+                        <tr class="mini-ranking-container reveal-table">
                             <td class="left">
-                                <div class="mini-mapa-title-container">
-                                    <a class="mini-mapa-title title-mapa">Nome</a>
-                                    <span class="mini-mapa-title map-creator">Mapeado por Shiro</span>
+                                <div class="mini-ranking-title-container">
+                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
-                            <td class="right mini-mapa-title">
+                            <td class="mini-ranking-title">
                                 <span>
-                                    300
+                                    1.500
                                 </span>
                             </td>
-                            
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
                         </tr>
-                        <tr class="mini-mapa-container reveal-table">
+                        <tr class="mini-ranking-container reveal-table">
                             <td class="left">
-                                <div class="mini-mapa-title-container">
-                                    <a class="mini-mapa-title title-mapa">Nome</a>
-                                    <span class="mini-mapa-title map-creator">Mapeado por Shiro</span>
+                                <div class="mini-ranking-title-container">
+                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
-                            <td class="right mini-mapa-title">
+                            <td class="mini-ranking-title">
                                 <span>
-                                    300
+                                    1.500
                                 </span>
                             </td>
-                            
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
                         </tr>
-                        <tr class="mini-mapa-container reveal-table">
+                        <tr class="mini-ranking-container reveal-table">
                             <td class="left">
-                                <div class="mini-mapa-title-container">
-                                    <a class="mini-mapa-title title-mapa">Nome</a>
-                                    <span class="mini-mapa-title map-creator">Mapeado por Shiro</span>
+                                <div class="mini-ranking-title-container">
+                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
-                            <td class="right mini-mapa-title">
+                            <td class="mini-ranking-title">
                                 <span>
-                                    300
+                                    1.500
                                 </span>
                             </td>
-                            
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
                         </tr>
-                        
                     </table>
                 </div>
             </div>
@@ -217,6 +233,7 @@
     document.getElementById('search-user').placeholder = '...';
     window.addEventListener('scroll', reveal);
     window.addEventListener('scroll', revealTable);
+    
 
     function reveal() {
         let reveals = document.getElementsByClassName('reveal'); /* Documento para revelar */

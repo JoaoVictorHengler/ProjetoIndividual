@@ -1,5 +1,5 @@
 function showMenu() {
-    document.getElementById('perfil-menu').style.width = '20vw';
+    document.getElementById('perfil-menu').style.width = '19vw';
     document.getElementById('search-user').style.width = '100%';
     document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
     search.style.left = '40px';
@@ -16,7 +16,7 @@ function showMenu() {
 }
 
 function hideMenu() {
-    document.getElementById('perfil-menu').style.width = '2vw';
+    document.getElementById('perfil-menu').style.width = '5vw';
     document.getElementById('search-user').style.width = '90%';
     document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
     search.style.left = '15px';
@@ -70,4 +70,8 @@ function goToLoginOrSingUp(type) {
     } else {
         window.location.href= "./cadastro.html"
     }
+}
+
+function startBackgroundVideo() {
+    document.getElementsByClassName('background-gif')[0].play;
 }
