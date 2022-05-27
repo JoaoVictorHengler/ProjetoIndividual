@@ -245,7 +245,6 @@ input {
 .left {
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
-    border-right: 3px solid purple;
     height: 40px;
 }
 
