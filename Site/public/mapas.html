@@ -6,11 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="./assets/js/funcoes.js"></script>
+   
+    <link rel="stylesheet" href="novoStyle.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    <title>Home</title>
+    <title>Mapas</title>
 </head>
 
 <body>
@@ -22,12 +24,12 @@
                 <li class="nav-bar-item">
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
-                        <span class="nav-bar-name" id="home">Início</span>
+                    <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item here">
-                    <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
-                    <span class="nav-bar-name" id="mapa">Mapas</span>
+                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="mapa">Mapas</span>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./ranking.html">
@@ -58,7 +60,7 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
             <div class="user-info">
                 <span id="username">UserName</span>
                 <span id="global">Global: #150</span>
@@ -76,29 +78,26 @@
         <div class="mapa-banner">
             <div class="container">
 
-                <table class="mapa-table">
+                <table class="mini-mapa-table">
                     <tr>
                         <th></th>
-                        <th class="mapa-table-title"><span>Plays</span></th>
+                        <th style="color: white; font-size: 25px;">Scores</th>
                     </tr>
-                    <tr class="mapa">
-                        <td class="mapa-container">
-                            <div class="mapa-img-container">
-                                <img class="mapa-img"
-                                    src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
-                            </div>
-                            <div class="mapa-creator-name-container">
-                                <div class="mapa-name-container">
-                                    <span class="mapa-name">Titulo</span>
-                                    <span class="mapa-creator">Mapeado por João </span>
-                                </div>
+                    <tr class="mini-mapa-container" >
+                        <td class="left" >
+                            <div class="mini-mapa-title-container" style="width: 500px;">
+                                <a class="mini-mapa-title title-mapa">Nome</a>
+                                <span class="mini-mapa-title map-creator">Mapeado por Shiro</span>
                             </div>
                         </td>
-                        <td class="mapa-plays-container">
-                            <span class="mapa-plays">1,504</span>
+                        <td class="right mini-mapa-title">
+                            <span>
+                                300
+                            </span>
                         </td>
+                        
                     </tr>
-
+                    
                 </table>
             </div>
             <div class="search-mapa">
@@ -111,35 +110,7 @@
 </body>
 <script>
     document.getElementById('search-user').placeholder = '...';
-    function showMenu() {
-        document.getElementById('perfil-menu').style.width = '20vw';
-        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
-        search.style.left = '35px';
-        home.classList.add('nav-bar-name-opacity');
-        mapa.classList.add('nav-bar-name-opacity');
-        ranking.classList.add('nav-bar-name-opacity');
-        ultimos.classList.add('nav-bar-name-opacity');
-        login.classList.add('nav-bar-name-opacity');
-        cadastro.classList.add('nav-bar-name-opacity');
-        setTimeout(() => {
-            document.getElementById('search-user').placeholder = 'Pesquisar...';
-        }, 500)
-    }
-
-    function hideMenu() {
-        document.getElementById('perfil-menu').style.width = '5vw';
-        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
-        search.style.left = '30px';
-        home.classList.remove('nav-bar-name-opacity');
-        mapa.classList.remove('nav-bar-name-opacity');
-        ranking.classList.remove('nav-bar-name-opacity');
-        ultimos.classList.remove('nav-bar-name-opacity');
-        login.classList.remove('nav-bar-name-opacity');
-        cadastro.classList.remove('nav-bar-name-opacity');
-        setTimeout(() => {
-            document.getElementById('search-user').placeholder = '...';
-        }, 500)
-    }
+    
 </script>
 
 </html>

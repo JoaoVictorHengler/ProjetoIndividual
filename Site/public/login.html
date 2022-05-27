@@ -6,9 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="./assets/js/funcoes.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/js/validacoes.js"></script>
+    <script src="./assets/js/validacoes.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="novoStyle.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
@@ -23,8 +25,8 @@
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
-                        <i class="fa-solid fa-house"></i>
-                        <span class="nav-bar-name" id="home">Início</span>
+                        <i class="fa-solid fa-house menu-icon"></i>
+                    <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
@@ -32,6 +34,7 @@
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapa">Mapas</span>
                     </a>
+
                 </li>
                 <li class="nav-bar-item">
                     <a href="./ranking.html">
@@ -46,9 +49,9 @@
                     </a>
                 </li>
                 <li class="nav-bar-item here">
-                    <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                    <span class="nav-bar-name" id="login">Login</span>
-
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./cadastro.html">
@@ -61,7 +64,7 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
             <div class="user-info">
                 <span id="username">UserName</span>
                 <span id="global">Global: #150</span>
@@ -74,7 +77,9 @@
     </div>
 
     <div class="login-main-banner">
-        <div class="banner-img-container"></div>
+        <div class="banner-img-container" style="overflow: hidden;">
+            <video src="./assets/img/videoplayback.mp4" autoplay loop style="transform: translateX(-550px); filter: blur(8px);"></video>
+        </div>
         <div class="login-banner">
             <div class="login-container">
                 <span>Login</span>
@@ -98,47 +103,6 @@
 </body>
 <script>
     document.getElementById('search-user').placeholder = '...';
-    function showMenu() {
-        document.getElementById('perfil-menu').style.width = '20vw';
-        document.getElementsByClassName('user-info')[0].classList.add('user-info-show');
-        search.style.left = '35px';
-        home.classList.add('nav-bar-name-opacity');
-        mapa.classList.add('nav-bar-name-opacity');
-        ranking.classList.add('nav-bar-name-opacity');
-        ultimos.classList.add('nav-bar-name-opacity');
-        login.classList.add('nav-bar-name-opacity');
-        cadastro.classList.add('nav-bar-name-opacity');
-        setTimeout(() => {
-            document.getElementById('search-user').placeholder = 'Pesquisar...';
-        }, 500)
-    }
-
-    function hideMenu() {
-        document.getElementById('perfil-menu').style.width = '5vw';
-        document.getElementsByClassName('user-info')[0].classList.remove('user-info-show');
-        search.style.left = '30px';
-        home.classList.remove('nav-bar-name-opacity');
-        mapa.classList.remove('nav-bar-name-opacity');
-        ranking.classList.remove('nav-bar-name-opacity');
-        ultimos.classList.remove('nav-bar-name-opacity');
-        login.classList.remove('nav-bar-name-opacity');
-        cadastro.classList.remove('nav-bar-name-opacity');
-        setTimeout(() => {
-            document.getElementById('search-user').placeholder = '...';
-        }, 500)
-    }
-
-    function mostrarSenha() {
-        if ((document.getElementsByClassName("fa-lock")).length == 0) {
-            cadeado.classList.add("fa-lock");
-            cadeado.classList.remove("fa-unlock");
-            senha.type = "password";
-        } else {
-            cadeado.classList.add("fa-unlock");
-            cadeado.classList.remove("fa-lock");
-            senha.type = "text";
-        }
-    }
 
     function autenticar() {
         let nomeEmailJogador = user.value;
