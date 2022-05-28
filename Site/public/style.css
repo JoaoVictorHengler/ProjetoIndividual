@@ -60,10 +60,7 @@
     font-size: 24px;
 }
 
-#flag-country {
-    display: flex;
-    align-items: center
-}
+
 
 img.emoji {
     width: 30px;

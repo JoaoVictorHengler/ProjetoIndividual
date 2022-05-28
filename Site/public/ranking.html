@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="novoStyle.css">
@@ -71,105 +72,69 @@
         </div>
 
     </div>
-    <div class="banner">
-        <div class="img-container">
-            <img src="./assets/img/bsbg.jpg" class="background-image">
-        </div>
-        <div class="ranking-banner">
-            <div class="container">
-                <div class="page-title-container">
-                    <span>Colocações</span>
+    <div class="ranking-banner">
+        <div class="pattern-dots-regular">
+                <div class="container">
+                    <div class="page-title-container">
+                        <span>Colocações</span>
+                    </div>
+                    <table class="mini-ranking-table">
+                        <tr>
+                            <th></th>
+                            <th style="font-size: 20px; color: #e3ebed;">Mapas Jogados</th>
+                            <th style="font-size: 20px; color: #e3ebed;">Precisão Média</th>
+                            <th style="font-size: 20px; color: #e3ebed;">SS</th>
+                            <th style="font-size: 20px; color: #e3ebed;">S</th>
+                            <th style="font-size: 20px; color: #e3ebed;">A</th>
+                        </tr>
+                        <tr class="mini-ranking-container ">
+                            <td class="left">
+                                <div class="mini-ranking-title-container">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <div class="flag-country">
+                                    </div>
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
+                                </div>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    1.500
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    30
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    10
+                                </span>
+                            </td>
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    10
+                                </span>
+                            </td>
+                        </tr>
+                        
+                    </table>
                 </div>
-                <table class="mini-ranking-table">
-                    <tr>
-                        <th></th>
-                        <th style="font-size: 20px; color: #e3ebed;">Mapas Jogados</th>
-                        <th style="font-size: 20px; color: #e3ebed;">Precisão Média</th>
-                    </tr>
-                    <tr class="mini-ranking-container ">
-                        <td class="left">
-                            <div class="mini-ranking-title-container">
-                                <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                <a class="mini-ranking-title title-ranking">Nome</a>
-                            </div>
-                        </td>
-                        <td class="mini-ranking-title">
-                            <span>
-                                1.500
-                            </span>
-                        </td>
-                        <td class="right mini-ranking-title">
-                            <span>
-                                95.00%
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="mini-ranking-container ">
-                        <td class="left">
-                            <div class="mini-ranking-title-container">
-                                <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                <a class="mini-ranking-title title-ranking">Nome</a>
-                            </div>
-                        </td>
-                        <td class="mini-ranking-title">
-                            <span>
-                                1.500
-                            </span>
-                        </td>
-                        <td class="right mini-ranking-title">
-                            <span>
-                                95.00%
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="mini-ranking-container ">
-                        <td class="left">
-                            <div class="mini-ranking-title-container">
-                                <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                <a class="mini-ranking-title title-ranking">Nome</a>
-                            </div>
-                        </td>
-                        <td class="mini-ranking-title">
-                            <span>
-                                1.500
-                            </span>
-                        </td>
-                        <td class="right mini-ranking-title">
-                            <span>
-                                95.00%
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="mini-ranking-container ">
-                        <td class="left">
-                            <div class="mini-ranking-title-container">
-                                <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                <a class="mini-ranking-title title-ranking">Nome</a>
-                            </div>
-                        </td>
-                        <td class="mini-ranking-title">
-                            <span>
-                                1.500
-                            </span>
-                        </td>
-                        <td class="right mini-ranking-title">
-                            <span>
-                                95.00%
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="search-player">
-                <input type="text" id="search-player" placeholder="Pesquisar...">
-                <i class="fa-solid fa-magnifying-glass search-player-icon"></i>
-            </div>
+
         </div>
+
+        
 
     </div>
 </body>
 <script>
     document.getElementById('search-user').placeholder = '...';
+    setPlayerCountry(document.getElementsByClassName('flag-country'), false);
 </script>
 
 </html>
