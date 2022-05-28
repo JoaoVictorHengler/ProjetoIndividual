@@ -1068,7 +1068,7 @@ input {
 }
 
 .mini-container {
-    width: 40%;
+    width: 20%;
     height: fit-content;
     background-color: #385073;
     border-radius: 5px;
@@ -1077,6 +1077,41 @@ input {
     flex-direction: column;
     align-items: center;
     margin-left: 20px;
+}
+
+.mapa-list-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mapa-list-table tr {
+    font-size: 12px;
+}
+
+.mapa-list-table tr:nth-child(3) {
+    background-color: #5E85BF;
+}
+
+.mapa-list-table td, .mapa-list-table th {
+    border: 1px solid #dddddd;
+}
+
+.mapa-list-table .mapa-list-table-title th{
+    /* width: 12.8% */
+    color: #1F2C40;
+}
+
+.mapa-list-scores td {
+    text-align: center;
+}
+
+.mapa-list-scores .rank {
+    font-weight: 600;
+}
+
+.mapa-list-scores .type {
+    width: 50px;
 }
 /* Fim Mapa */
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
