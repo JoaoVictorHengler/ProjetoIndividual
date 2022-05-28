@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="./assets/js/funcoes.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="novoStyle.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Mapa</title>
+</head>
+
+<body>
+    <div id="perfil-menu">
+        <div>
+            <input id="search-user" type="text" placeholder="Pesquisar...">
+            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                    <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./mapas.html">
+                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="mapa">Mapas</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">  
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
+            <div class="user-info">
+                <span id="username">UserName</span>
+                <span id="global">Global: #150</span>
+                <span id="nacional">Nacional: #1</span>
+
+            </div>
+            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
+        </div>
+
+    </div>
+    <div class="mapa-banner">
+        <div class="pattern-dots-regular">
+                <div class="container" style="width: 40%;">
+                    <div class="page-title-container">
+                        <span>Informações do mapa</span>
+                    </div>
+                    <div class="mapa-list-types">
+                        <div class="mapa-list-type selected">
+                            Ranking Global
+                        </div>
+                        <div class="mapa-list-type">
+                            Ranking Nacional
+                        </div>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Tipo</th>
+                            <th>Pontuação</th>
+                            <th>Precisão</th>
+                            <th>Jogador</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="mini-container"></div>
+
+        </div>
+
+        
+
+    </div>
+</body>
+<script>
+    setPlayerCountry(document.getElementsByClassName('flag-country'), false);
+</script>
+
+</html>
