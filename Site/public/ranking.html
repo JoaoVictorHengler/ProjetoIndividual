@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+    <div id="perfil-menu">
         <div>
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
@@ -122,6 +122,41 @@
                                 </span>
                             </td>
                         </tr>
+                        <tr class="mini-ranking-container ">
+                            <td class="left">
+                                <div class="mini-ranking-title-container">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <div class="flag-country">
+                                    </div>
+                                    <a class="mini-ranking-title title-ranking">Nome</a>
+                                </div>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    1.500
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    95.00%
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    30
+                                </span>
+                            </td>
+                            <td class="mini-ranking-title">
+                                <span>
+                                    10
+                                </span>
+                            </td>
+                            <td class="right mini-ranking-title">
+                                <span>
+                                    10
+                                </span>
+                            </td>
+                        </tr>
                         
                     </table>
                 </div>
@@ -133,7 +168,6 @@
     </div>
 </body>
 <script>
-    document.getElementById('search-user').placeholder = '...';
     setPlayerCountry(document.getElementsByClassName('flag-country'), false);
 </script>
 

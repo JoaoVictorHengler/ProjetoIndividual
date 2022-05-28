@@ -4,24 +4,6 @@
     #7eb2ff Sombra Cabelo
     #2b72c0 Roupa, Rabo
     #fff0e7 Pele
-    Cores complementares
-    #2B72C0
-    #459FFF
-    #2A8FFA
-    #AD6E00
-    #FAAE2A
-    Cores triplas Complementares
-    #2B72C0
-    #227FE3
-    #17C8E3
-    #00966E
-    #0BE3A9
-    Cinco Complementares
-    #2B72C0
-    #E3572D
-    #17C8E3
-    #E39000
-    #0BE3A9
 */
 
 body,
@@ -71,20 +53,9 @@ input {
 }
 
 .complementar-triple-colors {
-    background: linear-gradient(-45deg, #0BE3A9, #00966E, #17C8E3, #2B72C0, #227FE3, #2B72C0);
+    background: linear-gradient(-45deg, #385073, #2860B5, #5173A6, #7EB2FF, #C1D6F5);
 }
 
-.complementar-five-colors {
-    background: linear-gradient(-45deg, #0BE3A9, #E39000, #17C8E3, #E3572D, #2B72C0);
-}
-
-.complementar-colors {
-    background: linear-gradient(-45deg, #AD6E00, #FAAE2A, #2A8FFA, #459FFF, #2B72C0);
-}
-
-.gura-colors {
-    background: linear-gradient(-45deg, #e3ebed, #7eb2ff, #2b72c0);
-}
 
 .container-index {
     height: fit-content;
@@ -107,6 +78,7 @@ input {
     width: 60%;
     display: flex;
     align-items: center;
+    justify-content: space-around;
     height: 100%;
 }
 
@@ -119,7 +91,7 @@ input {
 }
 
 .background-gif {
-    height: 100%;
+    height: 110%;
     padding: 0;
     margin: 0;
     filter: blur(2px);
@@ -243,7 +215,7 @@ input {
     width: 50%;
     height: 50%;
     border-collapse: separate;
-    border-spacing: 0 5px;
+    border-spacing: 0 12px;
 }
 
 .mini-ranking-table th {
@@ -271,22 +243,16 @@ input {
     width: 100%;
     font-size: 17px;
     font-weight: 600;
-    background: linear-gradient(to left, rgba(36, 36, 36, .5), rgba(33, 33, 33, .93)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg") repeat scroll 0% 0%;
-    /* background-position: 50%!important; */
+    background: linear-gradient(.25turn, hsla( 200,10%,30%, .5),hsla(200,10%,30%,0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg") repeat scroll 0% 0%;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     color: #e3ebed;
-    text-shadow:
-        -2px -2px 0 #000,
-        0 -2px 0 #000,
-        2px -2px 0 #000,
-        2px 0 0 #000,
-        2px 2px 0 #000,
-        0 2px 0 #000,
-        -2px 2px 0 #000,
-        -2px 0 0 #000;
+    text-shadow: 2px 2px 0 #000;
     padding: 10px;
     margin-top: 20px;
+    box-shadow: 2px 2px 18px black;
+    border-radius: 5px;
+}
 }
 
 .mini-ranking-container .mini-ranking-info-container {
@@ -361,7 +327,7 @@ input {
 }
 
 #perfil-menu:hover {
-    width: 20vw;
+    width: 17vw;
 }
 
 #perfil-menu .menu-icon {
@@ -510,6 +476,34 @@ input {
     display: none;
     color: #34749e;
 }
+/* Mouse em cima Menu*/
+#perfil-menu:hover #search-user{
+    width: 100%;
+}
+
+#perfil-menu:hover .user-info {
+    width: 40%;
+    opacity: 1;
+}
+
+#perfil-menu:hover #search {
+    left: 6%;
+}
+
+#perfil-menu:hover #home,
+#perfil-menu:hover #mapa,
+#perfil-menu:hover #ranking,
+#perfil-menu:hover #ultimos,
+#perfil-menu:hover #login,
+#perfil-menu:hover #cadastro {
+    margin-left: 10px;
+    width: 175px;
+    opacity: 1;
+}
+
+#perfil-menu:hover #user {
+    display: block;
+}
 
 /* Fim Menu */
 /* ------------------------------------------------------------------------------------------------------------------------------------ */
@@ -548,8 +542,6 @@ input {
     flex-grow: 1;
 }
 
-
-
 .mapa-banner .pattern-dots-regular {
     height: 100%;
     padding: 10px 10px 30px 70px;
@@ -560,8 +552,8 @@ input {
     list-style: none;
     width: 900px;
     height: fit-content;
-    background-color: #5C83BD;
-    border-radius: 10px;
+    background-color: #385073;
+    border-radius: 5px;
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -570,7 +562,6 @@ input {
 
 .mapa-list-container {
     list-style: none;
-    border: 2px solid;
     width: 100%;
     padding: 10px;
     display: flex;
@@ -581,12 +572,12 @@ input {
 .mapa-list-item {
     width: 45%;
     height: 100px;
-    border: .5px solid white;
     margin-left: 30px;
     border-radius: 10px;
     overflow: hidden;
     display: flex;
     position: relative;
+    cursor: pointer;
 }
 
 .mapa-list-item.noMargin {
@@ -595,7 +586,6 @@ input {
 
 .mapa-list-item .mapa-image {
     height: 100%;
-    transform: translateX(-10px);
     border-radius: 10px;
     position: relative;
 }
@@ -603,21 +593,89 @@ input {
 .mapa-list-item .mapa-info {
     border-radius: 10px;
     height: 100%;
-    width: 78%;
-    border: 2px solid blue;
+    width: 76%;
     position: absolute;
     right: 0;
-    transition: width 1s ease;
-    background: linear-gradient(to left, rgba(36, 36, 36, .5), rgba(33, 33, 33, .93)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png") repeat scroll 0% 0%;
+    transition: width 1s cubic-bezier(.14,.66,.67,1.02);
+    background: linear-gradient(.25turn, hsla( 200,10%,30%, .5),hsla(200,10%,30%,0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png") repeat scroll 0% 0%;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: 600;
+    margin-left: 20%;
+    left: 0;
+    z-index: 1000;
 }
 
-.mapa-list-item .mapa-info:hover {
-    width: 85%;
+.mapa-list-item:hover .mapa-info{
+    width: 70%;
+}
+.mapa-info .mapa-other-infos {
+    width: auto;
+    height: 15px;
+    margin-top: 5px;
+    align-items: center;
+    font-size: 10px;
+    text-align: center;
+    display: flex;
+    opacity: 0;
 }
 
+.mapa-other-infos span, .mapa-other-infos .fa-play, .mapa-other-infos .fa-circle-check {
+    margin-left: 5px;
+}
+
+.mapa-all-diffs {
+    width: fit-content;
+    height: fit-content;
+    padding: 5px 0px 5px 0px;
+    list-style: none;
+}
+
+.mapa-info .type-of-diff {
+    background-color: purple;
+    height: 12px;
+    width: 6px;
+    border-radius: 10000px;
+}
+
+.mapa-list-item .mapa-info .mapa-name{
+    font-size: 20px;
+}
+
+.mapa-list-item .mapa-info .mapa-artist{
+    font-size: 15px;
+}
+.mapa-list-item .mapa-info .mapa-creator {
+    font-size: 13px;
+}
+
+.mapa-other-options {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    background-color: #2d3e58;
+    z-index: 999;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 2%;
+    cursor: auto;
+}
+
+.mapa-other-options .fa-solid.fa-heart {
+    display: none;
+}
+
+.mapa-other-options i {
+    cursor: pointer;
+}
 
 .search-mapa {
     list-style: none;
@@ -655,11 +713,17 @@ input {
     color: #5B6473;
 }
 
+/* Mouse em cima */
+
+.mapa-list-item:hover .mapa-info .mapa-other-infos {
+    opacity: 1;
+}
+
 /* Fim Mapa */
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
 /* Inicio Ranking */
 .ranking-banner {
-    height: 100%;
+    height: 100vh;
     background-color: #7EB2FF;
     padding: 2px;
     display: flex;
@@ -681,7 +745,7 @@ input {
 }
 
 .ranking-banner .pattern-dots-regular {
-    height: 100%;
+    height: auto;
     justify-content: center;
     padding: 10px 10px 30px 70px;
 }

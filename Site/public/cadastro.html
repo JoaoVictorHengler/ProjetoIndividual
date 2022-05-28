@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+    <div id="perfil-menu">
         <div>
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
@@ -120,9 +120,6 @@
 
 </body>
 <script>
-    document.getElementById('search-user').placeholder = '...';
-    
-
     function cadastrar() {
         let nomeJogador = user.value;
         let emailJogador = email.value;

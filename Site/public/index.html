@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div id="perfil-menu" onmouseover="showMenu()" onmouseout="hideMenu()">
+    <div id="perfil-menu">
         <div>
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
@@ -76,7 +76,7 @@
             <div class="pattern-dots-regular">
                 <div class="background-container">
                     <div class="background-gif-container">
-                        <div style="overflow: hidden; border: 4px solid #e3ebed; height: 100%; border-radius: 20px;">
+                        <div style="overflow: hidden; border: 4px solid #e3ebed; height: 100%; border-radius: 5px;">
                             <video class="background-gif" src="./assets/img/videoplayback.mp4" autoplay loop muted></video>
                         </div>
                         <img class="gura-gif" src="assets/img/gura-jogando.webp">
@@ -116,7 +116,7 @@
                         <tr class="mini-ranking-container reveal-table">
                             <td class="left">
                                 <div class="mini-ranking-title-container">
-                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
                                     <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
@@ -134,7 +134,7 @@
                         <tr class="mini-ranking-container reveal-table">
                             <td class="left">
                                 <div class="mini-ranking-title-container">
-                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
                                     <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
@@ -152,7 +152,7 @@
                         <tr class="mini-ranking-container reveal-table">
                             <td class="left">
                                 <div class="mini-ranking-title-container">
-                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
                                     <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
@@ -170,7 +170,7 @@
                         <tr class="mini-ranking-container reveal-table">
                             <td class="left">
                                 <div class="mini-ranking-title-container">
-                                    <img src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
                                     <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
                             </td>
@@ -232,7 +232,6 @@
 </body>
 
 <script>
-    document.getElementById('search-user').placeholder = '...';
     window.addEventListener('scroll', reveal);
     window.addEventListener('scroll', revealTable);
     
