@@ -1,10 +1,15 @@
 var express = require("express");
 var router = express.Router();
 
-router.get("/", function (req, res) {
-    res.render("index", { title: "Express" });
+var mapaController = require('../controllers/mapaController');
+
+router.get("/obterInformacoes/:idMapaServer", function (req, res) {
+    mapaController.obterInformacoes(req, res);
 });
 
+router.get("/listarMapas", function (req, res) {
+    mapaController.listarMapas(req, res);
+});
 /* 
     Fazer:
         Pegar informações
@@ -14,3 +19,4 @@ router.get("/", function (req, res) {
 */
 
 module.exports = router;
+

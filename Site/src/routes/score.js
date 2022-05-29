@@ -1,9 +1,13 @@
 var express = require("express");
 var router = express.Router();
 
-router.get("/", function (req, res) {
-    res.render("index", { title: "Express" });
+var scoreController = require('../controllers/scoreController');
+
+router.get("/listarScores", function (req, res) {
+    scoreController.listarScores(req, res);
 });
+
+
 
 /* 
     Fazer:

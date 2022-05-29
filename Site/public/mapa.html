@@ -123,6 +123,15 @@
 </body>
 <script>
     setPlayerCountry(document.getElementsByClassName('flag-country'), false);
+
+    function obterMapas() {
+        fetch('/mapa/obterInformacoes/', {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+    }
 </script>
 
 </html>
