@@ -23,7 +23,7 @@ create table Mapa (
                     subNomeMusica varchar(90),
                     criadorMapa varchar(90),
                     artistaMusica varchar(90),
-                    hashMapa char(40),
+                    hashMapa char(40) UNIQUE,
                     bpmMapa decimal(5,2),
                     duracaoMapa int,
                     dataUploadMapa datetime

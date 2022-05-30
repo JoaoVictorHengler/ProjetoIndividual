@@ -7,8 +7,8 @@ const { resolve } = require('path');
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 30;
-const limiteScoresPlayer = 40;
+const limitePlayers = 20;
+const limiteScoresPlayer = 50;
 const tipoScore = 'recent';
 const country = 'br'
 
@@ -100,11 +100,19 @@ async function inserirPlayer(player) {
     let checkPlayer = await executar(
         `select * from Jogador where idScoresaber = '${player.id}'`
     );
+    let getNumId = await executar(
+        `select idJogador from Jogador order by idJogador desc limit 0, 1`
+    )
+    if (getNumId.length == 0) {
+        numId = 0;
+    } else {
+        numId = getNumId[0].idJogador;
+    }
+
     if (checkPlayer.length == 0) {
         let resp = await executar(
             `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g,"\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', 0, 0, '${player.id}', null);`
         );
-        numId++;
         console.log('Player adicionado')
         return [resp.insertId, false]
     } else {
@@ -124,7 +132,7 @@ async function inserirHistorico(fkPlayer, historico) {
 /* Feito */
 async function inserirMapa(mapa) {
     let mapas = await executar(
-        `select idMapa from Mapa where hashMapa = '${mapa.versions[0].hash.toLowerCase()};'`
+        `select idMapa from Mapa where hashMapa like '${mapa.versions[0].hash.toLowerCase()}';`
     );
     if (mapas.length == 0) {
         let resp = await executar(
@@ -149,7 +157,7 @@ async function inserirDificuldade(fkMapa, diff, i) {
         await executar(
             `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
         );
-        console.log('Diff ' + diff.difficulty + 'Adicionada Com Sucesso.')
+        console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.')
     } else {
         let diffsExiste = dificuldades.filter((diffBd) => {
             return diffBd.nomeDificuldade == diff.difficulty
@@ -185,7 +193,8 @@ async function inserirScores(fkJogador, scores) {
         // console.log(`INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}';`)
         let checkScore = await executar(
             `select * from score join mapa on idMapa = fkMapa and hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' 
-                                 join dificuldade on Dificuldade.fkMapa = score.fkMapa and nomeDificuldade = '${nomeDificuldade}';`
+                                 join dificuldade on Dificuldade.fkMapa = score.fkMapa and nomeDificuldade = '${nomeDificuldade}'
+                                 join jogador on idJogador = fkJogador;`
         );
         if (checkScore.length == 0) {
             await executar (
