@@ -23,18 +23,17 @@
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item">
+                <li class="nav-bar-item"> 
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
-                    <span class="nav-bar-name" id="home">Início</span>
+                        <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html">
+                    <a href="./mapas.html" class="nav-bar-a">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapa">Mapas</span>
                     </a>
-
                 </li>
                 <li class="nav-bar-item">
                     <a href="./ranking.html">
@@ -53,8 +52,6 @@
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="login">Login</span>
                     </a>
-
-                    </a>
                 </li>
                 <li class="nav-bar-item here">
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
@@ -65,7 +62,7 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
+            <i class="fa-solid fa-user" id="user"></i>
             <div class="user-info">
                 <span id="username">UserName</span>
                 <span id="global">Global: #150</span>
@@ -82,39 +79,42 @@
             <video src="./assets/img/videoplayback.mp4" autoplay loop muted style="transform: translateX(-550px); filter: blur(8px);"></video>
         </div>
         <div class="login-banner">
-            <div class="login-container">
-                <span>Cadastro</span>
-                <div class="login-input-container">
-                    <div class="username-password-container">
-                        <label for="user">Username:</label>
-                        <input type="text" id="user" placeholder="Username">
-                        <i class="fa-solid fa-user"></i>
+            <div class="pattern-dots-regular">
+                <div class="login-container">
+                    <span>Cadastro</span>
+                    <div class="login-input-container">
+                        <div class="username-password-container">
+                            <label for="user">Username:</label>
+                            <input type="text" id="user" placeholder="Username">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="username-password-container">
+                            <label for="email">Email:</label>
+                            <input type="text" id="email" placeholder="Email">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="username-password-container">
+                            <label for="senha">Senha:</label>
+                            <input type="password" id="senha" placeholder="Password">
+                            <i class="fa-solid fa-lock password senha" id="cadeado" onclick="showPassword()"></i>
+                        </div>
+                        <div class="username-password-container">
+                            <label for="reescreverSenha ">Reescreva a Senha:</label>
+                            <input type="password" id="reescreverSenha" placeholder="Password">
+                            <i class="fa-solid fa-lock password reescrever" id="cadeadoReescrever"
+                                onclick="showRewritePassword()"></i>
+                        </div>
+                        <div style="width: 90%; display: flex; justify-content: flex-start;"> 
+                            <span style="font-size: 15px;">Já está cadastrado?</span>  
+                            <a class="login-cadastrar" href="./login.html">Entre aqui</a>
+                        </div>
                     </div>
-                    <div class="username-password-container">
-                        <label for="email">Email:</label>
-                        <input type="text" id="email" placeholder="Email">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div class="username-password-container">
-                        <label for="senha">Senha:</label>
-                        <input type="password" id="senha" placeholder="Password">
-                        <i class="fa-solid fa-lock password senha" id="cadeado" onclick="showPassword()"></i>
-                    </div>
-                    <div class="username-password-container">
-                        <label for="reescreverSenha ">Reescreva a Senha:</label>
-                        <input type="password" id="reescreverSenha" placeholder="Password">
-                        <i class="fa-solid fa-lock password reescrever" id="cadeadoReescrever"
-                            onclick="showRewritePassword()"></i>
-                    </div>
-                    <div style="width: 90%; display: flex; justify-content: flex-start;"> 
-                        <span style="font-size: 15px;">Já está cadastrado?</span>  
-                        <a class="login-cadastrar" href="./login.html">Entre aqui</a>
-                    </div>
+                    
+                    
+                    <button class="button-login" onclick="cadastrar()">Cadastrar</button>
                 </div>
-                
-                
-                <button class="button-login" onclick="cadastrar()">Cadastrar</button>
             </div>
+            
         </div>
     </div>
 

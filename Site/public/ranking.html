@@ -22,19 +22,19 @@
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item">
+                <li class="nav-bar-item"> 
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
-                    <span class="nav-bar-name" id="home">Início</span>
+                        <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html">
+                    <a href="./mapas.html" class="nav-bar-a">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapa">Mapas</span>
                     </a>
                 </li>
-                <li class="nav-bar-item here">  
+                <li class="nav-bar-item here">
                         <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ranking">Ranking</span>
                 </li>
@@ -61,7 +61,7 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
+            <i class="fa-solid fa-user" id="user"></i>
             <div class="user-info">
                 <span id="username">UserName</span>
                 <span id="global">Global: #150</span>
@@ -74,32 +74,50 @@
     </div>
     <div class="ranking-banner">
         <div class="pattern-dots-regular">
-                <div class="container">
-                    <div class="page-title-container">
-                        <span>Colocações</span>
-                    </div>
+            <div class="container">
+                <div class="page-title-container">
+                    <span>Colocações</span>
+                </div>
+                <div class="select-type-ranking-container">
+                    <ul>
+                        <li class="selected">
+                            Global
+                        </li>
+                        <li>
+                            Nacional
+                        </li>
+                    </ul>
+                </div>
+                <div class="pages-list">
+                    <ul>
+                        <li><span>Ant</span></li>
+                        <li class="selected"><span>1</span></li>
+                        <li><span>2</span></li>
+                        <li><span>3</span></li>
+                        <li><span>10</span></li>
+                        <li><span>Próx</span></li>
+                    </ul>
+                </div>
+                <div class="mini-ranking-table-container">
                     <table class="mini-ranking-table">
                         <tr>
                             <th></th>
-                            <th style="font-size: 20px; color: #e3ebed;">Mapas Jogados</th>
-                            <th style="font-size: 20px; color: #e3ebed;">Precisão Média</th>
-                            <th style="font-size: 20px; color: #e3ebed;">SS</th>
-                            <th style="font-size: 20px; color: #e3ebed;">S</th>
-                            <th style="font-size: 20px; color: #e3ebed;">A</th>
+                            <th>Precisão Média</th>
+                            <th>Mapas Jogados</th>
+                            <th>Pontuação Total</th>
+                            <th>SS</th>
+                            <th>S</th>
+                            <th>A</th>
                         </tr>
                         <tr class="mini-ranking-container ">
-                            <td class="left">
+                            <td>
                                 <div class="mini-ranking-title-container">
-                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
+                                    <img class="player-img"
+                                        src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
                                     <div class="flag-country">
                                     </div>
                                     <a class="mini-ranking-title title-ranking">Nome</a>
                                 </div>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>
-                                    1.500
-                                </span>
                             </td>
                             <td class="mini-ranking-title">
                                 <span>
@@ -108,63 +126,46 @@
                             </td>
                             <td class="mini-ranking-title">
                                 <span>
-                                    30
-                                </span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>
-                                    10
-                                </span>
-                            </td>
-                            <td class="right mini-ranking-title">
-                                <span>
-                                    10
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="mini-ranking-container ">
-                            <td class="left">
-                                <div class="mini-ranking-title-container">
-                                    <img class="player-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                    <div class="flag-country">
-                                    </div>
-                                    <a class="mini-ranking-title title-ranking">Nome</a>
-                                </div>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>
                                     1.500
                                 </span>
                             </td>
                             <td class="mini-ranking-title">
                                 <span>
-                                    95.00%
+                                    1.08 Trilhões
                                 </span>
                             </td>
                             <td class="mini-ranking-title">
                                 <span>
-                                    30
+                                    30.000
                                 </span>
                             </td>
                             <td class="mini-ranking-title">
                                 <span>
-                                    10
+                                    30.000
                                 </span>
                             </td>
-                            <td class="right mini-ranking-title">
+                            <td class="mini-ranking-title">
                                 <span>
-                                    10
+                                    30.000
                                 </span>
                             </td>
                         </tr>
-                        
                     </table>
                 </div>
+                <div class="pages-list">
+                    <ul>
+                        <li><span>Ant</span></li>
+                        <li class="selected"><span>1</span></li>
+                        <li><span>2</span></li>
+                        <li><span>3</span></li>
+                        <li><span>10</span></li>
+                        <li><span>Próx</span></li>
+                    </ul>
+                </div>
+
+            </div>
 
         </div>
-
-        
-
     </div>
 </body>
 <script>

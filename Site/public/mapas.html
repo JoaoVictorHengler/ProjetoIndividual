@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
-   
+
     <link rel="stylesheet" href="novoStyle.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -21,10 +21,10 @@
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item">
+                <li class="nav-bar-item"> 
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
-                    <span class="nav-bar-name" id="home">Início</span>
+                        <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item here">
@@ -60,7 +60,7 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user" style="display: none;"></i>
+            <i class="fa-solid fa-user" id="user"></i>
             <div class="user-info">
                 <span id="username">UserName</span>
                 <span id="global">Global: #150</span>
@@ -78,9 +78,24 @@
                     <div class="page-title-container">
                         <span>Lista de mapas</span>
                     </div>
+                    <div class="search-mapa-container">
+                        <input type="text" id="search-mapa" placeholder="Pesquisar...">
+                        <i class="fa-solid fa-magnifying-glass search-mapa-icon"></i>
+                    </div>
+                    <div class="pages-list">
+                        <ul>
+                            <li><span>Ant</span></li>
+                            <li class="selected"><span>1</span></li>
+                            <li><span>2</span></li>
+                            <li><span>3</span></li>
+                            <li><span>10</span></li>
+                            <li><span>Próx</span></li>
+                        </ul>
+                    </div>
                     <ul class="mapa-list-container">
-                        <li class="mapa-list-item noMargin">
-                            <img class="mapa-image" src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
+                        <li class="mapa-list-item">
+                            <img class="mapa-image"
+                                src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
                             <div class="mapa-info">
                                 <span class="mapa-name">Sjeng Oan de Geng</span>
                                 <span class="mapa-artist">por Dr. Peacock</span>
@@ -98,29 +113,63 @@
                                     <li class="type-of-diff">
                                     </li>
                                 </ul>
-                                
+
                             </div>
                             <div class="mapa-other-options">
                                 <i class="fa-regular fa-heart"></i>
-                                <i class="fa-solid fa-heart"></i> 
+                                <i class="fa-solid fa-heart"></i>
                                 <i class="fa-solid fa-file-arrow-down"></i>
                             </div>
                         </li>
-                        
+                        <li class="mapa-list-item">
+                            <img class="mapa-image"
+                                src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
+                            <div class="mapa-info">
+                                <span class="mapa-name">Sjeng Oan de Geng</span>
+                                <span class="mapa-artist">por Dr. Peacock</span>
+                                <span class="mapa-creator">mapeado por Gordon Feetman & Shark</span>
+                                <div class="mapa-other-infos">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                    <span>4</span>
+                                    <i class="fa-solid fa-play"></i>
+                                    <span>10</span>
+                                    <i class="fa-regular fa-circle-check"></i>
+                                    <span>26 de mai de 2022</span>
+                                </div>
+                                <ul class="mapa-all-diffs">
+                                    <li class="type-of-diff">
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <div class="mapa-other-options">
+                                <i class="fa-regular fa-heart"></i>
+                                <i class="fa-solid fa-heart"></i>
+                                <i class="fa-solid fa-file-arrow-down"></i>
+                            </div>
+                        </li>
                     </ul>
+                    <div class="pages-list">
+                        <ul>
+                            <li><span>Ant</span></li>
+                            <li class="selected"><span>1</span></li>
+                            <li><span>2</span></li>
+                            <li><span>3</span></li>
+                            <li><span>10</span></li>
+                            <li><span>Próx</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            
-            <!-- <div class="search-mapa">
-                <input type="text" id="search-mapa" placeholder="Pesquisar...">
-                <i class="fa-solid fa-magnifying-glass search-mapa-icon"></i>
-            </div> -->
+
+
         </div>
 
     </div>
 </body>
 <script>
-    
+
 </script>
 
 </html>
