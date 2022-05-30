@@ -1,7 +1,7 @@
-drop database bssc;
+drop database guraSaber;
 
-create database bssc;
-use bssc;
+create database guraSaber;
+use guraSaber;
 
 -- dificuldade.tipoDificuldade+0
 
@@ -10,15 +10,11 @@ create table Jogador (
                       nome varchar(90) NOT NULL,
                       email varchar(180) UNIQUE NOT NULL,
                       senha char(128) NOT NULL,
+                      pais varchar(30),
                       rankGlobal int,
-                      ranknacional int,
-                      mediaPrecisao decimal(5,2),
-                      OculosDeVrUsado varchar(45),
-                      youtubeLink varchar(90),
-                      twitchLink varchar(90),
-                      twitterLink varchar(90),
-                      idScoresaber varchar(20),
-                      pais varchar(30)
+                      rankNacional int,
+                      idScoresaber varchar(20) NULL UNIQUE,
+                      OculosDeVrUsado varchar(45) NULL
 );
 
 create table Mapa (
@@ -35,15 +31,14 @@ create table Mapa (
 
 create table Dificuldade (
 						  idDificuldade int,
-                          nomeDificuldade varchar(45),
-                          tipoDificuldade enum('Easy', 'Normal', 'Hard', 'Expert', 'ExpertPlus'),
-                          njs decimal(4,2),
-                          offsetDificuldade decimal(4,2),
-                          notas int,
-                          bombas int,
-                          obstaculos int,
-                          notasPSegundo decimal(5,2),
-                          maxScore int,
+                          nomeDificuldade varchar(45) NOT NULL,
+                          njs decimal(4,2) NOT NULL,
+                          offsetDificuldade decimal(4,2) NOT NULL,
+                          notas int NOT NULL,
+                          bombas int NOT NULL,
+                          obstaculos int NOT NULL,
+                          notasPSegundo decimal(5,2) NOT NULL,
+                          maxPontuacao int NOT NULL,
 						  fkMapa int,
                           foreign key (fkMapa) references Mapa(idMapa),
                           primary key(idDificuldade, fkMapa)
@@ -56,9 +51,12 @@ create table Score (
                     foreign key (fkDificuldade) references Dificuldade(idDificuldade),
                     fkMapa int,
                     foreign key (fkMapa) references Mapa(idMapa),
-                    pontuacao int,
-                    dataScore datetime,
-                    scoreFavorito bool
+                    pontuacao int NOT NULL,
+                    corteRuim int NOT NULL,
+                    notasErradas int NOT NULL,
+                    comboMaximo int NOT NULL,
+                    dataScore datetime NOT NULL,
+                    scoreFavorito bool NOT NULL 
 );
 
 create table Historico (
@@ -69,6 +67,10 @@ create table Historico (
     rankGlobal int NOT NULL,
     diaRank Date
 );
+select * from Jogador;
+select * from Score;
+select idJogador, nome, pais, rankGlobal, rankNacional, (select sum(pontuacao) from Score where fkJogador = idJogador) as 'Pontuacao Total' from Jogador join Score on idJogador = fkJogador group by idJogador;
+select * from mapa where nomeMusica like 'Captain Murasa%';
 select * from dificuldade join Mapa on idMapa = fkMapa;
 select * from dificuldade order by fkMapa;
 select * from Mapa where hashMapa = '621487b366d4793a095bc2e2fcf542845e325b38';
