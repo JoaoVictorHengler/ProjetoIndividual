@@ -2,7 +2,6 @@ const { request } = require('http');
 const https = require('https');
 const { resolve } = require('path');
 const path = require('path');
-const axios = require('axios')
 const fs = require('fs');
 var sql = require('mssql');
 var mysql = require("mysql2");

@@ -10,6 +10,10 @@ router.get("/obterInformacoes/:idMapaServer", function (req, res) {
 router.get("/listarMapas", function (req, res) {
     mapaController.listarMapas(req, res);
 });
+
+router.get("/getImage/:imgHashServer", function (req, res) {
+    mapaController.obterImagem(req, res);
+});
 /* 
     Fazer:
         Pegar informações

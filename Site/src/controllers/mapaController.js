@@ -1,5 +1,6 @@
 var mapaModel = require('../models/mapaModel');
 var sha512 = require('js-sha512');
+var path = require('Path');
 /* Fazendo... */
 function obterInformacoes(request, response) {
   var idMapa = request.params.idMapaServer;
@@ -36,7 +37,16 @@ function listarMapas(request, response) {
     })
 }
 
+function obterImagem(request, response) {
+  let fileHash = request.params.imgHashServer;
+  console.log('Obtendo Imagem da Hash: ', fileHash);
+    let fileLocation = path.join(__dirname, `../../public/assets/img/mapImg/${fileHash}.jpg`);
+    console.log(fileLocation)
+    response.sendFile(fileLocation);
+}
+
 module.exports = {
   obterInformacoes,
-  listarMapas
+  listarMapas,
+  obterImagem
 }

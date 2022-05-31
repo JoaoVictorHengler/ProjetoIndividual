@@ -89,4 +89,12 @@ select * from score join mapa on idMapa = score.fkMapa and hashMapa = '2c01774fd
                     
 SELECT idDificuldade, idMapa
 FROM Dificuldade JOIN Mapa ON hashMapa = '2c01774fdb9c4bcc53df1707ade85cea6f043477' 
-and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa
+and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa;
+
+select m1.*, d.nomeDificuldade, (select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade group by fkMapa) as 'QtdScores'
+from Mapa m1 join Dificuldade d on m1.idMapa = d.fkMapa;
+
+select m1.*, d.nomeDificuldade, 
+(select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade and scoreFavorito = 1 group by fkMapa) as 'QtdMapaFavorito'
+(select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade group by fkMapa) as 'QtdScores'
+from Mapa m1 join Dificuldade d on m1.idMapa = d.fkMapa;

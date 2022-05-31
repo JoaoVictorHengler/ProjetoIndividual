@@ -15,7 +15,7 @@
     <title>Mapas</title>
 </head>
 
-<body>
+<body onload="obterMapas()">
     <div id="perfil-menu">
         <div>
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -181,9 +181,71 @@
         if (response.ok) {
             response.json().then(json => {
                     console.log(json);
+                    let mapas = json;
+                    for (let i = 0; i < mapas.length; i++) {
+                        adicionarMapa(mapas[i]);
+                    }
             })
         }
     })
+    }
+
+    function adicionarMapa(mapa) {
+        let mesesPtBr = [];
+        let listMapas = document.getElementsByClassName('mapa-list-container');
+        let listItem = document.createElement('li');
+        let listElements = document.getElementsByClassName('mapa-list-item');
+        let listItems = [];
+
+        for (let i = 0; i< listElements.length; i++) {
+            listItems.push(listElements[i]);
+        }
+
+        let sameItems = listItems.filter((element) => {return element.id == `#${mapa.idMapa}`;});
+        if (sameItems.length == 0) {
+            listItem.classList.add('mapa-list-item');
+            listItem.id = `#${mapa.idMapa}`;
+            if (mapa.qtdMapaFavorito == null) mapa.qtdMapaFavorito = 0;
+            if (mapa.qtdScores == null) mapa.qtdScores = 0; /* (new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString()).replaceAll('/', ' de ') */
+            listItem.innerHTML += `
+                                <img class="mapa-image" src="/mapa/getImage/${mapa.hashMapa}">
+                                <div class="mapa-info" style="
+                                background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) 
+                                repeat scroll 0% 0%, rgba(0, 0, 0, 0) 
+                                url(/mapa/getImage/${mapa.hashMapa}) 
+                                repeat scroll 0% 0%;">
+                                    <span class="mapa-name">${mapa.nomeMusica + mapa.subNomeMusica}</span>
+                                    <span class="mapa-artist">por ${mapa.artistaMusica}</span>
+                                    <span class="mapa-creator">mapeado por ${mapa.criadorMapa}</span>
+                                    <div class="mapa-other-infos">
+                                        <i class="fa-regular fa-heart"></i>
+                                        <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                        <span>${mapa.qtdMapaFavorito}</span>
+                                        <i class="fa-solid fa-play"></i>
+                                        <span>${mapa.qtdScores}</span>
+                                        <i class="fa-regular fa-circle-check"></i>
+                                        <span>${(new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString()).substring(3, 5)}</span> 
+                                    </div>
+                                    <ul class="mapa-all-diffs">
+                                        <li class="type-of-diff">
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                <div class="mapa-other-options">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <i class="fa-solid fa-heart"></i>
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </div>`;
+                listMapas[0].appendChild(listItem);
+        } else {
+            appendDiffToHtml();
+        }
+        
+    }
+    
+    function appendDiffToHtml() {
+
     }
 </script>
 
