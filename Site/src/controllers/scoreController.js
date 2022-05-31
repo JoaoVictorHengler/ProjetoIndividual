@@ -19,7 +19,7 @@ function listarScores(request, response) {
       }
     }).catch(function (erro) {
       console.log(erro);
-      console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+      console.log("\nHouve um erro ao listar os scores! Erro: ", erro.sqlMessage);
       response.status(500).json(erro.sqlMessage);
     })
 

@@ -2,8 +2,8 @@ var mapaModel = require('../models/mapaModel');
 var sha512 = require('js-sha512');
 /* Fazendo... */
 function obterInformacoes(request, response) {
-  var idMapa = request.body.idMapaServer;
-
+  var idMapa = request.params.idMapaServer;
+  
   if (idMapa == undefined) {
     response.status(400).send("Id do mapa está undefined!");
   } else {
@@ -15,7 +15,7 @@ function obterInformacoes(request, response) {
       }
     }).catch(function (erro) {
       console.log(erro);
-      console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+      console.log("\nHouve um erro ao obter as informações do mapa! Erro: ", erro.sqlMessage);
       response.status(500).json(erro.sqlMessage);
     })
 
@@ -31,7 +31,7 @@ function listarMapas(request, response) {
       }
     }).catch(function (erro) {
       console.log(erro);
-      console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+      console.log("\nHouve um erro ao listar os mapas! Erro: ", erro.sqlMessage);
       response.status(500).json(erro.sqlMessage);
     })
 }

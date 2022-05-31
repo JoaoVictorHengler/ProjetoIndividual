@@ -15,7 +15,7 @@ router.get("/listarUsuariosGlobal", function (req, res) {
     userController.listarUsuariosGlobal(req, res);
 });
 
-router.get("/editarPerfil", function (req, res) {
+router.post("/editarPerfil", function (req, res) {
     userController.editarPerfil(req, res);
 });
 

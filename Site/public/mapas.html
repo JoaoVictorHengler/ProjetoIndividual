@@ -169,7 +169,22 @@
     </div>
 </body>
 <script>
+    function obterMapas() {
+        fetch('/mapa/listarMapas/', {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(function (response) {
+        console.log('Resposta: ', response);
 
+        if (response.ok) {
+            response.json().then(json => {
+                    console.log(json);
+            })
+        }
+    })
+    }
 </script>
 
 </html>

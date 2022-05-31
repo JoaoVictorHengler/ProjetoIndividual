@@ -70,11 +70,23 @@ create table Historico (
 select * from Jogador;
 select * from Score;
 select idJogador, nome, pais, rankGlobal, rankNacional, (select sum(pontuacao) from Score where fkJogador = idJogador) as 'Pontuacao Total' from Jogador join Score on idJogador = fkJogador group by idJogador;
-select * from mapa where nomeMusica like 'Captain Murasa%';
+select * from mapa where nomeMusica like 'Pastel%';
+
+select Mapa.*, idDificuldade, nomeDificuldade, njs, offsetDificuldade, notas, bombas, obstaculos, notasPSegundo, maxPontuacao, fkjogador, nome, pontuacao, corteRuim, notasErradas, comboMaximo, dataScore from Mapa 
+join Dificuldade on idMapa = fkMapa and idMapa = 1 
+join score on fkDificuldade = idDificuldade and score.fkMapa = idMapa
+join jogador on fkJogador = idJogador; 
+
 select * from dificuldade join Mapa on idMapa = fkMapa;
 select * from dificuldade order by fkMapa;
-select * from Mapa where hashMapa = '621487b366d4793a095bc2e2fcf542845e325b38';
-select * from Score 
-					join mapa on idMapa = fkMapa;
+select * from Mapa where hashMapa = '2C01774FDB9C4BCC53DF1707ADE85CEA6F043477';
+select * from dificuldade 
+					join mapa on hashMapa = '2c01774fdb9c4bcc53df1707ade85cea6f043477' and idMapa = fkMapa and nomeDificuldade = 'Hard';
 select * from score;
-INSERT INTO Score SELECT 1, idDificuldade, idMapa, 10000, '2022-10-10', false FROM Dificuldade JOIN Mapa ON hashMapa = '621487b366d4793a095bc2e2fcf542845e325b38' and nomeDificuldade = 'Easy';
+
+select * from score join mapa on idMapa = score.fkMapa and hashMapa = '2c01774fdb9c4bcc53df1707ade85cea6f043477'
+					join Dificuldade on idMapa = Dificuldade.fkMapa and score.fkJogador = 2 and score.fkDificuldade = idDificuldade;
+                    
+SELECT idDificuldade, idMapa
+FROM Dificuldade JOIN Mapa ON hashMapa = '2c01774fdb9c4bcc53df1707ade85cea6f043477' 
+and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa

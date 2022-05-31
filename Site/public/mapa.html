@@ -184,13 +184,22 @@
 <script>
     setPlayerCountry(document.getElementsByClassName('flag-country'), false);
 
-    function obterMapas() {
-        fetch('/mapa/obterInformacoes/', {
+    function obterInformacoes() {
+        let idMapa = 1;
+        fetch(`/mapa/obterInformacoes/${idMapa}`, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json"
         }
-      })
+      }).then(function (response) {
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            response.json().then(json => {
+                    console.log(json);
+            })
+        }
+    })
     }
 </script>
 

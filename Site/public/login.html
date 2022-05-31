@@ -156,21 +156,26 @@
             console.log('Resposta: ', response);
 
             if (response.ok) {
-                sessionStorage.IDJOGADOR = response.idJogador;
-                sessionStorage.NOME = response.nome;
-                sessionStorage.EMAIL = response.email;
+                response.json().then(json => {
+                    console.log(json);
+                    sessionStorage.IDJOGADOR = json.idJogador;
+                    sessionStorage.NOME = json.nome;
+                    sessionStorage.EMAIL = json.email;
 
-                Swal.fire({
-                    title: 'Suceso',
-                    text: 'Cadastro realizado com sucesso',
-                    icon: 'success',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    confirmButtonColor: '#34e269',
-                    willClose: () => {
-                        window.location = './perfil.html';
-                    }
+                    Swal.fire({
+                        title: 'Suceso',
+                        text: 'Cadastro realizado com sucesso',
+                        icon: 'success',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        confirmButtonColor: '#34e269',
+                        willClose: () => {
+                            window.location = './perfil.html';
+                        }
+                    });
+                    
                 });
+
 
             } else {
                 Swal.fire({

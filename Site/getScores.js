@@ -1,17 +1,20 @@
 const { request } = require('http');
 const https = require('https');
+const { resolve } = require('path');
+const path = require('path');
+const axios = require('axios')
+const fs = require('fs');
 var sql = require('mssql');
 var mysql = require("mysql2");
-const { resolve } = require('path');
+
 
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 20;
-const limiteScoresPlayer = 50;
+const limitePlayers = 1;
+const limiteScoresPlayer = 5;
 const tipoScore = 'recent';
-const country = 'br'
-
+const country = 'br';
 async function search(link) {
     return new Promise((resolve, reject) => {
         https.get(link, (resp) => {
@@ -56,7 +59,7 @@ async function getPlayerInfo() {
     }
 
     Promise.all(allPromises).then(async (player) => {
-        for (let i = 0; i< player.length; i++) {
+        for (let i = 0; i < player.length; i++) {
             let playerInfo = player[i][0];
             let playerScores = player[i][1].playerScores;
 
@@ -69,7 +72,7 @@ async function getPlayerInfo() {
                     await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
                 }
             }
-            
+
             let [userId, find] = await inserirPlayer(playerInfo)
             if (!find) {
                 await inserirHistorico(userId, playerInfo.histories.split(","));
@@ -78,7 +81,7 @@ async function getPlayerInfo() {
             await inserirScores(userId, playerScores);
             resolve('');
         }
-        
+
     });
     return
 }
@@ -110,10 +113,11 @@ async function inserirPlayer(player) {
     }
 
     if (checkPlayer.length == 0) {
+        downloadImage(player.profilePicture, path.resolve(__dirname, 'public', 'assets', 'img', 'playerImg', `${numId}.jpg`));
         let resp = await executar(
-            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g,"\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', 0, 0, '${player.id}', null);`
+            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', 0, 0, '${player.id}', null);`
         );
-        console.log('Player adicionado')
+        console.log('Player ' + player.name + 'adicionado')
         return [resp.insertId, false]
     } else {
         return [checkPlayer[0].idJogador, true];
@@ -135,18 +139,19 @@ async function inserirMapa(mapa) {
         `select idMapa from Mapa where hashMapa like '${mapa.versions[0].hash.toLowerCase()}';`
     );
     if (mapas.length == 0) {
+        downloadImage(mapa.versions[0].coverURL, path.resolve(__dirname, 'public', 'assets', 'img', 'mapImg', `${mapa.versions[0].hash.toLowerCase()}.jpg`));
         let resp = await executar(
-            `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES ('${mapa.metadata.songName.replaceAll(/'/g,"\\'")}', '${mapa.metadata.songSubName.replaceAll(/'/g,"\\'")}', '${mapa.metadata.levelAuthorName.replaceAll(/'/g,"\\'")}','${mapa.metadata.songAuthorName.replaceAll(/'/g,"\\'")}', '${mapa.versions[0].hash.toLowerCase()}', '${mapa.metadata.bpm}', '${mapa.metadata.duration}', '${mapa.createdAt.substring(0, 10) + ' ' + mapa.createdAt.substring(11, 19)}')`
+            `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES ('${mapa.metadata.songName.replaceAll(/'/g, "\\'")}', '${mapa.metadata.songSubName.replaceAll(/'/g, "\\'")}', '${mapa.metadata.levelAuthorName.replaceAll(/'/g, "\\'")}','${mapa.metadata.songAuthorName.replaceAll(/'/g, "\\'")}', '${mapa.versions[0].hash.toLowerCase()}', '${mapa.metadata.bpm}', '${mapa.metadata.duration}', '${mapa.createdAt.substring(0, 10) + ' ' + mapa.createdAt.substring(11, 19)}')`
         );
-        console.log('Mapa ' + mapa.metadata.songName.replaceAll(/'/g,"\\'") + ' Adicionado Com Sucesso.')
+        console.log('Mapa ' + mapa.metadata.songName.replaceAll(/'/g, "\\'") + ' Adicionado Com Sucesso.')
         return resp.insertId;
     } else {
-        console.log('Mapa ' + mapa.metadata.songName.replaceAll(/'/g,"\\'") +' Já existe.')
+        console.log('Mapa ' + mapa.metadata.songName.replaceAll(/'/g, "\\'") + ' Já existe.')
         return mapas[0].idMapa;
     }
-    
-    
-    
+
+
+
 }
 /* Feito */
 async function inserirDificuldade(fkMapa, diff, i) {
@@ -167,10 +172,12 @@ async function inserirDificuldade(fkMapa, diff, i) {
                 `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
             );
             console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.')
+        } else {
+            console.log('Diff já existe')
         }
     }
-    
-    
+
+
 }
 
 async function inserirScores(fkJogador, scores) {
@@ -190,15 +197,18 @@ async function inserirScores(fkJogador, scores) {
     }
     for (let i = 0; i < scores.length; i++) {
         let nomeDificuldade = diff(scores[i].leaderboard.difficulty.difficulty);
-        // console.log(`INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, '${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}';`)
+        /* console.log('nomeMapa: ', scores[i].leaderboard.songName);
+        console.log('hashMapa: ', scores[i].leaderboard.songHash.toLowerCase());
+        console.log('nome Dificuldade: ', nomeDificuldade);
+        console.log('número Dificuldade: ', scores[i].leaderboard.difficulty.difficulty); */
+
         let checkScore = await executar(
-            `select * from score join mapa on idMapa = fkMapa and hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' 
-                                 join dificuldade on Dificuldade.fkMapa = score.fkMapa and nomeDificuldade = '${nomeDificuldade}'
-                                 join jogador on idJogador = fkJogador;`
+            `select * from score join mapa on idMapa = fkMapa and hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' join dificuldade on Dificuldade.fkMapa = score.fkMapa and nomeDificuldade = '${nomeDificuldade}' and score.fkJogador = ${fkJogador} and score.fkDificuldade = idDificuldade;`
         );
+        console.log(checkScore)
         if (checkScore.length == 0) {
-            await executar (
-                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;` 
+            await executar(
+                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
             )
             console.log('Score Adicionado')
         } else {
@@ -230,7 +240,24 @@ function subDate(date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() - days);
     return result.toISOString().substring(0, 10);
-  }
+}
+
+async function downloadImage(url, filepath) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            if (res.statusCode === 200) {
+                res.pipe(fs.createWriteStream(filepath))
+                    .on('error', reject)
+                    .once('close', () => resolve(filepath));
+            } else {
+                // Consume response data to free up memory
+                res.resume();
+                reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+
+            }
+        });
+    });
+}
 
 /* await poolBancoDados.execute(
     'INSERT INTO sensores (dht11_umidade, dht11_temperatura, luminosidade, lm35_temperatura, chave) VALUES (?, ?, ?, ?, ?)',
