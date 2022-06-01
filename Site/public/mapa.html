@@ -9,7 +9,6 @@
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="novoStyle.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
@@ -18,7 +17,7 @@
 
 <body onload="getMapaParams(), obterInformacoesMapa()">
     <div id="perfil-menu">
-        <div>
+        <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
@@ -31,7 +30,7 @@
                 <li class="nav-bar-item">
                     <a href="./mapas.html" class="nav-bar-a">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="mapa">Mapas</span>
+                        <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
@@ -122,28 +121,29 @@
                 <div class="mini-container">
                     <div style="display: flex;">
                         <div class="mapa-info">
-                            <span class="mapa-name">Sjeng Oan de Geng</span>
-                            <span class="mapa-artist">por Dr. Peacock</span>
-                            <span class="mapa-creator">mapeado por Gordon Feetman & Shark</span>
+                            <span class="mapa-name" id="mapa-name">Sjeng Oan de Geng</span>
+                            <span class="mapa-artist" id="mapa-artist">por Dr. Peacock</span>
+                            <span class="mapa-creator" id="mapa-creator">mapeado por Gordon Feetman & Shark</span>
                         </div>
-                        <img src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
+                        <img id="map-img"
+                            src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
                     </div>
                     <div class="mapa-main-info">
                         <div>
                             <span>Quantidade de Scores:</span>
-                            <span>10000</span>
+                            <span id="qtd-scores">10000</span>
                         </div>
                         <div>
                             <span>Bpm:</span>
-                            <span>200</span>
+                            <span id="bpm">200</span>
                         </div>
                         <div>
                             <span>Duração:</span>
-                            <span>200</span>
+                            <span id="duracao">200</span>
                         </div>
                         <div>
                             <span>Data Uplaod:</span>
-                            <span>13/09/2022</span>
+                            <span id="data-upload">13/09/2022</span>
                         </div>
                     </div>
                 </div>
@@ -210,47 +210,102 @@
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then(function (response) {
-            console.log('Resposta: ', response);
+        }).then(function (responseMapa) {
+            console.log('Resposta: ', responseMapa);
 
-            if (response.ok) {
-                response.json().then(json => {
-                    console.log(json);
-                    let mapa = json[0];
-                    diff = mapa.dificuldades[0].nomeDificuldade; // Dificuldade mais dificil
-                    fetch(`/score/listarScores/${idMapa}&${diff}`, {
+            if (responseMapa.ok) {
+                responseMapa.json().then(jsonMapa => {
+                    console.log(jsonMapa);
+                    let mapa = jsonMapa[0];
+                    let convertDiff = (diffNumber) => {
+                        switch (diffNumber) {
+                            case 'Easy':
+                                return 1;
+                            case 'Normal':
+                                return 3;
+                            case 'Hard':
+                                return 5;
+                            case 'Expert':
+                                return 7;
+                            case 'ExpertPlus':
+                                return 9;
+                        }
+                    }
+
+                    for (let i = 0; i < mapa.dificuldades.length; i++) {
+                        mapa.dificuldades[i].nomeDificuldade = convertDiff(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
+                    }
+
+                    const higherDiff = mapa.dificuldades.reduce(function (prev, current) {
+                        return (prev.nomeDificuldade > current.nomeDificuldade) ? prev : current
+                    });
+                    let convertDiffToString = (diffNumber) => {
+                        switch (diffNumber) {
+                            case 1:
+                                return "Easy";
+                            case 3:
+                                return "Normal";
+                            case 5:
+                                return "Hard";
+                            case 7:
+                                return "Expert";
+                            case 9:
+                                return "ExpertPlus";
+                        }
+                    }
+                    for (let i = 0; i < mapa.dificuldades.length; i++) {
+                        mapa.dificuldades[i].nomeDificuldade = convertDiffToString(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
+                    }
+                    
+                    getScores(mapa, higherDiff);
+                    
+                })
+            }
+
+        })
+    }
+
+    function getScores(mapa, higherDiff) {
+        fetch(`/score/listarScores/${idMapa}&${higherDiff.nomeDificuldade}`, {
                         method: 'GET',
                         headers: {
                             "Content-Type": "application/json"
                         }
-                    }).then(function (response) {
-                        console.log('Resposta: ', response);
+                    }).then(function (responseScores) {
+                        console.log('Resposta: ', responseScores);
 
-                        if (response.ok) {
-                            response.json().then(json => {
-                                console.log(json);
+                        if (responseScores.ok) {
+                            responseScores.json().then(jsonScores => {
+                                console.log(jsonScores);
 
-                                let scores = json;
-                                let paginaElements = [];
+                                let scores = jsonScores;
+                                let paginaElements = savePages(scores);
 
-                                for (let i = 0; i < scores.length; i++) {
-                                    paginaElements.push(scores[i]);
-                                    if (i == 9 || i == scores.length - 1) {
-                                        paginacao.push(paginaElements);
-                                        paginaElements = [];
-                                    }
-                                }
+                                loadMapInfo(mapa.nomeMusica, mapa.artistaMusica, mapa.criadorMapa, mapa.hashMapa,
+                                    scores.length, mapa.bpmMapa, mapa.duracaoMapa / 60,
+                                    new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
+
                                 loadPages();
                                 for (let i = 0; i < paginacao[pagina - 1].length; i++) {
-                                    adicionarScores(paginacao[pagina - 1][i], i);
+                                    adicionarScores(paginacao[pagina - 1][i], i + 1);
                                 }
                             })
                         }
                     })
-                })
-            }
-        })
     }
+
+    function savePages(info) {
+        let paginaElements = [];
+        for (let i = 0; i < info.length; i++) {
+            paginaElements.push(info[i]);
+            if (i == 9 || i == info.length - 1) {
+                paginacao.push(paginaElements);
+                paginaElements = [];
+            }
+        }
+        return paginaElements;
+    }
+    
     function adicionarScores(score, lugar) {
         let tableElement = document.getElementById('table-scores');
         let scoreElement = document.createElement('tr');
@@ -306,6 +361,25 @@
             }
             pagesElement[k].appendChild(proxPage);
         }
+    }
+
+    function loadMapInfo(name, artist, creator, hash, qtdScores, bpmMapa, duracaoMapa, uploadMapa) {
+        let nameElement = document.getElementById('mapa-name');
+        let artistElement = document.getElementById('mapa-artist');
+        let creatorElement = document.getElementById('mapa-creator');
+        let mapImgElement = document.getElementById('map-img');
+        let qtdScoresElement = document.getElementById('qtd-scores');
+        let bpmElement = document.getElementById('bpm');
+        let duracaoElement = document.getElementById('duracao');
+        let dataUploadElement = document.getElementById('data-upload');
+        nameElement.innerHTML = name.trim();
+        artistElement.innerHTML = `por ${artist.trim()}`;
+        artistElement.innerHTML = `mapeado por ${creator.trim()}`;
+        mapImgElement.src = `/mapa/getImage/${hash}`;
+        qtdScoresElement.innerHTML = qtdScores;
+        bpmElement.innerHTML = bpmMapa;
+        duracaoElement.innerHTML = duracaoMapa;
+        dataUploadElement.innerHTML = uploadMapa;
     }
 </script>
 

@@ -30,7 +30,8 @@ function obterInformacoes(request, response) {
 }
 
 function listarMapas(request, response) {
-  mapaModel.listarMapas().then(async (resp) => {
+  let pagina = request.params.paginaServer;
+  mapaModel.listarMapas((pagina * 8) - 8, pagina * 8).then(async (resp) => {
     if (resp.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
@@ -38,7 +39,12 @@ function listarMapas(request, response) {
         let diffsMapa = await dificuldadeModel.obterTodasDiffs(resp[i].idMapa)
         resp[i].dificuldades = diffsMapa;
       }
-      response.json(resp);
+      /* verificarNumPaginas */
+      let finalResp = {
+        'qtdMapas': 0,
+        'mapas': resp
+      };
+      response.json(finalResp);
     }
   }).catch(function (erro) {
     console.log(erro);

@@ -10,9 +10,9 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 1;
-const limiteScoresPlayer = 5;
-const tipoScore = 'recent';
+const limitePlayers = 2;
+const limiteScoresPlayer = 10;
+const tipoScore = 'top';
 const country = 'br';
 async function search(link) {
     return new Promise((resolve, reject) => {

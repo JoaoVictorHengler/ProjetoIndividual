@@ -12,16 +12,25 @@ function obterInformacoes(idMapa) {
   return database.executar(instrucao);
 }
 
-function listarMapas() {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarMapas():");
+function listarMapas(minValue, maxValue) {
+  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarMapas(): ", minValue, maxValue);
 
   var instrucao = `
-  select m1.*, (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito', (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores' from Mapa m1;
+  select m1.*, (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito', (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores' from Mapa m1 limit ${minValue}, ${maxValue};
   `;
-
   console.log("Executando a instrução SQL: \n" + instrucao);
   return database.executar(instrucao);
 }
+
+function verificarNumPaginas() {
+  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function verificarNumPaginas(): ");
+
+  var instrucao = `
+  select count(*) as 'qtdmapas' from Mapa;
+  `;
+  console.log("Executando a instrução SQL: \n" + instrucao);
+  return database.executar(instrucao);
+} 
 
 module.exports = {
   obterInformacoes,

@@ -7,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
-
-    <link rel="stylesheet" href="novoStyle.css">
+    <link rel="stylesheet" href="style.css">
     <title>Mapas</title>
 </head>
 
 <body>
     <div id="perfil-menu">
-        <div>
+        <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
@@ -26,7 +25,7 @@
                 </li>
                 <li class="nav-bar-item here">
                     <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
-                    <span class="nav-bar-name" id="mapa">Mapas</span>
+                    <span class="nav-bar-name" id="mapas">Mapas</span>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./ranking.html">
@@ -111,7 +110,7 @@
 
     async function obterMapas() {
         await verifyPage()
-        fetch('/mapa/listarMapas/', {
+        fetch(`/mapa/listarMapas/${pagina}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -123,14 +122,7 @@
                 response.json().then(json => {
                     console.log(json);
                     let mapas = json;
-                    let paginaElements = [];
-                    for (let i = 0; i < mapas.length; i++) {
-                        paginaElements.push(mapas[i]);
-                        if (i == 9 || i == mapas.length - 1) {
-                            paginacao.push(paginaElements);
-                            paginaElements = [];
-                        }
-                    }
+                    let paginaElements = savePages(mapas);
 
                     loadPages();
 
@@ -205,6 +197,18 @@
         window.focus();
     }
 
+    function savePages(info) {
+        let paginaElements = [];
+        for (let i = 0; i < info.length; i++) {
+            paginaElements.push(info[i]);
+            if (i == 9 || i == info.length - 1) {
+                paginacao.push(paginaElements);
+                paginaElements = [];
+            }
+        }
+        return paginaElements;
+    }
+
     function loadPages() {
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
@@ -215,18 +219,19 @@
                 antPage.style.opacity = '0.5';
                 antPage.style.cursor = 'default';
             } else {
-                antPage.onclick = reloadPage(false);
+                antPage.onclick = () => {reloadPage(false)};
             }
             pagesElement[k].appendChild(antPage);
 
             for (let i = 0; i < paginacao.length; i++) {
                 let pageElement = document.createElement('li');
                 pageElement.classList.add("page-num");
-                if (i == 0) {
+                if (pagina - 1 == i) {
                     pageElement.classList.add('selected')
                 }
                 pageElement.innerHTML += i + 1;
                 pageElement.id = `page-#${i + 1}`
+                pageElement.onclick = () => {reloadPage(i + 1)};
                 pagesElement[k].appendChild(pageElement);
             }
 
@@ -236,22 +241,26 @@
                 proxPage.style.opacity = '0.5';
                 proxPage.style.cursor = 'default';
             } else {
-                proxPage.onclick = reloadPage(true);
+                proxPage.onclick = () => {reloadPage(true)};
             }
             pagesElement[k].appendChild(proxPage);
         }
     }
 
     function reloadPage(nextPage) {
-        if (nextPage) {
-            if (pagina == paginacao.length && pagina >= 1) return;
-            pagina += 1;
+        if (parseInt(nextPage) != NaN) {
+            pagina = nextPage;
         } else {
-            if (pagina <= 1) return;
-            pagina -= 1;
+            if (nextPage) {
+                if (pagina == paginacao.length && pagina >= 1) return;
+                pagina += 1;
+            } else {
+                if (pagina <= 1) return;
+                pagina -= 1;
+            }
         }
-        /* window.location.href = `./mapas.html?page=${pagina}`;
-        window.focus(); */
+        window.location.href = `./mapas.html?page=${pagina}`;
+        window.focus();
     }
 </script>
 
