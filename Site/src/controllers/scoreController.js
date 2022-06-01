@@ -12,11 +12,7 @@ function listarScores(request, response) {
     response.status(400).send("Nome da Dificuldade está undefined!");
   } else {
     scoreModel.listarScores(idMapa, nomeDificuldade).then((resp) => {
-      if (resp.length == 0) {
-        response.status(403).send("Não foi possível encontrar um score com esse id.");
-      } else {
-        response.json(resp);
-      }
+      obterQtdScores(response, resp, idMapa, nomeDificuldade);
     }).catch(function (erro) {
       console.log(erro);
       console.log("\nHouve um erro ao listar os scores! Erro: ", erro.sqlMessage);
@@ -24,6 +20,39 @@ function listarScores(request, response) {
     })
 
   }
+}
+
+
+function obterQtdScores(response, respBdScores, idMapa, nomeDificuldade) {
+  scoreModel.verificarNumPaginas(idMapa, nomeDificuldade).then(async (respNumPaginas) => {
+    if (respNumPaginas.length == 0) {
+    response.status(403).send("Não foi possível obter a quantidade de scores.");
+  } else {
+    let qtdScores = respNumPaginas[0].qtdscores
+    
+    let pagina = 0;
+    while (true) {
+      if (qtdScores >= 20) {
+
+        qtdScores -= 20;
+      }
+      pagina++;
+      if (qtdScores < 20) {
+        break;
+      }
+    }
+    let finalResp = {
+      'qtdPaginas': pagina,
+      'scores': respBdScores
+    };
+    response.json(finalResp);
+
+  }
+}).catch(function (erro) {
+  console.log(erro);
+  console.log("\nHouve um erro ao listar os scores! Erro: ", erro.sqlMessage);
+  response.status(500).json(erro.sqlMessage);
+})
 }
 
 module.exports = {

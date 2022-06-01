@@ -827,7 +827,7 @@ input {
     background-color: rgba(60, 180, 114);
 }
 
-.expertplus, .expert, .hard, .normal, .easy {
+.diff-mapas {
     height: 11px;
     width: 21px;
     border-radius: 10000px;
@@ -1257,8 +1257,8 @@ input {
     flex-direction: column;
 }
 
-.mini-container-container .mini-container:first-child {
-    margin-bottom: 10px;
+.mini-container-container .mini-container:nth-child(even) {
+    margin-top: 10px;
 }
 
 .mini-container {
@@ -1282,15 +1282,15 @@ input {
     font-weight: 600;
 }
 
-.mini-container .mapa-info .map-name {
+.mini-container .mapa-info #mapa-name {
     font-size: 20px;
 }
 
-.mini-container .mapa-info .mapa-artist {
+.mini-container .mapa-info #mapa-artist {
     font-size: 15px;
 }
 
-.mini-container .mapa-info .mapa-creator {
+.mini-container .mapa-info #mapa-creator {
     font-size: 13px;
 }
 
@@ -1300,11 +1300,10 @@ input {
 }
 
 .mini-container .mapa-main-info {
-    margin-top: 30px;
+    margin-top: 15px;
     width: 100%;
     height: fit-content;
-    border: 2px solid;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .mini-container .mapa-main-info div span:nth-child(even) {
@@ -1362,6 +1361,73 @@ input {
     width: 50px;
 }
 
+.mini-container #types-of-diffs-container {
+    width: 80%;
+    height: fit-content;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+
+.type-of-diff {
+    width: 48%;
+    height: fit-content;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 5px;
+    margin-top: 5px;
+    border: 1px solid white;
+    transition: .5s cubic-bezier(0.55, 0.025, 0.675, 0.97);
+    background-color: rgba(0, 0, 0, 0);
+}
+.expertplus-button {
+    border: 1px solid rgba(143, 72, 219);
+}
+.expert-button {
+    border: 1px solid rgba(191, 42, 66);
+}
+.hard-button {
+    border: 1px solid rgba(255, 99, 71);
+}
+.normal-button {
+    border: 1px solid rgba(89, 176, 244);
+}
+.easy-button {
+    border: 1px solid rgba(60, 180, 114);
+}
+
+.type-of-diff.expertplus-button.can-select:hover  {
+    background-color: rgba(143, 72, 219);
+    cursor: pointer;
+}
+
+.type-of-diff.expert-button.can-select:hover {
+    background-color: rgba(191, 42, 66);
+    cursor: pointer;
+}
+
+.type-of-diff.hard-button.can-select:hover {
+    background-color: rgba(255, 99, 71);
+    cursor: pointer;
+}
+
+.type-of-diff.normal-button.can-select:hover {
+    background-color: rgba(89, 176, 244);
+    cursor: pointer;
+}
+
+.type-of-diff.easy-button.can-select:hover {
+    background-color: rgba(60, 180, 114);
+    cursor: pointer;
+}
+
 /* Fim Mapa */
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -1370,7 +1436,6 @@ input {
     height: 100%;
     background-color: #7EB2FF;
     border-top: 4px solid white;
-    
     flex-grow: 1;
 }
 

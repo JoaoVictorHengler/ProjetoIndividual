@@ -34,5 +34,6 @@ function verificarNumPaginas() {
 
 module.exports = {
   obterInformacoes,
-  listarMapas
+  listarMapas,
+  verificarNumPaginas
 }
