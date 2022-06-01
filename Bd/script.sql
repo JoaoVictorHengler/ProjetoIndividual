@@ -95,8 +95,10 @@ and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa;
 
 select m1.*, d.nomeDificuldade, (select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade group by fkMapa) as 'QtdScores'
 from Mapa m1 join Dificuldade d on m1.idMapa = d.fkMapa;
+select * from score;
+select * from mapa join dificuldade on idMapa = fkMapa and idMapa = 2;
+select m1.*, 
+(select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'QtdMapaFavorito',
+(select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'QtdScores'
+from Mapa m1;
 
-select m1.*, d.nomeDificuldade, 
-(select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade and scoreFavorito = 1 group by fkMapa) as 'QtdMapaFavorito'
-(select count(*) from Score where Score.fkMapa = m1.idMapa and Score.fkDificuldade = d.idDificuldade group by fkMapa) as 'QtdScores'
-from Mapa m1 join Dificuldade d on m1.idMapa = d.fkMapa;

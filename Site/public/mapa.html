@@ -89,7 +89,7 @@
                         Ranking Nacional
                     </div>
                 </div>
-                <table class="mapa-list-table">
+                <table class="mapa-list-table" id="table-scores">
                     <tr class="mapa-list-table-title">
                         <th><span>Rank</span></th>
                         <th></th>
@@ -113,6 +113,10 @@
                         <td>2d</td>
                     </tr>
                 </table>
+                <div class="pages-list">
+                    <ul class="pages">
+                    </ul>
+                </div>
             </div>
             <div class="mini-container-container">
                 <div class="mini-container">
@@ -225,6 +229,21 @@
                         if (response.ok) {
                             response.json().then(json => {
                                 console.log(json);
+
+                                let scores = json;
+                                let paginaElements = [];
+
+                                for (let i = 0; i < scores.length; i++) {
+                                    paginaElements.push(scores[i]);
+                                    if (i == 9 || i == scores.length - 1) {
+                                        paginacao.push(paginaElements);
+                                        paginaElements = [];
+                                    }
+                                }
+                                loadPages();
+                                for (let i = 0; i < paginacao[pagina - 1].length; i++) {
+                                    adicionarScores(paginacao[pagina - 1][i], i);
+                                }
                             })
                         }
                     })
@@ -232,8 +251,61 @@
             }
         })
     }
-    function adicionarScores(score) {
+    function adicionarScores(score, lugar) {
+        let tableElement = document.getElementById('table-scores');
+        let scoreElement = document.createElement('tr');
 
+        console.log(score.dataScore)
+
+        scoreElement.classList.add('mapa-list-scores');
+        scoreElement.innerHTML += `
+                        <td class="rank">#${lugar}</td>
+                        <td class="type">SS</td>
+                        <td style="font-weight: 600;">${score.pontuacao.toLocaleString("en-US")}</td>
+                        <td>${score.precisao}</td> <!-- Verde 100% -->
+                        <td>${score.pais}</td>
+                        <td>${score.nome}</td>
+                        <td>${score.comboMaximo}x</td> <!-- Verde 100% -->
+                        <td>${score.notasErradas + score.corteRuim}</td>
+                        <td>${2}d</td>`;
+        tableElement.appendChild(scoreElement);
+    }
+
+    function loadPages() {
+        let pagesElement = document.getElementsByClassName('pages');
+        for (let k = 0; k < pagesElement.length; k++) {
+
+            let antPage = document.createElement('li');
+            antPage.innerHTML = '<span>Próx</span>';
+            if (pagina == 1) {
+                antPage.style.opacity = '0.5';
+                antPage.style.cursor = 'default';
+            } else {
+                antPage.onclick = reloadPage(false);
+            }
+            pagesElement[k].appendChild(antPage);
+
+            for (let i = 0; i < paginacao.length; i++) {
+                let pageElement = document.createElement('li');
+                pageElement.classList.add("page-num");
+                if (i == 0) {
+                    pageElement.classList.add('selected')
+                }
+                pageElement.innerHTML += i + 1;
+                pageElement.id = `page-#${i + 1}`
+                pagesElement[k].appendChild(pageElement);
+            }
+
+            let proxPage = document.createElement('li');
+            proxPage.innerHTML = '<span>Próx</span>';
+            if (pagina == paginacao.length) {
+                proxPage.style.opacity = '0.5';
+                proxPage.style.cursor = 'default';
+            } else {
+                proxPage.onclick = reloadPage(true);
+            }
+            pagesElement[k].appendChild(proxPage);
+        }
     }
 </script>
 
