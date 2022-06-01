@@ -9,27 +9,24 @@
     <script src="./assets/js/funcoes.js"></script>
 
     <link rel="stylesheet" href="novoStyle.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
     <title>Mapas</title>
 </head>
 
-<body onload="obterMapas()">
+<body>
     <div id="perfil-menu">
         <div>
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item"> 
+                <li class="nav-bar-item">
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
                         <span class="nav-bar-name" id="home">Início</span>
                     </a>
                 </li>
                 <li class="nav-bar-item here">
-                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="mapa">Mapas</span>
+                    <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="mapa">Mapas</span>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./ranking.html">
@@ -83,81 +80,13 @@
                         <i class="fa-solid fa-magnifying-glass search-mapa-icon"></i>
                     </div>
                     <div class="pages-list">
-                        <ul>
-                            <li><span>Ant</span></li>
-                            <li class="selected"><span>1</span></li>
-                            <li><span>2</span></li>
-                            <li><span>3</span></li>
-                            <li><span>10</span></li>
-                            <li><span>Próx</span></li>
+                        <ul class="pages">
                         </ul>
                     </div>
                     <ul class="mapa-list-container">
-                        <li class="mapa-list-item">
-                            <img class="mapa-image"
-                                src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
-                            <div class="mapa-info">
-                                <span class="mapa-name">Sjeng Oan de Geng</span>
-                                <span class="mapa-artist">por Dr. Peacock</span>
-                                <span class="mapa-creator">mapeado por Gordon Feetman & Shark</span>
-                                <div class="mapa-other-infos">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
-                                    <span>4</span>
-                                    <i class="fa-solid fa-play"></i>
-                                    <span>10</span>
-                                    <i class="fa-regular fa-circle-check"></i>
-                                    <span>26 de mai de 2022</span>
-                                </div>
-                                <ul class="mapa-all-diffs">
-                                    <li class="type-of-diff">
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div class="mapa-other-options">
-                                <i class="fa-regular fa-heart"></i>
-                                <i class="fa-solid fa-heart"></i>
-                                <i class="fa-solid fa-file-arrow-down"></i>
-                            </div>
-                        </li>
-                        <li class="mapa-list-item">
-                            <img class="mapa-image"
-                                src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
-                            <div class="mapa-info">
-                                <span class="mapa-name">Sjeng Oan de Geng</span>
-                                <span class="mapa-artist">por Dr. Peacock</span>
-                                <span class="mapa-creator">mapeado por Gordon Feetman & Shark</span>
-                                <div class="mapa-other-infos">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
-                                    <span>4</span>
-                                    <i class="fa-solid fa-play"></i>
-                                    <span>10</span>
-                                    <i class="fa-regular fa-circle-check"></i>
-                                    <span>26 de mai de 2022</span>
-                                </div>
-                                <ul class="mapa-all-diffs">
-                                    <li class="type-of-diff">
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div class="mapa-other-options">
-                                <i class="fa-regular fa-heart"></i>
-                                <i class="fa-solid fa-heart"></i>
-                                <i class="fa-solid fa-file-arrow-down"></i>
-                            </div>
-                        </li>
                     </ul>
                     <div class="pages-list">
-                        <ul>
-                            <li><span>Ant</span></li>
-                            <li class="selected"><span>1</span></li>
-                            <li><span>2</span></li>
-                            <li><span>3</span></li>
-                            <li><span>10</span></li>
-                            <li><span>Próx</span></li>
+                        <ul class="pages">
                         </ul>
                     </div>
                 </div>
@@ -169,51 +98,81 @@
     </div>
 </body>
 <script>
-    function obterMapas() {
-        fetch('/mapa/listarMapas/', {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(function (response) {
-        console.log('Resposta: ', response);
+    var paginacao = [];
+    var pagina = 1;
+    obterMapas();
 
-        if (response.ok) {
-            response.json().then(json => {
+    function verifyPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get('page');
+        if (page < 1) pagina = 1;
+        else pagina = 1;
+    }
+
+    async function obterMapas() {
+        await verifyPage()
+        fetch('/mapa/listarMapas/', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
                     console.log(json);
                     let mapas = json;
+                    let paginaElements = [];
                     for (let i = 0; i < mapas.length; i++) {
-                        adicionarMapa(mapas[i]);
+                        paginaElements.push(mapas[i]);
+                        if (i == 9 || i == mapas.length - 1) {
+                            paginacao.push(paginaElements);
+                            paginaElements = [];
+                        }
                     }
-            })
-        }
-    })
+
+                    loadPages();
+
+                    for (let i = 0; i < paginacao[pagina - 1].length; i++) {
+                        adicionarMapa(paginacao[pagina - 1][i]);
+                    }
+                })
+            }
+        })
     }
 
     function adicionarMapa(mapa) {
-        let mesesPtBr = [];
+        let mesesPtBr = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
         let listMapas = document.getElementsByClassName('mapa-list-container');
         let listItem = document.createElement('li');
         let listElements = document.getElementsByClassName('mapa-list-item');
         let listItems = [];
 
-        for (let i = 0; i< listElements.length; i++) {
+        for (let i = 0; i < listElements.length; i++) {
             listItems.push(listElements[i]);
         }
 
-        let sameItems = listItems.filter((element) => {return element.id == `#${mapa.idMapa}`;});
-        if (sameItems.length == 0) {
-            listItem.classList.add('mapa-list-item');
-            listItem.id = `#${mapa.idMapa}`;
-            if (mapa.qtdMapaFavorito == null) mapa.qtdMapaFavorito = 0;
-            if (mapa.qtdScores == null) mapa.qtdScores = 0; /* (new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString()).replaceAll('/', ' de ') */
-            listItem.innerHTML += `
+        listItem.classList.add('mapa-list-item');
+        listItem.id = `#${mapa.idMapa}`;
+        if (mapa.qtdMapaFavorito == null) mapa.qtdMapaFavorito = 0;
+        if (mapa.qtdScores == null) mapa.qtdScores = 0;
+
+
+        let dataUpload = (new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
+        let mesUpload = mesesPtBr[parseInt(dataUpload.substring(3, 5)) - 1]
+        let diaUpload = dataUpload.substring(0, 2);
+        let anoUpload = dataUpload.substring(6, 10);
+        let diffs = '';
+        for (let i = 0; i < mapa.dificuldades.length; i++) {
+            diffs += `
+                    <li class="${mapa.dificuldades[i].nomeDificuldade.toLowerCase()}">
+                    </li>
+                `;
+        }
+        listItem.innerHTML += `
                                 <img class="mapa-image" src="/mapa/getImage/${mapa.hashMapa}">
-                                <div class="mapa-info" style="
-                                background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) 
-                                repeat scroll 0% 0%, rgba(0, 0, 0, 0) 
-                                url(/mapa/getImage/${mapa.hashMapa}) 
-                                repeat scroll 0% 0%;">
+                                <div class="mapa-info" onclick="mudarPaginaMapa(${mapa.idMapa})" style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/${mapa.hashMapa}) repeat scroll 0% 0%;">
                                     <span class="mapa-name">${mapa.nomeMusica + mapa.subNomeMusica}</span>
                                     <span class="mapa-artist">por ${mapa.artistaMusica}</span>
                                     <span class="mapa-creator">mapeado por ${mapa.criadorMapa}</span>
@@ -224,28 +183,75 @@
                                         <i class="fa-solid fa-play"></i>
                                         <span>${mapa.qtdScores}</span>
                                         <i class="fa-regular fa-circle-check"></i>
-                                        <span>${(new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString()).substring(3, 5)}</span> 
+                                        <span>${diaUpload} de ${mesUpload} de ${anoUpload}</span> 
                                     </div>
                                     <ul class="mapa-all-diffs">
-                                        <li class="type-of-diff">
-                                        </li>
+                                        ${diffs}
                                     </ul>
 
                                 </div>
                                 <div class="mapa-other-options">
                                     <i class="fa-regular fa-heart"></i>
                                     <i class="fa-solid fa-heart"></i>
-                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                    <a href="https://r2cdn.beatsaver.com/${mapa.hashMapa}.zip"><i class="fa-solid fa-file-arrow-down" ></i></a>
+                                    
                                 </div>`;
-                listMapas[0].appendChild(listItem);
-        } else {
-            appendDiffToHtml();
-        }
-        
-    }
-    
-    function appendDiffToHtml() {
+        listMapas[0].appendChild(listItem);
 
+    }
+
+    function mudarPaginaMapa(idMapa) {
+        window.location.href = `./mapa.html?idMapa=${idMapa}`;
+        window.focus();
+    }
+
+    function loadPages() {
+        let pagesElement = document.getElementsByClassName('pages');
+        for (let k = 0; k < pagesElement.length; k++) {
+
+            let antPage = document.createElement('li');
+            antPage.innerHTML = '<span>Próx</span>';
+            if (pagina == 1) {
+                antPage.style.opacity = '0.5';
+                antPage.style.cursor = 'default';
+            } else {
+                antPage.onclick = reloadPage(false);
+            }
+            pagesElement[k].appendChild(antPage);
+
+            for (let i = 0; i < paginacao.length; i++) {
+                let pageElement = document.createElement('li');
+                pageElement.classList.add("page-num");
+                if (i == 0) {
+                    pageElement.classList.add('selected')
+                }
+                pageElement.innerHTML += i + 1;
+                pageElement.id = `page-#${i + 1}`
+                pagesElement[k].appendChild(pageElement);
+            }
+
+            let proxPage = document.createElement('li');
+            proxPage.innerHTML = '<span>Próx</span>';
+            if (pagina == paginacao.length) {
+                proxPage.style.opacity = '0.5';
+                proxPage.style.cursor = 'default';
+            } else {
+                proxPage.onclick = reloadPage(true);
+            }
+            pagesElement[k].appendChild(proxPage);
+        }
+    }
+
+    function reloadPage(nextPage) {
+        if (nextPage) {
+            if (pagina == paginacao.length && pagina >= 1) return;
+            pagina += 1;
+        } else {
+            if (pagina <= 1) return;
+            pagina -= 1;
+        }
+        /* window.location.href = `./mapas.html?page=${pagina}`;
+        window.focus(); */
     }
 </script>
 

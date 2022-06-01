@@ -67,6 +67,8 @@ create table Historico (
     rankGlobal int NOT NULL,
     diaRank Date
 );
+
+
 select * from Jogador;
 select * from Score;
 select idJogador, nome, pais, rankGlobal, rankNacional, (select sum(pontuacao) from Score where fkJogador = idJogador) as 'Pontuacao Total' from Jogador join Score on idJogador = fkJogador group by idJogador;

@@ -3,7 +3,7 @@ var router = express.Router();
 
 var scoreController = require('../controllers/scoreController');
 
-router.get("/listarScores", function (req, res) {
+router.get("/listarScores/:idMapaServer&:nomeDificuldadeServer", function (req, res) {
     scoreController.listarScores(req, res);
 });
 

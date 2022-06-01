@@ -14,13 +14,7 @@ router.get("/listarMapas", function (req, res) {
 router.get("/getImage/:imgHashServer", function (req, res) {
     mapaController.obterImagem(req, res);
 });
-/* 
-    Fazer:
-        Pegar informações
-        Listar mapas passados de x pessoas
-        Listar todos os mapas
 
-*/
 
 module.exports = router;
 

@@ -14,7 +14,7 @@ html {
     scroll-behavior: smooth;
 }
 
-a {
+#perfil-menu a {
     text-decoration: none;
     color: #34749e;
     width: 100%;
@@ -674,13 +674,7 @@ input {
     height: fit-content;
     padding: 5px 0px 5px 0px;
     list-style: none;
-}
-
-.mapa-info .type-of-diff {
-    background-color: purple;
-    height: 12px;
-    width: 6px;
-    border-radius: 10000px;
+    display: flex;
 }
 
 .mapa-list-item .mapa-info .mapa-name {
@@ -714,8 +708,16 @@ input {
     display: none;
 }
 
-.mapa-other-options i {
+.mapa-other-options .fa-solid.fa-file-arrow-down, .mapa-other-options .fa-heart {
     cursor: pointer;
+}
+
+.mapa-other-options a {
+    color: white;
+}
+
+.mapa-other-options .fa-solid.fa-file-arrow-down:hover, .mapa-other-options .fa-heart:hover {
+    color:#2A8FFA;
 }
 
 .search-mapa-container {
@@ -802,6 +804,37 @@ input {
     cursor: pointer;
 }
 
+.expertplus {
+    background-color: rgba(143, 72, 219);
+}
+
+.expert {
+    background-color: rgba(191, 42, 66);
+}
+
+.hard {
+    background-color: rgba(255, 99, 71);
+}
+
+.normal {
+    background-color: rgba(89, 176, 244);
+}
+
+.easy {
+    background-color: rgba(60, 180, 114);
+}
+
+.expertplus, .expert, .hard, .normal, .easy {
+    height: 11px;
+    width: 21px;
+    border-radius: 10000px;
+    border: 2px solid black
+}
+
+.mapa-all-diffs:not(:first-child) .expertplus, .mapa-all-diffs:not(:first-child) .expert, .mapa-all-diffs:not(:first-child) .hard,
+.mapa-all-diffs:not(:first-child) .normal, .mapa-all-diffs:not(:first-child) .easy {
+    margin-left: 2px;
+}
 /* Fim Mapas */
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
 /* Inicio Ranking */
