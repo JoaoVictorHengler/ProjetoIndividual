@@ -11,9 +11,10 @@ var requestNum = 0;
 var allPromises = [];
 
 const limitePlayers = 5;
-const limiteScoresPlayer = 10;
+const limiteScoresPlayer = 5;
 const tipoScore = 'top';
 const country = 'br';
+
 async function search(link) {
     return new Promise((resolve, reject) => {
         https.get(link, (resp) => {
@@ -97,18 +98,20 @@ var mySqlConfig = {
     password: "pateta@123",
 };
 /* Feito */
-var numId = 0;
+var numId = 1;
 async function inserirPlayer(player) {
     let checkPlayer = await executar(
         `select * from Jogador where idScoresaber = '${player.id}'`
     );
+    
     let getNumId = await executar(
         `select idJogador from Jogador order by idJogador desc limit 0, 1`
     )
+
     if (getNumId.length == 0) {
-        numId = 0;
+        numId = 1;
     } else {
-        numId = getNumId[0].idJogador;
+        numId = getNumId[0].idJogador + 1;
     }
 
     if (checkPlayer.length == 0) {
@@ -257,8 +260,3 @@ async function downloadImage(url, filepath) {
         });
     });
 }
-
-/* await poolBancoDados.execute(
-    'INSERT INTO sensores (dht11_umidade, dht11_temperatura, luminosidade, lm35_temperatura, chave) VALUES (?, ?, ?, ?, ?)',
-    [dht11Umidade, dht11Temperatura, luminosidade, lm35Temperatura, chave]
-); */

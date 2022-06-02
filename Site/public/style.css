@@ -622,6 +622,7 @@ input {
     display: flex;
     position: relative;
     cursor: pointer;
+    
 }
 
 .mapa-list-item .mapa-image {
@@ -649,10 +650,12 @@ input {
     margin-left: 14%;
     left: 0;
     z-index: 1000;
+    overflow: hidden;
 }
 
 .mapa-list-item:hover .mapa-info {
     width: 77%;
+   
 }
 
 .mapa-info .mapa-other-infos {
@@ -682,6 +685,7 @@ input {
 
 .mapa-list-item .mapa-info .mapa-name {
     font-size: 20px;
+    white-space: nowrap;
 }
 
 .mapa-list-item .mapa-info .mapa-artist {
@@ -1214,6 +1218,14 @@ input {
     width: 25px;
 }
 
+.mapa-banner .flag-country {
+    display: flex;
+    align-items: center;
+}
+.mapa-banner .flag-country img.emoji {
+    width: 15px;
+}
+
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
 /* Inicio Mapa */
 .mapa-list-types {
@@ -1310,13 +1322,18 @@ input {
     font-weight: 600;
 }
 
-.mini-container .mapa-info-diff {
-    margin-top: 10px;
+
+.mini-container .mapa-info-diff div span {
+    font-size: 13px;
+}
+
+.mini-container .mapa-info-diff .mapa-info-diff-label {
+    font-weight: 600;
+    font-size: 18px;
 }
 
 .mini-container .mapa-info-diff div span:nth-child(even) {
     font-weight: 600;
-
 }
 
 .mapa-list-table {
@@ -1500,10 +1517,6 @@ input {
 .player-header-container .player-name-container .player-name {
     font-weight: 400;
     font-size: 24px;
-}
-
-img.emoji {
-    width: 25px;
 }
 
 .contry-name {

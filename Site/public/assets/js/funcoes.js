@@ -42,22 +42,24 @@ function startBackgroundVideo() {
     document.getElementsByClassName('background-gif')[0].play;
 }
 
-function setPlayerCountry(elementFlag, showName, countryName = 'Brasil') {
-    for (let i = 0; i < elementFlag.length; i++) {
-        let countryFlagUnicode = 'U+1F1E7 U+1F1F7'.split(' ');
+function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', countryFlags) {
+    let countryFlagUnicode = (countryFlags.filter(country => { return country.code == countryName }))[0].unicode;
+    countryFlagUnicode = countryFlagUnicode.split(' ');
 
-        countryFlagUnicode.forEach((unicode) => {
-            let convert = twemoji.convert.fromCodePoint(unicode.substring(2));
-            elementFlag[i].textContent += convert;
-        })
-
-        twemoji.parse(document.body);
-        if (showName) {
-            let spanElement = document.createElement('span');
-            spanElement.innerHTML = countryName;
-            spanElement.classList.add('contry-name');
-            elementFlag[i].appendChild(spanElement);
-        }
+    countryFlagUnicode.forEach((unicode) => {
+        let convert = twemoji.convert.fromCodePoint(unicode.substring(2));
+        elementFlag.textContent += convert;
+    })
+    twemoji.parse(document.body);
+    if (showName != false) {
+        let spanElement = document.createElement('span');
+        spanElement.innerHTML = showName;
+        spanElement.classList.add('contry-name');
+        elementFlag.appendChild(spanElement);
     }
+    if (showName) {
+
+    }
+
 
 }

@@ -8,7 +8,7 @@ function listarScores(idMapa, nomeDificuldade) {
     select pontuacao, round((pontuacao / maxPontuacao) * 100, 2) as precisao, pais, nome, comboMaximo, corteRuim, notasErradas, dataScore, maxPontuacao from Score 
                       join Jogador on fkJogador = idJogador
                       join Dificuldade on fkDificuldade = idDificuldade and nomeDificuldade = '${nomeDificuldade}' 
-                      join Mapa on idMapa = Dificuldade.fkMapa and idMapa = Score.fkMapa and idMapa = ${idMapa} order by pontuacao;
+                      join Mapa on idMapa = Dificuldade.fkMapa and idMapa = Score.fkMapa and idMapa = ${idMapa} order by pontuacao desc;
   `;
 
   console.log("Executando a instrução SQL: \n" + instrucao);

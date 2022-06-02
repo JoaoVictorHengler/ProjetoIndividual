@@ -3,7 +3,6 @@ var dificuldadeModel = require('../models/dificuldadeModel');
 var sha512 = require('js-sha512');
 var path = require('Path');
 
-/* Fazendo... */
 function obterInformacoes(request, response) {
   var idMapa = request.params.idMapaServer;
 
@@ -31,7 +30,7 @@ function obterInformacoes(request, response) {
 
 function listarMapas(request, response) {
   let pagina = request.params.paginaServer;
-  mapaModel.listarMapas((pagina * 8) - 8, pagina * 8).then(async (respBdMapas) => {
+  mapaModel.listarMapas((pagina * 8) - 8).then(async (respBdMapas) => {
     if (respBdMapas.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {

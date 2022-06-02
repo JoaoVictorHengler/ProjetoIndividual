@@ -15,7 +15,7 @@
     <title>Mapa</title>
 </head>
 
-<body onload="getMapaParams(), obterInformacoesMapa()">
+<body onload="getMapaParams(), obterInformacoesMapa(), getCountryFlags()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -100,17 +100,6 @@
                         <th>Erros</th>
                         <th>Tempo</th>
                     </tr>
-                    <tr class="mapa-list-scores">
-                        <td class="rank">#1</td>
-                        <td class="type">SS</td>
-                        <td style="font-weight: 600;">1.000.000</td>
-                        <td>100%</td> <!-- Verde 100% -->
-                        <td>C</td>
-                        <td>Shiro</td>
-                        <td>300x</td> <!-- Verde 100% -->
-                        <td>0</td>
-                        <td>2d</td>
-                    </tr>
                 </table>
                 <div class="pages-list">
                     <ul class="pages">
@@ -150,32 +139,32 @@
                     <ul id="types-of-diffs-container">
                     </ul>
                 </div>
-                <div class="mini-container" style="margin-top: 10px;">
+                <div class="mini-container" style="margin-top: 10px; padding: 10px;">
                     <div class="mapa-info-diff">
-                        <span style="font-weight: 600;">Informações da Dificuldade</span>
+                        <span class="mapa-info-diff-label">Informações da Dificuldade</span>
                         <div>
                             <span>Nome Dificuldade</span>
-                            <span>Easy</span>
+                            <span id="nome-dificuldade"></span>
                         </div>
                         <div>
                             <span>Njs</span>
-                            <span>20</span>
+                            <span id="njs-dificuldade">20</span>
                         </div>
                         <div>
                             <span>Quantidade de notas</span>
-                            <span>200</span>
+                            <span id="qtd-notas">200</span>
                         </div>
                         <div>
                             <span>Quantidade de bombas</span>
-                            <span>1</span>
+                            <span id="qtd-bombas">1</span>
                         </div>
                         <div>
                             <span>Quantidade de paredes</span>
-                            <span>1</span>
+                            <span id="qtd-paredes">1</span>
                         </div>
                         <div>
                             <span>Notas por segundo</span>
-                            <span>1</span>
+                            <span id="notas-p-segundo">1</span>
                         </div>
                     </div>
                 </div>
@@ -191,8 +180,25 @@
 <script>
     var idMapa, diff;
     var pagina = 1;
-    setPlayerCountry(document.getElementsByClassName('flag-country'), false);
+    var countryJson;
 
+    function getCountryFlags() {
+        fetch(`/jogador/countryFlag`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then( async json => {
+                    countryJson = json;
+                })
+            }
+            
+        });
+    }
     function getMapaParams() {
         const urlParams = new URLSearchParams(window.location.search);
         idMapa = urlParams.get('idmapa');
@@ -269,14 +275,22 @@
                     loadMapInfo(mapa.nomeMusica, mapa.artistaMusica, mapa.criadorMapa, mapa.hashMapa,
                         scores.length, mapa.bpmMapa, mapa.duracaoMapa,
                         new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
-
+                    
                     for (let i = 0; i < mapa.dificuldades.length; i++) {
+                
+                        if (mapa.dificuldades[i].nomeDificuldade == higherDiff.nomeDificuldade) loadDiffInfo(mapa.dificuldades[i])
                         await loadDiffs(mapa.dificuldades[i].nomeDificuldade, higherDiff.nomeDificuldade)
                     }
 
                     loadPages(totalPaginas);
                     for (let i = 0; i < scores.length; i++) {
                         adicionarScores(scores[i], i + 1);
+                    }
+                    let flagElements = document.getElementsByClassName('flag-country');
+                    for (let i = 0; i < flagElements.length; i++) {
+                        let countryName = flagElements[i].getElementsByTagName('span')[0].innerHTML;
+                        flagElements[i].innerHTML = '';
+                        setPlayerCountry(flagElements[i], false, countryName, countryJson);
                     }
                 })
             }
@@ -295,17 +309,18 @@
             colorCombo = `style="color: green;"`;
             
         }
+        let metric = getMetrics(score.precisao);
         scoreElement.classList.add('mapa-list-scores');
         scoreElement.innerHTML += `
-                        <td class="rank">#${lugar}</td>
-                        <td class="type">SS</td>
-                        <td style="font-weight: 600;">${score.pontuacao.toLocaleString("en-US")}</td>
-                        <td ${colorPrecisao}>${score.precisao}</td>
-                        <td>${score.pais}</td>
-                        <td>${score.nome}</td>
-                        <td ${colorCombo}>${score.comboMaximo}x</td>
-                        <td>${score.notasErradas + score.corteRuim}</td>
-                        <td>${2}d</td>`;
+                        <td class="rank"><span>#${lugar}</span></td>
+                        <td class="type"><span>${metric}</span></td>
+                        <td style="font-weight: 600;">${score.pontuacao.toLocaleString("en-US")}<span></span></td>
+                        <td ${colorPrecisao}><span>${score.precisao}%</span></td>
+                        <td class="flag-country"><span>${score.pais}</span></td>
+                        <td><span>${score.nome}</span></td>
+                        <td ${colorCombo}><span>${score.comboMaximo}x</span></td>
+                        <td><span>${score.notasErradas + score.corteRuim}</span></td>
+                        <td><span>${2}d</span></td>`;
         tableElement.appendChild(scoreElement);
     }
 
@@ -511,6 +526,33 @@
         window.focus();
     }
 
+    function loadDiffInfo(diff) {
+        console.log(diff);
+        let nomeDiffElement = document.getElementById('nome-dificuldade');
+        let njsElement = document.getElementById('njs-dificuldade');
+        let qtdNotasElement = document.getElementById('qtd-notas');
+        let qtdBombasElement = document.getElementById('qtd-bombas');
+        let qtdParedesElement = document.getElementById('qtd-paredes');
+        let notasPSegundoElement = document.getElementById('notas-p-segundo');
+        nomeDiffElement.innerHTML = diff.nomeDificuldade; 
+        njsElement.innerHTML = diff.njs; 
+        qtdNotasElement.innerHTML = diff.notas; 
+        qtdBombasElement.innerHTML = diff.bombas; 
+        qtdParedesElement.innerHTML = diff.obstaculos;  
+        notasPSegundoElement.innerHTML = diff.notasPSegundo; 
+    }
+
+    function getMetrics(acc) {
+        let accNum = parseFloat(acc);
+        if (accNum >= 100) return 'SSS';
+        else if (accNum >= 90) return 'SS';
+        else if (accNum >= 80) return 'S';
+        else if (accNum >= 65) return 'A';
+        else if (accNum >= 50) return 'B';
+        else if (accNum >= 35) return 'C';
+        else if (accNum >= 20) return 'D';
+        else if (accNum >= 0) return 'E';
+    }
 </script>
 
 </html>
