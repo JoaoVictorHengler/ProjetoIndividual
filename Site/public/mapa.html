@@ -125,8 +125,7 @@
                             <span id="mapa-artist"></span>
                             <span id="mapa-creator"></span>
                         </div>
-                        <img id="map-img"
-                            src="https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png">
+                        <img id="map-img"src="">
                     </div>
                     <div class="mapa-main-info">
                         <div>
@@ -228,12 +227,13 @@
                         mapa.dificuldades[i].nomeDificuldade = convertDiffs(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
                     }
 
-                    for (let i = 0; i < mapa.dificuldades.length; i++) {
-                        mapa.dificuldades[i].nomeDificuldade = convertDiffs(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
-                    }
                     let higherDiff = mapa.dificuldades.reduce(function (prev, current) {
                         return (prev.nomeDificuldade > current.nomeDificuldade) ? prev : current
                     });
+
+                    for (let i = 0; i < mapa.dificuldades.length; i++) {
+                        mapa.dificuldades[i].nomeDificuldade = convertDiffs(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
+                    }
 
                     if (diff == null) diff = { 'nomeDificuldade': higherDiff.nomeDificuldade};
                     else {
@@ -241,7 +241,6 @@
                             'nomeDificuldade': diff
                         };
                     }
-                    console.log(diff)
                     
                     getScores(mapa, diff);
 
@@ -267,16 +266,10 @@
                     let informacao = jsonScores
                     let scores = informacao.scores;
                     totalPaginas = informacao.qtdPaginas;
-
                     loadMapInfo(mapa.nomeMusica, mapa.artistaMusica, mapa.criadorMapa, mapa.hashMapa,
                         scores.length, mapa.bpmMapa, mapa.duracaoMapa,
                         new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
 
-
-                    if (mapa.dificuldades.length == 1) {
-                        let diffsElement = document.getElementById('types-of-diffs-container');
-                        diffsElement.style.flexDirection = 'row';
-                    }
                     for (let i = 0; i < mapa.dificuldades.length; i++) {
                         await loadDiffs(mapa.dificuldades[i].nomeDificuldade, higherDiff.nomeDificuldade)
                     }
@@ -290,23 +283,27 @@
         })
     }
 
-    function adicionarScores(score, lugar) {
+    function adicionarScores(score, lugar, notes) {
         let tableElement = document.getElementById('table-scores');
         let scoreElement = document.createElement('tr');
 
-        let colorPrecisao = '';
+        let colorPrecisao = '', colorCombo = '';
         if (score.precisao == '100') {
             colorPrecisao = `style="color: green;"`;
+        }
+        if (score.comboMaximo == notes) {
+            colorCombo = `style="color: green;"`;
+            
         }
         scoreElement.classList.add('mapa-list-scores');
         scoreElement.innerHTML += `
                         <td class="rank">#${lugar}</td>
                         <td class="type">SS</td>
                         <td style="font-weight: 600;">${score.pontuacao.toLocaleString("en-US")}</td>
-                        <td ${colorPrecisao}>${score.precisao}</td> <!-- Verde 100% -->
+                        <td ${colorPrecisao}>${score.precisao}</td>
                         <td>${score.pais}</td>
                         <td>${score.nome}</td>
-                        <td>${score.comboMaximo}x</td> <!-- Verde 100% -->
+                        <td ${colorCombo}>${score.comboMaximo}x</td>
                         <td>${score.notasErradas + score.corteRuim}</td>
                         <td>${2}d</td>`;
         tableElement.appendChild(scoreElement);
@@ -374,7 +371,7 @@
 
         nameElement.innerHTML = name.trim();
         artistElement.innerHTML = `por ${artist.trim()}`;
-        artistElement.innerHTML = `mapeado por ${creator.trim()}`;
+        creatorElement.innerHTML = `mapeado por ${creator.trim()}`;
         mapImgElement.src = `/mapa/getImage/${hash}`;
         qtdScoresElement.innerHTML = qtdScores;
         bpmElement.innerHTML = bpmMapa;

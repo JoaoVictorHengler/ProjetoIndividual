@@ -10,7 +10,7 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 2;
+const limitePlayers = 5;
 const limiteScoresPlayer = 10;
 const tipoScore = 'top';
 const country = 'br';

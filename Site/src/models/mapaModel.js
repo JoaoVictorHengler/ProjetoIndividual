@@ -16,7 +16,7 @@ function listarMapas(minValue, maxValue) {
   console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarMapas(): ", minValue, maxValue);
 
   var instrucao = `
-  select m1.*, (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito', (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores' from Mapa m1 limit ${minValue}, ${maxValue};
+  select m1.*, (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito', (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores' from Mapa m1 order by qtdScores desc limit ${minValue}, ${maxValue};
   `;
   console.log("Executando a instrução SQL: \n" + instrucao);
   return database.executar(instrucao);

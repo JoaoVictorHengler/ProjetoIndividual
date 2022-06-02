@@ -40,9 +40,6 @@ function listarMapas(request, response) {
         respBdMapas[i].dificuldades = diffsMapa;
       }
       obterQtdMapas(response, respBdMapas);
-
-
-
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -60,12 +57,11 @@ function obterQtdMapas(response, respBdMapas) {
 
       let pagina = 0;
       while (true) {
-        if (qtdMapas >= 20) {
-
-          qtdMapas -= 20;
-        }
         pagina++;
-        if (qtdMapas < 20) {
+        if (qtdMapas >= 8) {
+          qtdMapas -= 8;
+        }
+        if (qtdMapas < 8) {
           break;
         }
       }

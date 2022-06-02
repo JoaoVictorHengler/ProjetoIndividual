@@ -123,7 +123,6 @@
                 response.json().then(json => {
                     console.log(json);
                     let informacao = json;
-                    /* let paginaElements = savePages(mapas); */
                     let totalMapas = informacao.mapas;
                     totalPaginas = informacao.qtdPaginas;
                     loadPages(totalPaginas);
@@ -200,24 +199,12 @@
         window.focus();
     }
 
-    /* function savePages(info) {
-        let paginaElements = [];
-        for (let i = 0; i < info.length; i++) {
-            paginaElements.push(info[i]);
-            if (i == 9 || i == info.length - 1) {
-                paginacao.push(paginaElements);
-                paginaElements = [];
-            }
-        }
-        return paginaElements;
-    } */
-
     function loadPages(totalPaginas) {
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
             createAntButton(pagesElement[k], totalPaginas);
-            
+
             for (let i = 1; i <= totalPaginas; i++) {
                 let pageElement = document.createElement('li');
                 pageElement.classList.add("page-num");
@@ -225,21 +212,20 @@
                     pageElement.classList.add('selected')
                     pageElement.style.opacity = '0.5';
                     pageElement.style.cursor = 'default';
+                } else {
+                    pageElement.onclick = () => { reloadPage(i) };
                 }
                 pageElement.innerHTML += i;
                 pageElement.id = `page-#${i}`
-                pageElement.onclick = () => { reloadPage(i) };
                 pagesElement[k].appendChild(pageElement);
             }
             createNextButton(pagesElement[k], totalPaginas);
-
-
         }
     }
 
     function createAntButton(element, totalPaginas) {
         let antPage = document.createElement('li');
-        antPage.innerHTML = '<span>Próx</span>';
+        antPage.innerHTML = '<span>Ant</span>';
         if (pagina == 1) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
@@ -262,7 +248,7 @@
     }
 
     function reloadPage(nextPage, totalPaginas) {
-        if (parseInt(nextPage) != NaN) {
+        if (!isNaN(parseInt(nextPage))) {
             pagina = nextPage;
         } else {
             if (nextPage) {
