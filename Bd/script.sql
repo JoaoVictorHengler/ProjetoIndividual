@@ -10,6 +10,8 @@ create table Jogador (
                       nome varchar(90) NOT NULL,
                       email varchar(180) UNIQUE NOT NULL,
                       senha char(128) NOT NULL,
+                      rankGlobal int,
+                      rankNacional int,
                       pais varchar(30),
                       idScoresaber varchar(20) NULL UNIQUE,
                       OculosDeVrUsado varchar(45) NULL
@@ -66,5 +68,8 @@ create table Historico (
     diaRank Date
 );
 
+
 select * from jogador;
+
+alter table jogador add rankNacional int;
 
