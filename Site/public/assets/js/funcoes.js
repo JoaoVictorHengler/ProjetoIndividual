@@ -43,6 +43,7 @@ function startBackgroundVideo() {
 }
 
 function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', countryFlags) {
+    console.log(elementFlag)
     let countryFlagUnicode = (countryFlags.filter(country => { return country.code == countryName }))[0].unicode;
     countryFlagUnicode = countryFlagUnicode.split(' ');
 

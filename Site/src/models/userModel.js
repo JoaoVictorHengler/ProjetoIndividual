@@ -5,7 +5,7 @@ function cadastrar(nome, email, senha) {
   console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha);
 
   var instrucao = `
-    insert into Jogador(nome, email, senha, rankGlobal, rankNacional, pontosDePerformace, mediaPrecisao) values ('${nome}', '${email}', SHA2('${senha}', 512), null, null, 0, 0);
+    insert into Jogador(nome, email, senha) values ('${nome}', '${email}', SHA2('${senha}', 512));
   `;
 
   console.log("Executando a instrução SQL: \n" + instrucao);
@@ -27,7 +27,7 @@ function autenticar(nomeEmail, senha) {
   console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function autenticar():", nomeEmail, senha);
 
   var instrucao = `
-    select * from Jogador where (nome = '${nomeEmail}' or email = '${nomeEmail}')and senha = SHA2('${senha}', 512);
+    select * from Jogador where (email = '${nomeEmail}')and senha = SHA2('${senha}', 512);
   `;
 
   console.log("Executando a instrução SQL: \n" + instrucao);

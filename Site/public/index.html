@@ -76,7 +76,8 @@
                 <div class="background-container">
                     <div class="background-gif-container">
                         <div>
-                            <video class="background-gif" src="./assets/img/videoplayback.mp4" autoplay loop muted></video>
+                            <video class="background-gif" src="./assets/img/videoplayback.mp4" autoplay loop
+                                muted></video>
                         </div>
                         <img class="gura-gif" src="assets/img/gura-jogando.webp">
                     </div>
@@ -86,22 +87,346 @@
                         <h1>Bem vindo ao Gura Saber</h1>
                     </div>
                     <div class="paragraph-container">
-                        <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
+                        <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber
+                        </h4>
                     </div>
                     <div class="container-index-button" style="justify-content: center;">
                         <!-- <button class="login" onclick="goToLoginOrSingUp('login')">Login</button> -->
-                        <button class="cadastro" onclick="goToLoginOrSingUp('')" style="width: 250px; height: 60px;">Cadastre-se</button>
+                        <button class="cadastro" onclick="goToLoginOrSingUp('')"
+                            style="width: 250px; height: 60px;">Cadastre-se</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container-index " style="background: none; background-color: #e3ebed;">
-            <div class="pattern-dots-regular" style="color: black;">
+
+        <div class="container-index " style="background: none; background-color: #656F80;">
+            <div class="pattern-dots-regular" style="color: white;">
                 <div class="container-index-title-container reveal" style="width: 40%;">
                     <div class="container-index-title">
                         <h1>Possuímos uma variedade de mapas</h1>
                     </div>
-                   <!--  <div class="paragraph-container">
+                    <!-- <div class="paragraph-container">
+                        <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
+                    </div> -->
+
+                </div>
+                <ul class="mapa-list-container reveal">
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/5a79f235519f17323538cb9f9730c9040c89e5de">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(14)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/5a79f235519f17323538cb9f9730c9040c89e5de) repeat scroll 0% 0%;">
+                            <span class="mapa-name">You</span>
+                            <span class="mapa-artist">por Imil</span>
+                            <span class="mapa-creator">mapeado por Emilia</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>44</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>19 de Março de 2021</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+                                <li class="diff-mapas expertplus">
+                                </li>
+                                <li class="diff-mapas expert">
+                                </li>
+                                <li class="diff-mapas hard">
+                                </li>
+                                <li class="diff-mapas normal">
+                                </li>
+                                <li class="diff-mapas easy">
+                                </li>
+                            </ul>
+
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/5a79f235519f17323538cb9f9730c9040c89e5de.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/6a5aea3ce9a7a9f120ebd4deea377b4a54640bfb">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(2)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/6a5aea3ce9a7a9f120ebd4deea377b4a54640bfb) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Break</span>
+                            <span class="mapa-artist">por The Quick Brown Fox</span>
+                            <span class="mapa-creator">mapeado por Souk &amp; Oddloop</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>42</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>20 de Outubro de 2019</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+                                <li class="diff-mapas expertplus">
+                                </li>
+                                <li class="diff-mapas expert">
+                                </li>
+                                <li class="diff-mapas hard">
+                                </li>
+                                <li class="diff-mapas normal">
+                                </li>
+                                <li class="diff-mapas easy">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/6a5aea3ce9a7a9f120ebd4deea377b4a54640bfb.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/158005783f1b04090f97cd22325232ec7cbf6fd5">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(23)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/158005783f1b04090f97cd22325232ec7cbf6fd5) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Shinbatsu o Tadori Kyoukotsu ni Itaru</span>
+                            <span class="mapa-artist">por Imperial Circus Dead Decadence</span>
+                            <span class="mapa-creator">mapeado por altrewin &amp; ExUnReal</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>34</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>07 de Setembro de 2020</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+                                <li class="diff-mapas expertplus">
+                                </li>
+                                <li class="diff-mapas expert">
+                                </li>
+                                <li class="diff-mapas hard">
+                                </li>
+                                <li class="diff-mapas normal">
+                                </li>
+                                <li class="diff-mapas easy">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/158005783f1b04090f97cd22325232ec7cbf6fd5.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/fdcf6854379007b211b5b62919f907f8d3a53fff">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(1)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/fdcf6854379007b211b5b62919f907f8d3a53fff) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Ghost Family Living In Graveyard</span>
+                            <span class="mapa-artist">por RoughSketch</span>
+                            <span class="mapa-creator">mapeado por Jabob, Narwhal &amp; Schwank</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>31</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>07 de Junho de 2021</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+                                <li class="diff-mapas expertplus">
+                                </li>
+                                <li class="diff-mapas expert">
+                                </li>
+                                <li class="diff-mapas hard">
+                                </li>
+                                <li class="diff-mapas normal">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/fdcf6854379007b211b5b62919f907f8d3a53fff.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/a3bfe1a6cc95adba6f5541338264f40235f1d5f4">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(12)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/a3bfe1a6cc95adba6f5541338264f40235f1d5f4) repeat scroll 0% 0%;">
+                            <span class="mapa-name">QZKago Requiem</span>
+                            <span class="mapa-artist">por t+pazolite</span>
+                            <span class="mapa-creator">mapeado por Schwank</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>30</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>14 de Abril de 2020</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+                                <li class="diff-mapas expertplus">
+                                </li>
+                                <li class="diff-mapas expert">
+                                </li>
+                                <li class="diff-mapas hard">
+                                </li>
+                                <li class="diff-mapas normal">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/a3bfe1a6cc95adba6f5541338264f40235f1d5f4.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/16a457c5ceeb408adeeacea53ce31d2ea493647e">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(8)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/16a457c5ceeb408adeeacea53ce31d2ea493647e) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Break</span>
+                            <span class="mapa-artist">por The Quick Brown Fox</span>
+                            <span class="mapa-creator">mapeado por Emilia</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>29</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>25 de Setembro de 2020</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+
+                                <li class="diff-mapas expertplus">
+                                </li>
+
+                                <li class="diff-mapas expert">
+                                </li>
+
+                                <li class="diff-mapas hard">
+                                </li>
+
+                                <li class="diff-mapas normal">
+                                </li>
+
+                                <li class="diff-mapas easy">
+                                </li>
+
+                            </ul>
+
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/16a457c5ceeb408adeeacea53ce31d2ea493647e.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/625642cf98cd718dc2835882c227ed983fc65c6b">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(22)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/625642cf98cd718dc2835882c227ed983fc65c6b) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Ultrasonic Anthem(Kobaryo's FTN-Remix)</span>
+                            <span class="mapa-artist">por t+pazolite</span>
+                            <span class="mapa-creator">mapeado por Refugee Camp</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>29</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>21 de Outubro de 2020</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+
+                                <li class="diff-mapas expertplus">
+                                </li>
+
+                                <li class="diff-mapas expert">
+                                </li>
+
+                                <li class="diff-mapas hard">
+                                </li>
+
+                                <li class="diff-mapas normal">
+                                </li>
+
+                                <li class="diff-mapas easy">
+                                </li>
+
+                            </ul>
+
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/625642cf98cd718dc2835882c227ed983fc65c6b.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+
+                        </div>
+                    </li>
+                    <li class="mapa-list-item reveal-table" id="mapa-list-item-index">
+                        <img class="mapa-image" src="/mapa/getImage/018acaad1ec1e13bd9e428a19e41c844aa05b9da">
+                        <div class="mapa-info" onclick="mudarPaginaMapa(11)"
+                            style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/018acaad1ec1e13bd9e428a19e41c844aa05b9da) repeat scroll 0% 0%;">
+                            <span class="mapa-name">Chocolate Lily</span>
+                            <span class="mapa-artist">por Kobaryo</span>
+                            <span class="mapa-creator">mapeado por xScaramouche</span>
+                            <div class="mapa-other-infos">
+                                <i class="fa-regular fa-heart"></i>
+                                <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                <span>0</span>
+                                <i class="fa-solid fa-play"></i>
+                                <span>28</span>
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>13 de Fevereiro de 2020</span>
+                            </div>
+                            <ul class="mapa-all-diffs">
+
+                                <li class="diff-mapas expertplus">
+                                </li>
+
+                                <li class="diff-mapas expert">
+                                </li>
+
+                                <li class="diff-mapas hard">
+                                </li>
+
+                            </ul>
+
+                        </div>
+                        <div class="mapa-other-options">
+                            <i class="fa-regular fa-heart"></i>
+                            <i class="fa-solid fa-heart"></i>
+                            <a href="https://r2cdn.beatsaver.com/018acaad1ec1e13bd9e428a19e41c844aa05b9da.zip"><i
+                                    class="fa-solid fa-file-arrow-down"></i></a>
+
+                        </div>
+                    </li>
+                </ul>
+                <div>
+
+                </div>
+            </div>
+        </div>
+        <div class="container-index " style="background: none; background-color: #C9DFFF;">
+            <div class="pattern-dots-regular" style="flex-direction: row-reverse; color: black;">
+                <div class="container-index-title-container reveal" style="width: 40%;">
+                    <div class="container-index-title">
+                        <h1>Possuimos uma tela de ranking</h1>
+                    </div>
+                    <!--  <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
                     </div> -->
                 </div>
@@ -161,24 +486,12 @@
                             </tr>
                         </table>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
-        <div class="container-index " style="background: none; background-color: #7eb2ff;">
-            <div class="pattern-dots-regular" style="flex-direction: row-reverse;">
-                <div class="container-index-title-container reveal" style="width: 40%;">
-                    <div class="container-index-title">
-                        <h1>Guardamos o seu score</h1>
-                    </div>
-                    <!-- <div class="paragraph-container">
-                        <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
-                    </div> -->
-                </div>
-            </div>
-        </div>
-        <div class="container-index " style="background: none; background-color: #fff0e7;">
-            <div class="pattern-dots-regular" style="color: black;">
+        <div class="container-index " style="background: none; background-color: #648ECC;">
+            <div class="pattern-dots-regular">
                 <div class="container-index-title-container reveal" style="width: 40%;">
                     <div class="container-index-title">
                         <h1>Edite o seu perfil</h1>
@@ -189,8 +502,8 @@
                 </div>
             </div>
         </div>
-        <div class="container-index " style="background: none; background-color: #2b72c0;">
-            <div class="pattern-dots-regular" style="flex-direction: row-reverse; ">
+        <div class="container-index " style="background: none; background-color: #e3ebed;">
+            <div class="pattern-dots-regular" style="flex-direction: row-reverse; color: black;">
                 <div class="container-index-title-container reveal" style="width: 40%;">
                     <div class="container-index-title">
                         <h1>É fácil criar a sua conta</h1>
@@ -203,18 +516,18 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </body>
 
 <script>
     window.addEventListener('scroll', reveal);
     window.addEventListener('scroll', revealTable);
-    
+
 
     function reveal() {
         let reveals = document.getElementsByClassName('reveal'); /* Documento para revelar */
-        for(let i = 0; i < reveals.length; i++) {
+        for (let i = 0; i < reveals.length; i++) {
             let windowHeight = window.innerHeight; /* tamanho da página */
             let revealTop = reveals[i].getBoundingClientRect().top; /* canto superior da div */
             let revealPoint = 130; /* ponto de revelar */
@@ -230,7 +543,7 @@
     function revealTable() {
         let reveals = document.getElementsByClassName('reveal-table'); /* Documento para revelar */
         console.log(reveals)
-        for(let i = 0; i < reveals.length; i++) {
+        for (let i = 0; i < reveals.length; i++) {
             let windowHeight = window.innerHeight; /* tamanho da página */
             let revealTop = reveals[i].getBoundingClientRect().top; /* canto superior da div */
             let revealPoint = 50; /* ponto de revelar */
@@ -242,6 +555,8 @@
             }
         }
     }
+
+
 </script>
 
 </html>

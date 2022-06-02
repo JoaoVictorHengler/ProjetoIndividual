@@ -21,7 +21,7 @@
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item"> 
+                <li class="nav-bar-item">
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
                         <span class="nav-bar-name" id="home">Início</span>
@@ -34,8 +34,8 @@
                     </a>
                 </li>
                 <li class="nav-bar-item here">
-                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="ranking">Ranking</span>
                 </li>
                 <li class="nav-bar-item">
                     <a href="">
@@ -72,8 +72,8 @@
 
     </div>
     <div class="ranking-banner">
-        <div class="pattern-dots-regular">
-            <div class="container">
+        <div class="pattern-dots-regular" style="color: black;">
+            <div class="container" style="color: white;">
                 <div class="page-title-container">
                     <span>Colocações</span>
                 </div>
@@ -88,12 +88,11 @@
                     </ul>
                 </div>
                 <div class="pages-list">
-                    <ul>
-                        <li><span>Ant</span></li>
-                        <li class="selected"><span>1</span></li>
-                        <li><span>2</span></li>
-                        <li><span>3</span></li>
-                        <li><span>10</span></li>
+                    <ul class="pages">
+                        <li style="opacity: 0.5; cursor: default;"><span>Ant</span></li>
+                        <li class="page-num selected" id="page-#1" style="opacity: 0.5; cursor: default;">1</li>
+                        <li class="page-num" id="page-#2">2</li>
+                        <li class="page-num" id="page-#3">3</li>
                         <li><span>Próx</span></li>
                     </ul>
                 </div>
@@ -152,12 +151,11 @@
                     </table>
                 </div>
                 <div class="pages-list">
-                    <ul>
-                        <li><span>Ant</span></li>
-                        <li class="selected"><span>1</span></li>
-                        <li><span>2</span></li>
-                        <li><span>3</span></li>
-                        <li><span>10</span></li>
+                    <ul class="pages">
+                        <li style="opacity: 0.5; cursor: default;"><span>Ant</span></li>
+                        <li class="page-num selected" id="page-#1" style="opacity: 0.5; cursor: default;">1</li>
+                        <li class="page-num" id="page-#2">2</li>
+                        <li class="page-num" id="page-#3">3</li>
                         <li><span>Próx</span></li>
                     </ul>
                 </div>
@@ -168,7 +166,28 @@
     </div>
 </body>
 <script>
-    setPlayerCountry(document.getElementsByClassName('flag-country'), false);
+    
+    function getRanking() {
+        let typeOfRanking = (document.getElementsByClassName('selected'))[0].innerHTML;
+        fetch(`/score/listarRanking/${typeOfRanking}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then( async json => {
+                    console.log(json);
+
+                })
+            }
+        })
+    }
+
+
+
 </script>
 
 </html>
