@@ -10,8 +10,8 @@ var mysql = require("mysql2");
 var requestNum = 0;
 var allPromises = [];
 
-const limitePlayers = 5;
-const limiteScoresPlayer = 5;
+const limitePlayers = 30;
+const limiteScoresPlayer = 30;
 const tipoScore = 'top';
 const country = 'br';
 
@@ -117,7 +117,7 @@ async function inserirPlayer(player) {
     if (checkPlayer.length == 0) {
         downloadImage(player.profilePicture, path.resolve(__dirname, 'public', 'assets', 'img', 'playerImg', `${numId}.jpg`));
         let resp = await executar(
-            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', 0, 0, '${player.id}', null);`
+            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null);`
         );
         console.log('Player ' + player.name + 'adicionado')
         return [resp.insertId, false]
@@ -209,8 +209,9 @@ async function inserirScores(fkJogador, scores) {
         );
         console.log(checkScore)
         if (checkScore.length == 0) {
+            if (scores[i].pp == undefined) scores[i].pp = 0;
             await executar(
-                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
+                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false, ${scores[i].pp} FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
             )
             console.log('Score Adicionado')
         } else {

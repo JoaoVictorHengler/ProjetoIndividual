@@ -11,10 +11,6 @@ router.post("/autenticar", function (req, res) {
     userController.autenticar(req, res);
 });
 
-router.get("/listarUsuariosGlobal", function (req, res) {
-    userController.listarUsuariosGlobal(req, res);
-});
-
 router.post("/editarPerfil", function (req, res) {
     userController.editarPerfil(req, res);
 });

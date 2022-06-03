@@ -10,8 +10,6 @@ create table Jogador (
                       nome varchar(90) NOT NULL,
                       email varchar(180) UNIQUE NOT NULL,
                       senha char(128) NOT NULL,
-                      rankGlobal int,
-                      rankNacional int,
                       pais varchar(30),
                       idScoresaber varchar(20) NULL UNIQUE,
                       OculosDeVrUsado varchar(45) NULL
@@ -19,10 +17,10 @@ create table Jogador (
 
 create table Mapa (
 					idMapa int primary key auto_increment,
-                    nomeMusica varchar(90),
-                    subNomeMusica varchar(90),
-                    criadorMapa varchar(90),
-                    artistaMusica varchar(90),
+                    nomeMusica varchar(254),
+                    subNomeMusica varchar(254),
+                    criadorMapa varchar(254),
+                    artistaMusica varchar(254),
                     hashMapa char(40) UNIQUE,
                     bpmMapa decimal(5,2),
                     duracaoMapa int,
@@ -56,7 +54,8 @@ create table Score (
                     notasErradas int NOT NULL,
                     comboMaximo int NOT NULL,
                     dataScore datetime NOT NULL,
-                    scoreFavorito bool NOT NULL 
+                    scoreFavorito bool NOT NULL,
+                    pontosDePerformace decimal(6,2)
 );
 
 create table Historico (
@@ -69,7 +68,20 @@ create table Historico (
 );
 
 
+select idJogador, nome from jogador;
+update jogador set nome = 'Selner' where idJogador = 5;
+
 select * from jogador;
 
-alter table jogador add rankNacional int;
+select idJogador, nome, pais,  
+	    sum(pontuacao) as 'pontuacaoTotal',
+	    ROW_NUMBER() OVER (order by	sum(pontuacao) desc) as 'rankGlobal'
+        from jogador j1 join score on idJogador = fkJogador group by idJogador;
+        
+select idJogador, nome, pais,  
+	sum(pontuacao) as 'pontuacaoTotal',
+	ROW_NUMBER() OVER (order by	sum(pontuacao) desc) as 'Row_Num'
+  from jogador j1 join score on idJogador = fkJogador group by idJogador;
+  
+
 

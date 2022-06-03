@@ -63,47 +63,14 @@ function autenticar(request, response) {
   }
 }
 
-function listarUsuariosGlobal(request, response) {
-  userModel.listarUsuariosGlobal().then(function (resp) {
-    console.log(`\nResultados encontrados: ${resp.length}`);
-    console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
-
-    response.json(resp);
-  }).catch(function (erro) {
-    console.log(erro);
-    console.log("\nHouve um erro ao listar os usuarios global! Erro: ", erro.sqlMessage);
-    response.status(500).json(erro.sqlMessage);
-  })
-
-}
-
-function listarUsuariosNacional(request, response) {
-  userModel.listarUsuariosNacional().then(function (resp) {
-    console.log(`\nResultados encontrados: ${resp.length}`);
-    console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
-
-    response.json(resp);
-  }).catch(function (erro) {
-    console.log(erro);
-    console.log("\nHouve um erro ao listar os usuarios global! Erro: ", erro.sqlMessage);
-    response.status(500).json(erro.sqlMessage);
-  })
-}
-
 function editarPerfil(request, response) {
   let idJogador = request.body.idJogadorServer;
-  let nome = request.body.nomeServer;
   let email = request.body.emailServer;
-  let senha = request.body.senhaServer;
 
   if (idJogador == undefined) {
     response.status(400).send("Seu id está undefined!");
-  } else if (nome == undefined) {
-    response.status(400).send("Seu nome está undefined!");
   } else if (email == undefined) {
     response.status(400).send("Seu email está undefined!");
-  } else if (senha == undefined) {
-    response.status(400).send("Seu senha está undefined!");
   } else if (vrUtilizado == undefined) {
     response.status(400).send("O seu vrUtilizado está undefined!");
   } else {
@@ -119,10 +86,9 @@ function editarPerfil(request, response) {
     })
   }
 }
+
 module.exports = {
   cadastrar,
   autenticar,
-  listarUsuariosGlobal,
-  listarUsuariosNacional,
   editarPerfil
 }

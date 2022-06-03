@@ -151,8 +151,9 @@ async function inserirScores(fkJogador, scores, hash, nomeDificuldade) {
     /* console.log(checkScore) */
 
     if (checkScore.length == 0) {
+        if (scores.pp == undefined) scores[i].pp = 0;
         await executar(
-            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores.baseScore}, ${scores.badCuts}, ${scores.missedNotes}, ${scores.maxCombo},'${scores.timeSet.substring(0, 10) + ' ' + scores.timeSet.substring(11, 19)}', false FROM Dificuldade JOIN Mapa ON hashMapa = '${hash}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
+            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores.baseScore}, ${scores.badCuts}, ${scores.missedNotes}, ${scores.maxCombo},'${scores.timeSet.substring(0, 10) + ' ' + scores.timeSet.substring(11, 19)}', false, ${scores.pp} FROM Dificuldade JOIN Mapa ON hashMapa = '${hash}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
         )
         console.log('Score Adicionado')
     } else {

@@ -34,28 +34,6 @@ function autenticar(nomeEmail, senha) {
   return database.executar(instrucao);
 }
 
-function listarUsuariosGlobal() {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarUsuariosGlobal():");
-
-  var instrucao = `
-    select * from Jogador where rankGlobal >= 1;
-  `;
-
-  console.log("Executando a instrução SQL: \n" + instrucao);
-  return database.executar(instrucao);
-}
-
-function listarUsuariosNacional() {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarUsuariosNacional():");
-
-  var instrucao = `
-    select * from Jogador where rankNacional >= 1;
-  `;
-
-  console.log("Executando a instrução SQL: \n" + instrucao);
-  return database.executar(instrucao);
-}
-
 function editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, twitchLink, twitterLink) {
   console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function editarPerfil():", idJogador, nome, email, senha, vrUtilizado, youtubeLink, twitchLink, twitterLink);
 
@@ -67,11 +45,10 @@ function editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, t
   return database.executar(instrucao);
 }
 
+
 module.exports = {
   cadastrar,
   verificarEmail,
   autenticar,
-  listarUsuariosGlobal,
-  listarUsuariosNacional,
   editarPerfil
 }

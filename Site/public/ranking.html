@@ -15,7 +15,7 @@
     <title>Desempenho</title>
 </head>
 
-<body onload="getRanking()">
+<body onload="getCountryFlags(), getRanking()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -78,10 +78,13 @@
                     <span>Colocações</span>
                 </div>
                 <div class="select-type-ranking-container">
-                    <ul>
-                        <li class="selected">Global</li>
-                        <li>Nacional</li>
-                    </ul>
+                    <div>
+                        <span>País</span>
+
+                    </div>
+                    <select id="type-of-ranking">
+                        <option value="Global">Todos</option>
+                    </select>
                 </div>
                 <div class="pages-list">
                     <ul class="pages">
@@ -162,10 +165,62 @@
     </div>
 </body>
 <script>
+    var countryJson;
+
+    function getCountryFlags() {
+        fetch(`/jogador/countryFlag`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then( async json => {
+                    countryJson = json;
+                })
+            }
+            
+        });
+    }
     
+    function getDataBaseCountries() {
+        fetch('/jogador/listarPaisesCadastrados', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then( async json => {
+                    console.log(json);
+
+                    let selectElement = document.getElementById('type-of-ranking');
+
+                })
+            }
+        })
+    }   
+
     function getRanking() {
-        let typeOfRanking = (document.getElementsByClassName('selected'))[0].innerHTML;
-        fetch(`/score/listarRanking/${typeOfRanking}`, {
+        let typeOfRanking = (document.getElementById('type-of-ranking')).value;
+        
+        let country = countryJson.filter(countryChosen => {return countryChosen.toLowerCase() == 'Brasil'.toLowerCase()})
+        let countryState = null;
+        let link = '';
+        
+        if (typeOfRanking == 'Global') {
+            link = `/score/listarRankingGlobal`;
+        } else {
+            link = `/score/listarRankingNacional/${typeOfRanking}`;
+
+        }
+
+
+        fetch(link, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"

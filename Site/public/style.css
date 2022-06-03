@@ -1046,41 +1046,32 @@ input {
 
 .select-type-ranking-container {
     width: 100%;
-    background-color: #3C424D;
+    background-color: #4b6690;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     position: relative;
     box-sizing: border-box;
+    padding: 0px 10px 10px 0px;
 }
 
-.select-type-ranking-container ul {
-    list-style: none;
-    width: 20%;
-    height: fit-content;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0;
-    box-sizing: border-box;
-
+.select-type-ranking-container div {
+    width: 90%;
+    padding: 10px 5px 5px 0px;
+    font-size: 15px;
 }
 
-/* .select-type-ranking-container ul li:nth-child(even) {
-    margin-left: 15px;
-}
- */
-.select-type-ranking-container ul li {
-    /* border: .5px solid; */
-    width: fit-content;
-    height: fit-content;
-    box-sizing: border-box;
-    padding: 10px 0 5px 0;
-    cursor: pointer;
-}
-
-.select-type-ranking-container ul li:hover {
-    border-bottom: 5px solid #022f55;
-
+.select-type-ranking-container #type-of-ranking {
+    width: 90%;
+    padding: 10px 30px 10px 0px;
+    background-color: #3E5880;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
 }
 
 .select-type-ranking-container .selected {
