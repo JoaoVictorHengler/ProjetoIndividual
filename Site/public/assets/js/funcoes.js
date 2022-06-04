@@ -43,7 +43,6 @@ function startBackgroundVideo() {
 }
 
 function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', countryFlags) {
-    console.log(elementFlag)
     let countryFlagUnicode = (countryFlags.filter(country => { return country.code == countryName }))[0].unicode;
     countryFlagUnicode = countryFlagUnicode.split(' ');
 
@@ -51,7 +50,7 @@ function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', 
         let convert = twemoji.convert.fromCodePoint(unicode.substring(2));
         elementFlag.textContent += convert;
     })
-    twemoji.parse(document.body);
+    twemoji.parse(elementFlag);
     if (showName != false) {
         let spanElement = document.createElement('span');
         spanElement.innerHTML = showName;

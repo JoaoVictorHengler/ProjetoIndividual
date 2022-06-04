@@ -52,6 +52,7 @@ async function main() {
         console.log(scoresPromise + ' Um')
     }
     console.log('Terminei')
+    getPlayers();
 
 }
 
@@ -81,10 +82,6 @@ function getScores(hash) {
                         'country': player.country,
                         'profilePicture': player.profilePicture
                     });
-                    if (!find) {
-                        let playerInfo = await search(`https://scoresaber.com/api/player/${player.id}/full`);
-                        await inserirHistorico(userId, playerInfo.histories.split(","));
-                    }
                     await inserirScores(userId, scores[j], hash, diffName);
 
                 }
@@ -102,6 +99,12 @@ function getScores(hash) {
     })
 }
 
+async function getPlayers() {
+    let players = await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador group by idJogador;`);
+    for (let i = 0; i < players.length; i++) {
+        inserirHistorico(players[i].idJogador, players[i].rankGlobal);
+    }
+}
 
 async function inserirPlayer(player) {
     let checkPlayer = await executar(
@@ -125,16 +128,27 @@ async function inserirPlayer(player) {
     }
 }
 /* Feito, Mas subtrair datas*/
-async function inserirHistorico(fkPlayer, historico) {
-    for (let i = 0; i < historico.length; i++) {
-        if (historico[i] != '') {
-            let diaHistorico = subDate(new Date().toISOString().slice(0, 10), i + 1)
-            await executar(
-                `INSERT INTO Historico values (${fkPlayer}, ${i + 1}, ${historico[i]}, '${diaHistorico}');`
-            )
-        }
+async function inserirHistorico(fkPlayer, rankGlobal = null) {
+    let diaHistorico = await executar(`SELECT * from Historico where diaRank = ${new Date().toISOString().split('T')[0]}`);
+    if (rankGlobal == null) {
+        let playerInfo = (await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador and idJogador = ${fkPlayer} group by idJogador;`))[0];
+        rankGlobal = playerInfo.rankGlobal;
     }
-    console.log('Historico adicionado')
+    console.log(diaHistorico)
+    if (diaHistorico.length == 0) {
+        let ultimoHistorico = await executar('select idHistorico from historico order by idHistorico desc limit 0, 1');
+        if (ultimoHistorico.length == 0) {
+            let i = 1;
+            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}');`
+                );
+        } else {
+            await executar(
+                `INSERT INTO Historico SELECT ${fkPlayer}, idHistorico + 1, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}' from historico order by idHistorico desc limit 0, 1;`);
+        }
+        
+        console.log('Historico adicionado');
+    }
+        
 }
 
 
@@ -153,7 +167,7 @@ async function inserirScores(fkJogador, scores, hash, nomeDificuldade) {
     if (checkScore.length == 0) {
         if (scores.pp == undefined) scores[i].pp = 0;
         await executar(
-            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores.baseScore}, ${scores.badCuts}, ${scores.missedNotes}, ${scores.maxCombo},'${scores.timeSet.substring(0, 10) + ' ' + scores.timeSet.substring(11, 19)}', false, ${scores.pp} FROM Dificuldade JOIN Mapa ON hashMapa = '${hash}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
+            `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores.baseScore}, ${scores.badCuts}, ${scores.missedNotes}, ${scores.maxCombo},'${scores.timeSet.substring(0, 10) + ' ' + scores.timeSet.substring(11, 19)}', false, ${scores.pp * scores.weight} FROM Dificuldade JOIN Mapa ON hashMapa = '${hash}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
         )
         console.log('Score Adicionado')
     } else {

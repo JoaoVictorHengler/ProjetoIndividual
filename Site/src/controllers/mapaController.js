@@ -38,7 +38,7 @@ function listarMapas(request, response) {
         let diffsMapa = await dificuldadeModel.obterTodasDiffs(respBdMapas[i].idMapa)
         respBdMapas[i].dificuldades = diffsMapa;
       }
-      obterQtdMapas(response, respBdMapas);
+      obterQtdPaginas(response, respBdMapas);
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -47,7 +47,7 @@ function listarMapas(request, response) {
   })
 }
 
-function obterQtdMapas(response, respBdMapas) {
+function obterQtdPaginas(response, respBdMapas) {
   mapaModel.verificarNumPaginas().then(async (respNumPaginas) => {
     if (respNumPaginas.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
@@ -64,11 +64,10 @@ function obterQtdMapas(response, respBdMapas) {
           break;
         }
       }
-      let finalResp = {
+      response.json({
         'qtdPaginas': pagina,
         'mapas': respBdMapas
-      };
-      response.json(finalResp);
+      });
 
     }
   }).catch(function (erro) {

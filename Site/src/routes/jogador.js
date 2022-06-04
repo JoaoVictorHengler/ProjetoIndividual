@@ -7,11 +7,11 @@ var jogadorController = require('../controllers/jogadorController');
     mapaController.obterInformacoes(req, res);
 });
  */
-router.get("/listarRankingGlobal", function (req, res) {
+router.get("/listarRankingGlobal/:paginaServer", function (req, res) {
     jogadorController.listarRankingGlobal(req, res);
 });
 
-router.get("/listarRankingNacional/:paisServer", function (req, res) {
+router.get("/listarRankingNacional/:paisServer&:paginaServer", function (req, res) {
     jogadorController.listarRankingNacional(req, res);
 });
 
@@ -23,6 +23,9 @@ router.get("/listarPaisesCadastrados/", function (req, res) {
     jogadorController.listarPaisesCadastrados(req, res);
 });
 
+router.get("/getImage/:idJogadorServer", function (req, res) {
+    jogadorController.obterImagem(req, res);
+});
 
 module.exports = router;
 

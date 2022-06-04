@@ -14,6 +14,8 @@ const limitePlayers = 30;
 const limiteScoresPlayer = 30;
 const tipoScore = 'top';
 const country = 'br';
+const onlyGetPosition = false;
+
 
 async function search(link) {
     return new Promise((resolve, reject) => {
@@ -37,6 +39,13 @@ async function search(link) {
     });
 }
 
+var mySqlConfig = {
+    host: "localhost",
+    port: "3306",
+    user: "pateta",
+    database: "guraSaber",
+    password: "pateta@123",
+};
 
 async function main() {
     var players = (await search(`https://scoresaber.com/api/players?countries=${country}&withMetadata=true`)).players;
@@ -50,8 +59,10 @@ async function main() {
         requestNum = 0;
     }, 60000)
     await getPlayerInfo();
+    getPlayers()
     return;
 }
+
 async function getPlayerInfo() {
     if (requestNum >= 400) {
         while (requestNum >= 400) {
@@ -74,10 +85,6 @@ async function getPlayerInfo() {
             }
 
             let [userId, find] = await inserirPlayer(playerInfo)
-            if (!find) {
-                await inserirHistorico(userId, playerInfo.histories.split(","));
-            }
-            console.log("Inserir Historico finalizado")
             await inserirScores(userId, playerScores);
             resolve('');
         }
@@ -88,15 +95,21 @@ async function getPlayerInfo() {
 console.log('Limite Players: ', limitePlayers);
 console.log('Limite Scores: ', limiteScoresPlayer);
 console.log('Tipo Scores: ', tipoScore);
-main();
 
-var mySqlConfig = {
-    host: "localhost",
-    port: "3306",
-    user: "pateta",
-    database: "guraSaber",
-    password: "pateta@123",
-};
+if (!onlyGetPosition) {
+    main();
+} else {
+    getPlayers();
+}
+
+async function getPlayers() {
+    let players = await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador group by idJogador;`);
+    for (let i = 0; i < players.length; i++) {
+        inserirHistorico(players[i].idJogador, players[i].rankGlobal);
+    }
+}
+
+
 /* Feito */
 var numId = 1;
 async function inserirPlayer(player) {
@@ -106,7 +119,7 @@ async function inserirPlayer(player) {
     
     let getNumId = await executar(
         `select idJogador from Jogador order by idJogador desc limit 0, 1`
-    )
+    );
 
     if (getNumId.length == 0) {
         numId = 1;
@@ -119,21 +132,34 @@ async function inserirPlayer(player) {
         let resp = await executar(
             `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null);`
         );
-        console.log('Player ' + player.name + 'adicionado')
-        return [resp.insertId, false]
+        console.log('Player ' + player.name + 'adicionado');
+        return [resp.insertId, false];
     } else {
         return [checkPlayer[0].idJogador, true];
     }
 }
 /* Feito, Mas subtrair datas*/
-async function inserirHistorico(fkPlayer, historico) {
-    for (let i = 0; i < historico.length; i++) {
-        let diaHistorico = subDate(new Date().toISOString().slice(0, 10), i + 1)
-        await executar(
-            `INSERT INTO Historico values (${fkPlayer}, ${i + 1}, ${historico[i]}, '${diaHistorico}');`
-        )
+async function inserirHistorico(fkPlayer, rankGlobal = null) {
+    let diaHistorico = await executar(`SELECT * from Historico where diaRank = ${new Date().toISOString().split('T')[0]}`);
+    if (rankGlobal == null) {
+        let playerInfo = (await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador and idJogador = ${fkPlayer} group by idJogador;`))[0];
+        rankGlobal = playerInfo.rankGlobal;
     }
-    console.log('Historico adicionado')
+    console.log(diaHistorico)
+    if (diaHistorico.length == 0) {
+        let ultimoHistorico = await executar('select idHistorico from historico order by idHistorico desc limit 0, 1');
+        if (ultimoHistorico.length == 0) {
+            let i = 1;
+            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}');`
+                );
+        } else {
+            await executar(
+                `INSERT INTO Historico SELECT ${fkPlayer}, idHistorico + 1, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}' from historico order by idHistorico desc limit 0, 1;`);
+        }
+        
+        console.log('Historico adicionado');
+    }
+        
 }
 /* Feito */
 async function inserirMapa(mapa) {
@@ -164,7 +190,7 @@ async function inserirDificuldade(fkMapa, diff, i) {
         await executar(
             `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
         );
-        console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.')
+        console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.');
     } else {
         let diffsExiste = dificuldades.filter((diffBd) => {
             return diffBd.nomeDificuldade == diff.difficulty
@@ -173,9 +199,9 @@ async function inserirDificuldade(fkMapa, diff, i) {
             await executar(
                 `INSERT INTO Dificuldade values (${i + 1}, '${diff.difficulty}', ${diff.njs.toFixed(2)}, ${diff.offset.toFixed(2)}, ${diff.notes}, ${diff.bombs}, ${diff.obstacles}, ${diff.nps.toFixed(2)}, ${diff.maxScore}, ${parseInt(fkMapa)});`
             );
-            console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.')
+            console.log('Diff ' + diff.difficulty + ' Adicionada Com Sucesso.');
         } else {
-            console.log('Diff já existe')
+            console.log('Diff já existe');
         }
     }
 
@@ -196,7 +222,7 @@ async function inserirScores(fkJogador, scores) {
             case 9:
                 return "ExpertPlus";
         }
-    }
+    };
     for (let i = 0; i < scores.length; i++) {
         let nomeDificuldade = diff(scores[i].leaderboard.difficulty.difficulty);
         /* console.log('nomeMapa: ', scores[i].leaderboard.songName);
@@ -207,21 +233,22 @@ async function inserirScores(fkJogador, scores) {
         let checkScore = await executar(
             `select * from score join mapa on idMapa = fkMapa and hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' join dificuldade on Dificuldade.fkMapa = score.fkMapa and nomeDificuldade = '${nomeDificuldade}' and score.fkJogador = ${fkJogador} and score.fkDificuldade = idDificuldade;`
         );
-        console.log(checkScore)
+        console.log(checkScore);
         if (checkScore.length == 0) {
-            if (scores[i].pp == undefined) scores[i].pp = 0;
+            if (scores[i].score.pp == undefined) scores[i].score.pp = 0;
             await executar(
-                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false, ${scores[i].pp} FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
+                `INSERT INTO Score SELECT ${fkJogador}, idDificuldade, idMapa, ${scores[i].score.baseScore}, ${scores[i].score.badCuts}, ${scores[i].score.missedNotes}, ${scores[i].score.maxCombo},'${scores[i].score.timeSet.substring(0, 10) + ' ' + scores[i].score.timeSet.substring(11, 19)}', false, ${scores[i].score.pp * scores[i].score.weight} FROM Dificuldade JOIN Mapa ON hashMapa = '${scores[i].leaderboard.songHash.toLowerCase()}' and nomeDificuldade = '${nomeDificuldade}' and idMapa = Dificuldade.fkMapa;`
             )
-            console.log('Score Adicionado')
+            console.log('Score Adicionado');
         } else {
-            console.log('Score já existe')
+            console.log('Score já existe');
         }
     }
 }
 
 function executar(instrucao) {
     // VERIFICA A VARIÁVEL DE AMBIENTE SETADA EM app.js
+    /* console.log(instrucao); */
     return new Promise(function (resolve, reject) {
         var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect();

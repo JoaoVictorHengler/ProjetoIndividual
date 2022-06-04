@@ -9,12 +9,13 @@ function obterPaises(request, response) {
 }
 
 function listarRankingGlobal(request, response) {
+  let pagina = request.params.paginaServer;
 
-  jogadorModel.listarRankingGlobal().then(async (resp) => {
+  jogadorModel.listarRankingGlobal((pagina * 8) - 8).then(async (resp) => {
     if (resp.length == 0) {
       response.status(403).send("Não foi possível listar os jogadores.");
     } else {
-      response.json(resp)
+      obterQtdPaginas(response, resp);
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -23,16 +24,20 @@ function listarRankingGlobal(request, response) {
   })
 }
 
+
+
 function listarRankingNacional(request, response) {
   let paisEscolhido = request.params.paisServer;
+  let pagina = request.params.paginaServer;
+
   if (paisEscolhido == undefined) {
     response.status(403).send("Pais não foi passado.");
   } else {
-    jogadorModel.listarRankingNacional(paisEscolhido).then(async (resp) => {
+    jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 8) - 8).then(async (resp) => {
       if (resp.length == 0) {
         response.status(403).send("Não foi possível listar os jogadores.");
       } else {
-        response.json(resp)
+        obterQtdPaginas(response, resp);
       }
     }).catch(function (erro) {
       console.log(erro);
@@ -43,9 +48,39 @@ function listarRankingNacional(request, response) {
 
 }
 
-function listarPaisesCadastrados() {
+function obterQtdPaginas(response, respJogadores) {
+  jogadorModel.verificarNumPaginas().then(async (resp) => {
+    if (resp.length == 0) {
+      response.status(403).send("Não foi possível listar os mapas.");
+    } else {
+      let qtdJogadores = resp[0].qtdJogadores
 
-  jogadorModel.listarPaisesCadastrados(paisEscolhido).then(async (resp) => {
+      let pagina = 0;
+      while (true) {
+        pagina++;
+        if (qtdJogadores >= 8) {
+          qtdJogadores -= 8;
+        }
+        if (qtdJogadores < 8) {
+          break;
+        }
+      }
+      response.json({
+        'qtdPaginas': pagina,
+        'jogadores': respJogadores
+      });
+
+    }
+  }).catch(function (erro) {
+    console.log(erro);
+    console.log("\nHouve um erro ao listar os mapas! Erro: ", erro.sqlMessage);
+    response.status(500).json(erro.sqlMessage);
+  })
+}
+
+function listarPaisesCadastrados(request, response) {
+
+  jogadorModel.listarPaisesCadastrados().then(async (resp) => {
     if (resp.length == 0) {
       response.status(403).send("Não foi possível listar os paises.");
     } else {
@@ -58,9 +93,21 @@ function listarPaisesCadastrados() {
   })
 
 }
+
+function obterImagem(request, response) {
+  let idJogador = request.params.idJogadorServer;
+  if (idJogador == undefined) {
+    response.status(403).send("Não foi possível obter a imagem.");
+  } else {
+    let fileLocation = path.join(__dirname, `../../public/assets/img/playerImg/${idJogador}.jpg`);
+    response.sendFile(fileLocation);
+  }
+}
+
 module.exports = {
   obterPaises,
   listarRankingGlobal,
   listarRankingNacional,
-  listarPaisesCadastrados
+  listarPaisesCadastrados,
+  obterImagem
 }

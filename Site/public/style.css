@@ -870,7 +870,7 @@ input {
 /* ------------------------------------------------------------------------------------------------------------------------------------- */
 /* Inicio Ranking */
 .ranking-banner {
-    height: 100vh;
+    height: auto;
     background-color: #7EB2FF;
     padding: 2px;
     display: flex;
@@ -1362,11 +1362,11 @@ input {
 }
 
 .mapa-list-table tr:nth-child(even) {
-    background-color: #5E85BF;
+    background-color: #213040;
 }
 
 .mapa-list-table .mapa-list-table-title th {
-    color: #1F2C40;
+    color: white;
     padding-bottom: 5px;
 }
 
