@@ -45,7 +45,6 @@ function editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, t
   return database.executar(instrucao);
 }
 
-
 module.exports = {
   cadastrar,
   verificarEmail,

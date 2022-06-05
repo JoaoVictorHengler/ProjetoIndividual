@@ -85,8 +85,8 @@
                     <span>Login</span>
                     <div class="login-input-container">
                         <div class="username-password-container">
-                            <label for="user">Username:</label>
-                            <input type="text" id="user" placeholder="Email / Username">
+                            <label for="user">Email:</label>
+                            <input type="text" id="email" placeholder="Email">
                             <i class="fa-solid fa-user"></i>
                         </div>
                         <div class="username-password-container">
@@ -111,11 +111,11 @@
 
 
     function autenticar() {
-        let nomeEmailJogador = user.value;
+        let emailJogador = email.value;
         let senhaJogador = senha.value;
 
         if (
-            nomeEmailJogador == '' || senhaJogador == ''
+            emailJogador == '' || senhaJogador == ''
         ) {
             Swal.fire({
                 title: 'Erro',
@@ -148,7 +148,7 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                nomeEmailJogadorServer: nomeEmailJogador,
+                emailServer: emailJogador,
                 senhaServer: senhaJogador
             })
         }).then(function (response) {
@@ -157,19 +157,18 @@
             if (response.ok) {
                 response.json().then(json => {
                     console.log(json);
-                    sessionStorage.IDJOGADOR = json.idJogador;
-                    sessionStorage.NOME = json.nome;
-                    sessionStorage.EMAIL = json.email;
+                    sessionStorage.IDJOGADOR = json.id;
+                    sessionStorage.TOKENJOGADOR = json.token;
 
                     Swal.fire({
                         title: 'Suceso',
-                        text: 'Cadastro realizado com sucesso',
+                        text: 'Login realizado com sucesso',
                         icon: 'success',
                         timer: 2000,
                         timerProgressBar: true,
                         confirmButtonColor: '#34e269',
                         willClose: () => {
-                            window.location = './perfil.html';
+                            window.location = `./perfil.html?id=${sessionStorage.IDJOGADOR}`;
                         }
                     });
                     
@@ -190,8 +189,6 @@
         }).catch(function (response) {
             console.log(`ERRO: ${response}`);
         })
-
-        return;
     }
 </script>
 

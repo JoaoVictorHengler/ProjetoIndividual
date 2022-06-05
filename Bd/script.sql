@@ -12,7 +12,8 @@ create table Jogador (
                       senha char(128) NOT NULL,
                       pais varchar(30),
                       idScoresaber varchar(20) NULL UNIQUE,
-                      OculosDeVrUsado varchar(45) NULL
+                      vrUtilizado varchar(45) NULL,
+                      replaysAssistidos int Null
 );
 
 create table Mapa (
@@ -66,22 +67,53 @@ create table Historico (
     rankGlobal int NOT NULL,
     diaRank Date
 );
+select * from historico;
+select * from score;
 
+alter table jogador rename column OculosDeVrUsado to vrUtilizado;
 
-select idJogador, nome from jogador;
-update jogador set nome = 'Selner' where idJogador = 5;
+select idJogador, nome, pais,
+    ROW_NUMBER() OVER (order by	sum(pontosDePerformace) desc) as 'rank',
+    (select round(avg(round(pontuacao / maxPontuacao * 100, 2)),2 ) as 'precisao' from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'precisaoMedia',
+    (select count(*) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'mapasJogados',
+    (select sum(pontosDePerformace) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'ppTotal',
+    (select count(*) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador and round((pontuacao / maxPontuacao) * 100, 2) >= 90 group by fkJogador) as 'SS',
+    (select count(*) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador and round((pontuacao / maxPontuacao) * 100, 2) >= 80 and round((pontuacao / maxPontuacao) * 100, 2) < 90 group by fkJogador) as 'S',
+    (select count(*) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador and round((pontuacao / maxPontuacao) * 100, 2) >= 65 and round((pontuacao / maxPontuacao) * 100, 2) < 80 group by fkJogador) as 'A'
+    from Jogador join score on idJogador = fkJogador and pais = 'BR'group by idJogador order by ppTotal desc;
 
+select idJogador, count(*) from Score where Jogador.idJogador = fkJogador and precisao >= 90 group by fkJogador;
 select * from jogador;
 
-select idJogador, nome, pais,  
-	    sum(pontuacao) as 'pontuacaoTotal',
-	    ROW_NUMBER() OVER (order by	sum(pontuacao) desc) as 'rankGlobal'
-        from jogador j1 join score on idJogador = fkJogador group by idJogador;
-        
-select idJogador, nome, pais,  
-	sum(pontuacao) as 'pontuacaoTotal',
-	ROW_NUMBER() OVER (order by	sum(pontuacao) desc) as 'Row_Num'
-  from jogador j1 join score on idJogador = fkJogador group by idJogador;
-  
+use gurasaber;
 
+select * from jogador;
+select nome, pais, idScoresaber, vrUtilizado,
+(select round(avg(round(pontuacao / maxPontuacao * 100, 2)),2 ) as 'precisao' from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'precisaoMedia',
+    (select sum(pontosDePerformace) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'ppTotal',
+    (select ROW_NUMBER() OVER (order by	sum(pontosDePerformace) desc)
+from Jogador j1 join score on j1.idJogador = fkJogador and idJogador = Jogador.idJogador group by idJogador order by rankGlobal) as 'rankGlobal'
+from Jogador where idJogador = 2 group by idJogador;
+
+select ROW_NUMBER() OVER (order by	sum(pontosDePerformace) desc) as 'rankGlobal'
+from Jogador j1 join score on j1.idJogador = fkJogador and idJogador = Jogador.idJogador group by idJogador order by rankGlobal;
+
+select * from Historico;
+  
 

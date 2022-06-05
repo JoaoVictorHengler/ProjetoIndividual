@@ -24,8 +24,6 @@ function listarRankingGlobal(request, response) {
   })
 }
 
-
-
 function listarRankingNacional(request, response) {
   let paisEscolhido = request.params.paisServer;
   let pagina = request.params.paginaServer;
@@ -104,10 +102,77 @@ function obterImagem(request, response) {
   }
 }
 
+function obterInfo(request, response) {
+  let idJogador = request.params.idJogadorServer;
+
+  if (idJogador == undefined) {
+    response.status(400).send("Seu id está undefined!");
+  } else {
+    jogadorModel.obterInfo(idJogador).then(async function (resp) {
+      console.log(`\nResultados encontrados: ${resp.length}`);
+      console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
+      let rankGlobal = await listarRankingGlobalJogador(idJogador, response);
+      let rankNacional = await listarRankingNacionalJogador(idJogador, rankGlobal.pais, response);
+      console.log({
+        'infoJogador': resp,
+        'rankGlobal': rankGlobal,
+        'rankNacional': rankNacional
+      })
+      resp.json({
+        'infoJogador': resp,
+        'rankGlobal': rankGlobal,
+        'rankNacional': rankNacional
+      });
+    }).catch(function (erro) {
+      console.log(erro);
+      console.log("\nHouve um erro ao obter a informação do jogador! Erro: ", erro.sqlMessage);
+      response.status(500).json(erro.sqlMessage);
+    })
+  }
+}
+
+async function listarRankingGlobalJogador(idJogador, response) {
+  try {
+    let resp = await jogadorModel.listarRankingGlobalSemLimite();
+    console.log(`\nResultados encontrados: ${resp.length}`);
+
+    let rankGlobal = (resp.filter(jogador => {
+      return jogador.idJogador == idJogador;
+    }));
+    console.log(rankGlobal)
+    return rankGlobal.rankJogador;
+
+  } catch (e) {
+    console.log(e);
+    console.log("\nHouve um erro ao editar o perfil! Erro: ", e.sqlMessage);
+    response.status(500).json(e.sqlMessage);
+  }
+
+}
+
+async function listarRankingNacionalJogador(idJogador, pais, response) {
+  try {
+    let resp = await jogadorModel.listarRankingNacionalSemLimite(pais);
+    console.log(`\nResultados encontrados: ${resp.length}`);
+
+    let rankNacional = (resp.filter(jogador => {
+      return jogador.idJogador == idJogador;
+    }));
+
+    return rankNacional.rankJogador;
+
+  } catch (e) {
+    console.log(e);
+    console.log("\nHouve um erro ao editar o perfil! Erro: ", e.sqlMessage);
+    response.status(500).json(e.sqlMessage);
+  }
+}
+
 module.exports = {
   obterPaises,
   listarRankingGlobal,
   listarRankingNacional,
   listarPaisesCadastrados,
-  obterImagem
+  obterImagem,
+  obterInfo
 }

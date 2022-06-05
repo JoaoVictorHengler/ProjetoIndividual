@@ -59,7 +59,9 @@ async function main() {
         requestNum = 0;
     }, 60000)
     await getPlayerInfo();
-    getPlayers()
+    Promise.all(allPromises).then(() => {
+        getPlayers();
+    })
     return;
 }
 
@@ -140,12 +142,11 @@ async function inserirPlayer(player) {
 }
 /* Feito, Mas subtrair datas*/
 async function inserirHistorico(fkPlayer, rankGlobal = null) {
-    let diaHistorico = await executar(`SELECT * from Historico where diaRank = ${new Date().toISOString().split('T')[0]}`);
+    let diaHistorico = await executar(`SELECT * from Historico where diaRank = '${new Date().toISOString().split('T')[0]}';`);
     if (rankGlobal == null) {
         let playerInfo = (await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador and idJogador = ${fkPlayer} group by idJogador;`))[0];
         rankGlobal = playerInfo.rankGlobal;
     }
-    console.log(diaHistorico)
     if (diaHistorico.length == 0) {
         let ultimoHistorico = await executar('select idHistorico from historico order by idHistorico desc limit 0, 1');
         if (ultimoHistorico.length == 0) {

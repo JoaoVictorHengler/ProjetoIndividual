@@ -209,27 +209,71 @@
 </script>
 
 <script>
-    document.getElementById('search-user').placeholder = '...';
+
+
+    
     setPlayerInformations();
-    /* ClassicEditor
-        .then(editor => {
-            editor.setData('<p>Some text.</p>');
-            console.log(editor.config.width)
-            editorElement = editor;
-            ;
-            var editInterval = setInterval(() => {
-                console.log('Enviar para o servidor')
-            }, 20000)
-            editor.model.document.on('change:data', () => {
-                Enviar para o servidor a data
-                console.log(editor.getData())
-            });
-        })
-*/
+    function getURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idJogador = urlParams.get('id');
+        return idJogador;
+    }
 
     function setPlayerInformations() {
+        let idJogador = getURLParams();
         setPlayerCountry(document.getElementsByClassName('flag-country'), true, 'Brasil');
         playerPositionChart();
+    }
+
+    function getPlayerInfo(idJogador) {
+
+        if (idJogador == null) {
+            window.location = `./ranking.html`;
+        }
+
+        fetch(`/user/obterInfo/${idJogador}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    console.log(json);
+                    sessionStorage.IDJOGADOR = json.id;
+                    sessionStorage.TOKENJOGADOR = json.token;
+
+                    Swal.fire({
+                        title: 'Suceso',
+                        text: 'Login realizado com sucesso',
+                        icon: 'success',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        confirmButtonColor: '#34e269',
+                        willClose: () => {
+                            window.location = `./perfil.html?id=${sessionStorage.IDJOGADOR}`;
+                        }
+                    });
+                    
+                });
+
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao realizar o login!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                throw ('Houve um erro ao realizar o login!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
     }
 
     function playerPositionChart() {

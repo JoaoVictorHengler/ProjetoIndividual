@@ -27,5 +27,9 @@ router.get("/getImage/:idJogadorServer", function (req, res) {
     jogadorController.obterImagem(req, res);
 });
 
+router.get("/obterInfo/:idJogadorServer", function (req, res) {
+    jogadorController.obterInfo(req, res);
+});
+
 module.exports = router;
 

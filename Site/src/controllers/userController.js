@@ -1,11 +1,13 @@
 var userModel = require('../models/userModel');
 var sha512 = require('js-sha512');
+var jwt = require('jsonwebtoken');
+
 /* Fazendo... */
 function cadastrar(request, response) {
   var nome = request.body.nomeServer;
   var email = request.body.emailServer;
   var senha = request.body.senhaServer;
-
+  console.log(request.body)
   if (nome == undefined) {
     response.status(400).send("Seu nome está undefined!");
   } else if (email == undefined) {
@@ -15,6 +17,7 @@ function cadastrar(request, response) {
   } else {
     userModel.verificarEmail(email).then((resultado) => {
       if (resultado.length == 0) {
+
         userModel.cadastrar(nome, email, senha).then(
           function (resp) {
             response.json(resp);
@@ -37,21 +40,24 @@ function cadastrar(request, response) {
 }
 
 function autenticar(request, response) {
-  var nomeEmail = request.body.nomeEmailJogadorServer;
+  var email = request.body.emailServer;
   var senha = request.body.senhaServer;
-
-  if (nomeEmail == undefined) {
+  console.log(request.body)
+  if (email == undefined) {
     response.status(400).send("Seu Nome/Email está undefined!");
   } else if (senha == undefined) {
     response.status(400).send("Sua senha está indefinida!");
   } else {
-    userModel.autenticar(nomeEmail, senha).then(function (resp) {
+    userModel.autenticar(email, senha).then(async function (resp) {
       console.log(`\nResultados encontrados: ${resp.length}`);
       console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
 
       if (resp.length == 1) {
-        console.log(resp[0]);
-        response.json(resp[0]);
+        var token = await jwt.sign({ 'email': email, 'senha': senha }, 'shhhhh', { 'expiresIn': '1d' });
+        response.json({
+          'token': token,
+          'id': resp[0].idJogador
+        });
       } else if (resp.length == 0) {
         response.status(403).send("Email e/ou senha inválidos(s)");
       }
@@ -90,5 +96,5 @@ function editarPerfil(request, response) {
 module.exports = {
   cadastrar,
   autenticar,
-  editarPerfil
+  editarPerfil,
 }

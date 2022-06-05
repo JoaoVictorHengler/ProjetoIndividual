@@ -84,7 +84,7 @@
                     <div class="login-input-container">
                         <div class="username-password-container">
                             <label for="user">Username:</label>
-                            <input type="text" id="user" placeholder="Username">
+                            <input type="text" id="username-input" placeholder="Username">
                             <i class="fa-solid fa-user"></i>
                         </div>
                         <div class="username-password-container">
@@ -120,11 +120,11 @@
 </body>
 <script>
     function cadastrar() {
-        let nomeJogador = user.value;
-        let emailJogador = email.value;
-        let senhaJogador = senha.value;
+        let nomeJogador = document.getElementById('username-input').value;
+        let emailJogador = document.getElementById('email').value;
+        let senhaJogador = document.getElementById('senha').value;
         let reescreverSenhaJogador = reescreverSenha.value;
-
+        console.log(nomeJogador);
         if (
             nomeJogador == '' || emailJogador == ''
             || senhaJogador == '' || reescreverSenhaJogador == ''
