@@ -1,5 +1,5 @@
-var mapaModel = require('../models/mapaModel');
 var jogadorModel = require('../models/jogadorModel');
+var scoreModel = require('../models/scoreModel');
 var sha512 = require('js-sha512');
 var path = require('Path');
 
@@ -109,19 +109,24 @@ function obterInfo(request, response) {
     response.status(400).send("Seu id está undefined!");
   } else {
     jogadorModel.obterInfo(idJogador).then(async function (resp) {
-      console.log(`\nResultados encontrados: ${resp.length}`);
-      console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
-      let rankGlobal = await listarRankingGlobalJogador(idJogador, response);
-      let rankNacional = await listarRankingNacionalJogador(idJogador, rankGlobal.pais, response);
-      console.log({
-        'infoJogador': resp,
-        'rankGlobal': rankGlobal,
-        'rankNacional': rankNacional
-      })
-      resp.json({
-        'infoJogador': resp,
-        'rankGlobal': rankGlobal,
-        'rankNacional': rankNacional
+
+      let rankGlobal = (await listarRankingGlobalJogador(idJogador, response))[0];
+      if (rankGlobal == undefined) {
+          response.json({
+            'infoJogador': resp[0],
+            'rankGlobal': 0,
+            'rankNacional': 0
+          });
+          return;
+      }
+      let rankNacional = (await listarRankingNacionalJogador(idJogador, rankGlobal.pais, response))[0];
+      let scores = await scoreModel.listarScoresJogador(idJogador);
+
+      response.json({
+        'infoJogador': resp[0],
+        'rankGlobal': rankGlobal.rankJogador,
+        'rankNacional': rankNacional.rankJogador,
+        'scores': scores
       });
     }).catch(function (erro) {
       console.log(erro);
@@ -134,13 +139,11 @@ function obterInfo(request, response) {
 async function listarRankingGlobalJogador(idJogador, response) {
   try {
     let resp = await jogadorModel.listarRankingGlobalSemLimite();
-    console.log(`\nResultados encontrados: ${resp.length}`);
 
     let rankGlobal = (resp.filter(jogador => {
       return jogador.idJogador == idJogador;
     }));
-    console.log(rankGlobal)
-    return rankGlobal.rankJogador;
+    return rankGlobal;
 
   } catch (e) {
     console.log(e);
@@ -153,13 +156,12 @@ async function listarRankingGlobalJogador(idJogador, response) {
 async function listarRankingNacionalJogador(idJogador, pais, response) {
   try {
     let resp = await jogadorModel.listarRankingNacionalSemLimite(pais);
-    console.log(`\nResultados encontrados: ${resp.length}`);
 
     let rankNacional = (resp.filter(jogador => {
       return jogador.idJogador == idJogador;
     }));
 
-    return rankNacional.rankJogador;
+    return rankNacional;
 
   } catch (e) {
     console.log(e);

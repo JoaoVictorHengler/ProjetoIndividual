@@ -7,18 +7,21 @@ function cadastrar(request, response) {
   var nome = request.body.nomeServer;
   var email = request.body.emailServer;
   var senha = request.body.senhaServer;
-  console.log(request.body)
+  var pais = request.body.paisServer;
+
   if (nome == undefined) {
     response.status(400).send("Seu nome está undefined!");
   } else if (email == undefined) {
     response.status(400).send("Seu email está undefined!");
   } else if (senha == undefined) {
     response.status(400).send("Sua senha está undefined!");
+  } else if (pais == undefined) {
+    response.status(400).send("Seu País está undefined!");
   } else {
     userModel.verificarEmail(email).then((resultado) => {
       if (resultado.length == 0) {
 
-        userModel.cadastrar(nome, email, senha).then(
+        userModel.cadastrar(nome, email, senha, pais).then(
           function (resp) {
             response.json(resp);
           }

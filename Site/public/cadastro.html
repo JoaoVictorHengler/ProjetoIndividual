@@ -16,13 +16,13 @@
     <title>Cadastro</title>
 </head>
 
-<body>
+<body onload="loadFlags()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
             <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
-                <li class="nav-bar-item"> 
+                <li class="nav-bar-item">
                     <a href="./index.html">
                         <i class="fa-solid fa-house menu-icon"></i>
                         <span class="nav-bar-name" id="home">Início</span>
@@ -53,8 +53,8 @@
                     </a>
                 </li>
                 <li class="nav-bar-item here">
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                    <span class="nav-bar-name" id="cadastro">Cadastro</span>
                 </li>
 
             </ul>
@@ -75,7 +75,8 @@
 
     <div class="login-main-banner">
         <div class="banner-img-container" style="overflow: hidden;">
-            <video src="./assets/img/videoplayback.mp4" autoplay loop muted style="transform: translateX(-550px); filter: blur(8px);"></video>
+            <video src="./assets/img/videoplayback.mp4" autoplay loop muted
+                style="transform: translateX(-550px); filter: blur(8px);"></video>
         </div>
         <div class="login-banner">
             <div class="pattern-dots-regular">
@@ -103,32 +104,66 @@
                             <i class="fa-solid fa-lock password reescrever" id="cadeadoReescrever"
                                 onclick="showRewritePassword()"></i>
                         </div>
-                        <div style="width: 90%; display: flex; justify-content: flex-start;"> 
-                            <span style="font-size: 15px;">Já está cadastrado?</span>  
+                        <div class="username-password-container">
+                            <label for="pais-select">País:</label>
+                            <select id="pais-select">
+                                <option value="none">Selecione uma nacionalidade</option>
+                            </select>
+                        </div>
+                        <div style="width: 90%; display: flex; justify-content: flex-start;">
+                            <span style="font-size: 15px;">Já está cadastrado?</span>
                             <a class="login-cadastrar" href="./login.html">Entre aqui</a>
                         </div>
                     </div>
-                    
-                    
+
+
                     <button class="button-login" onclick="cadastrar()">Cadastrar</button>
                 </div>
             </div>
-            
+
         </div>
     </div>
 
 </body>
 <script>
+
+    async function getCountryFlags() {
+        let response = await fetch(`/jogador/countryFlag`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let json = await response.json();
+            return json;
+        }
+    }
+
+    async function loadFlags() {
+        let countryFlags = await getCountryFlags();
+
+        for (let i = 0; i < countryFlags.length; i++) {
+            let countryName = countryFlags[i].name;
+            let flagsElement = document.getElementById('pais-select')
+            let optionElement = document.createElement('option');
+            optionElement.value = countryFlags[i].code;
+            optionElement.innerHTML = countryFlags[i].name;
+            flagsElement.appendChild(optionElement);
+        }
+    }
+
     function cadastrar() {
         let nomeJogador = document.getElementById('username-input').value;
         let emailJogador = document.getElementById('email').value;
         let senhaJogador = document.getElementById('senha').value;
         let reescreverSenhaJogador = reescreverSenha.value;
+        let paisJogador =document.getElementById('pais-select').value;
         console.log(nomeJogador);
-        if (
-            nomeJogador == '' || emailJogador == ''
-            || senhaJogador == '' || reescreverSenhaJogador == ''
-        ) {
+        if (nomeJogador == '' || emailJogador == '' || senhaJogador == '' || reescreverSenhaJogador == '') {
             Swal.fire({
                 title: 'Erro',
                 text: 'Todos os campos são obrigatórios',
@@ -137,6 +172,17 @@
                 showDenyButton: true,
                 denyButtonText: 'OK'
             });
+            return;
+        }
+        if (paisJogador == 'none') {
+            Swal.fire({
+                    title: 'Erro',
+                    text: 'Insira um país válido!',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    showDenyButton: false,
+                    denyButtonText: 'OK'
+                });
             return;
         }
 
@@ -176,50 +222,53 @@
             });
             return;
         }
-        
+
         fetch('/user/cadastrar', {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nomeServer: nomeJogador,
-          emailServer: emailJogador,
-          senhaServer: senhaJogador
-        })
-      }).then(function (response) {
-        console.log('Resposta: ', response);
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeJogador,
+                emailServer: emailJogador,
+                senhaServer: senhaJogador,
+                paisServer: paisJogador
+            })
+        }).then(function (response) {
+            console.log('Resposta: ', response);
 
-        if (response.ok) {
-          Swal.fire({
-            title: 'Suceso',
-            text: 'Login realizado com sucesso',
-            icon: 'success',
-            timer: 2000,
-            timerProgressBar: true,
-            confirmButtonColor: '#34e269',
-            willClose: () => {
-              window.location = './login.html';
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Suceso',
+                    text: 'Login realizado com sucesso',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    confirmButtonColor: '#34e269',
+                    willClose: () => {
+                        window.location = './login.html';
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao realizar o cadastro!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                throw ('Houve um erro ao realizar o cadastro!');
             }
-          });
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
 
-        } else {
-          Swal.fire({
-            title: 'Erro',
-            text: 'Houve um erro ao realizar o cadastro!',
-            icon: 'error',
-            showConfirmButton: false,
-            showDenyButton: true,
-            denyButtonText: 'OK'
-          });
-          throw ('Houve um erro ao realizar o cadastro!');
-        }
-      }).catch(function (response) {
-        console.log(`ERRO: ${response}`);
-      })
-
-      return;
+        return;
     }
+
+
 </script>
 
 </html>

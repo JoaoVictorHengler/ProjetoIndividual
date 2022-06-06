@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./assets/js/funcoes.js"></script>
     <script src="./assets/ckEditor/build/ckeditor.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -216,22 +217,25 @@
     function getURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const idJogador = urlParams.get('id');
+        console.log(idJogador);
+        /* if (idJogador == null) {
+            window.location = `./ranking.html`;
+        } */
         return idJogador;
     }
 
     function setPlayerInformations() {
         let idJogador = getURLParams();
-        setPlayerCountry(document.getElementsByClassName('flag-country'), true, 'Brasil');
+        getPlayerInfo(idJogador);
+        /* setPlayerCountry(document.getElementsByClassName('flag-country'), true, 'Brasil'); */
         playerPositionChart();
     }
 
     function getPlayerInfo(idJogador) {
 
-        if (idJogador == null) {
-            window.location = `./ranking.html`;
-        }
+        
 
-        fetch(`/user/obterInfo/${idJogador}`, {
+        fetch(`/jogador/obterInfo/${idJogador}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -242,20 +246,8 @@
             if (response.ok) {
                 response.json().then(json => {
                     console.log(json);
-                    sessionStorage.IDJOGADOR = json.id;
-                    sessionStorage.TOKENJOGADOR = json.token;
 
-                    Swal.fire({
-                        title: 'Suceso',
-                        text: 'Login realizado com sucesso',
-                        icon: 'success',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        confirmButtonColor: '#34e269',
-                        willClose: () => {
-                            window.location = `./perfil.html?id=${sessionStorage.IDJOGADOR}`;
-                        }
-                    });
+
                     
                 });
 
@@ -263,13 +255,16 @@
             } else {
                 Swal.fire({
                     title: 'Erro',
-                    text: 'Houve um erro ao realizar o login!',
+                    text: 'Houve um erro ao carregar o perfil!',
                     icon: 'error',
                     showConfirmButton: false,
                     showDenyButton: true,
-                    denyButtonText: 'OK'
+                    denyButtonText: 'OK',
+                    /* willClose: () => {
+                            window.location = `./ranking.html`;
+                        } */
                 });
-                throw ('Houve um erro ao realizar o login!');
+                throw ('Houve um erro ao carregar o perfil!');
             }
         }).catch(function (response) {
             console.log(`ERRO: ${response}`);

@@ -1131,7 +1131,7 @@ input {
     font-size: 60px;
 }
 
-.login-container input {
+.login-container input, .login-container select {
     height: 40px;
     width: 100%;
     border-radius: 5px;
@@ -1140,6 +1140,10 @@ input {
     font-weight: 500;
     font-size: 20px;
     -webkit-appearance: none;
+}
+
+.login-container select {
+    border: 0;
 }
 
 .login-container input:focus {
