@@ -1,8 +1,7 @@
 var database = require('../database/config');
 
 function listarRankingGlobal(minValue) {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarRankingGlobal(): ", minValue);
-
+    
     var instrucao = `select idJogador, nome, pais,
     ROW_NUMBER() OVER (order by	sum(pontosDePerformace) desc) as 'rank',
     (select round(avg(round(pontuacao / maxPontuacao * 100, 2)),2 ) as 'precisao' from Dificuldade 
@@ -30,7 +29,6 @@ function listarRankingGlobal(minValue) {
 }
 
 function listarRankingNacional(pais, minValue) {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarRankingNacional(): ", pais, minValue);
 
 
     var instrucao = `select idJogador, nome, pais,
@@ -60,7 +58,6 @@ function listarRankingNacional(pais, minValue) {
 }
 
 function listarPaisesCadastrados() {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarPaisesCadastrados()");
 
 
     var instrucao = `select pais from jogador group by pais;`;
@@ -70,7 +67,6 @@ function listarPaisesCadastrados() {
 }
 
 function verificarNumPaginas() {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function verificarNumPaginas(): ");
   
     var instrucao = `
     select count(*) as 'qtdJogadores' from Jogador;
@@ -80,7 +76,6 @@ function verificarNumPaginas() {
 }
 
 function listarRankingGlobalSemLimite() {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarRankingGlobalSemLimite(): ");
 
     var instrucao = `select idJogador, pais, ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankJogador'
     from Jogador join score on idJogador = fkJogador group by idJogador order by rankJogador desc;`;
@@ -90,7 +85,6 @@ function listarRankingGlobalSemLimite() {
 }
 
 function listarRankingNacionalSemLimite(pais) {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarRankingNacionalSemLimite(): ", pais);
 
 
     var instrucao = `select idJogador, nome, pais,
@@ -102,7 +96,6 @@ function listarRankingNacionalSemLimite(pais) {
 }
 
 function obterInfo(idJogador) {
-    console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function obterInfo():", idJogador);
   
     var instrucao = `select nome, pais, idScoresaber, vrUtilizado,
       (select round(avg(round(pontuacao / maxPontuacao * 100, 2)),2 ) as 'precisao' from Dificuldade 
@@ -110,12 +103,16 @@ function obterInfo(idJogador) {
         and Jogador.idJogador = fkJogador group by fkJogador) as 'precisaoMedia',
         (select sum(pontosDePerformace) from Dificuldade 
         join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
-        and Jogador.idJogador = fkJogador group by fkJogador) as 'ppTotal'
+        and Jogador.idJogador = fkJogador group by fkJogador) as 'ppTotal',
+        (select sum(pontuacao)  from Dificuldade 
+        join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+	    where Jogador.idJogador = fkJogador group by fkJogador) as 'pontuacaoTotal',
+        replaysAssistidos
       from Jogador where idJogador = ${idJogador} group by idJogador;`;
   
     console.log("Executando a instrução SQL: \n" + instrucao.replaceAll('\n', ''));
     return database.executar(instrucao);
-  }
+}
 
 module.exports = {
     listarRankingGlobal,

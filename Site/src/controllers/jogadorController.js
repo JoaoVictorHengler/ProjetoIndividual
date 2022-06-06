@@ -1,7 +1,10 @@
+var historicoModel = require('../models/historicoModel');
 var jogadorModel = require('../models/jogadorModel');
 var scoreModel = require('../models/scoreModel');
-var sha512 = require('js-sha512');
+var userModel = require('../models/userModel');
 var path = require('Path');
+var jwt = require('jsonwebtoken');
+var config = require('../config.json');
 
 function obterPaises(request, response) {
   let fileLocation = path.join(__dirname, `../../public/assets/country_flags.json`);
@@ -11,11 +14,15 @@ function obterPaises(request, response) {
 function listarRankingGlobal(request, response) {
   let pagina = request.params.paginaServer;
 
-  jogadorModel.listarRankingGlobal((pagina * 8) - 8).then(async (resp) => {
-    if (resp.length == 0) {
+  jogadorModel.listarRankingGlobal((pagina * 8) - 8).then(async (result) => {
+    if (result.length == 0) {
       response.status(403).send("Não foi possível listar os jogadores.");
     } else {
-      obterQtdPaginas(response, resp);
+      let qtdPaginas = await obterQtdPaginas(response, result);
+      response.json({
+        'qtdPaginas': qtdPaginas,
+        'jogadores': result
+      });
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -31,11 +38,15 @@ function listarRankingNacional(request, response) {
   if (paisEscolhido == undefined) {
     response.status(403).send("Pais não foi passado.");
   } else {
-    jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 8) - 8).then(async (resp) => {
-      if (resp.length == 0) {
+    jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 8) - 8).then(async (result) => {
+      if (result.length == 0) {
         response.status(403).send("Não foi possível listar os jogadores.");
       } else {
-        obterQtdPaginas(response, resp);
+        let qtdPaginas = await obterQtdPaginas(response, result);
+      response.json({
+        'qtdPaginas': qtdPaginas,
+        'jogadores': result
+      });
       }
     }).catch(function (erro) {
       console.log(erro);
@@ -46,16 +57,17 @@ function listarRankingNacional(request, response) {
 
 }
 
-function obterQtdPaginas(response, respJogadores) {
-  jogadorModel.verificarNumPaginas().then(async (resp) => {
-    if (resp.length == 0) {
+async function obterQtdPaginas(response) {
+  try {
+    let result = await jogadorModel.verificarNumPaginas();
+    if (result.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
-      let qtdJogadores = resp[0].qtdJogadores
+      let qtdJogadores = result[0].qtdJogadores
 
-      let pagina = 0;
+      let qtdPaginas = 0;
       while (true) {
-        pagina++;
+        qtdPaginas++;
         if (qtdJogadores >= 8) {
           qtdJogadores -= 8;
         }
@@ -63,26 +75,22 @@ function obterQtdPaginas(response, respJogadores) {
           break;
         }
       }
-      response.json({
-        'qtdPaginas': pagina,
-        'jogadores': respJogadores
-      });
-
+      return qtdPaginas;
     }
-  }).catch(function (erro) {
-    console.log(erro);
-    console.log("\nHouve um erro ao listar os mapas! Erro: ", erro.sqlMessage);
-    response.status(500).json(erro.sqlMessage);
-  })
+  } catch(err) {
+    console.log(err);
+    console.log("\nHouve um erro ao listar os mapas! Erro: ", err.sqlMessage);
+    response.status(500).json(err.sqlMessage);
+  }
 }
 
 function listarPaisesCadastrados(request, response) {
 
-  jogadorModel.listarPaisesCadastrados().then(async (resp) => {
-    if (resp.length == 0) {
+  jogadorModel.listarPaisesCadastrados().then(async (result) => {
+    if (result.length == 0) {
       response.status(403).send("Não foi possível listar os paises.");
     } else {
-      response.json(resp)
+      response.json(result)
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -108,12 +116,15 @@ function obterInfo(request, response) {
   if (idJogador == undefined) {
     response.status(400).send("Seu id está undefined!");
   } else {
-    jogadorModel.obterInfo(idJogador).then(async function (resp) {
-
+    jogadorModel.obterInfo(idJogador).then(async function (result) {
+      
+      if (result.length == 0) {
+        response.status(400).send("Usuário não cadastrado!");
+      }
       let rankGlobal = (await listarRankingGlobalJogador(idJogador, response))[0];
       if (rankGlobal == undefined) {
           response.json({
-            'infoJogador': resp[0],
+            'infoJogador': result[0],
             'rankGlobal': 0,
             'rankNacional': 0
           });
@@ -121,13 +132,15 @@ function obterInfo(request, response) {
       }
       let rankNacional = (await listarRankingNacionalJogador(idJogador, rankGlobal.pais, response))[0];
       let scores = await scoreModel.listarScoresJogador(idJogador);
-
+      let historico = await obterHistorico(idJogador, response);
       response.json({
-        'infoJogador': resp[0],
+        'infoJogador': result[0],
         'rankGlobal': rankGlobal.rankJogador,
         'rankNacional': rankNacional.rankJogador,
-        'scores': scores
+        'scores': scores,
+        'historico': historico
       });
+
     }).catch(function (erro) {
       console.log(erro);
       console.log("\nHouve um erro ao obter a informação do jogador! Erro: ", erro.sqlMessage);
@@ -138,9 +151,9 @@ function obterInfo(request, response) {
 
 async function listarRankingGlobalJogador(idJogador, response) {
   try {
-    let resp = await jogadorModel.listarRankingGlobalSemLimite();
+    let result = await jogadorModel.listarRankingGlobalSemLimite();
 
-    let rankGlobal = (resp.filter(jogador => {
+    let rankGlobal = (result.filter(jogador => {
       return jogador.idJogador == idJogador;
     }));
     return rankGlobal;
@@ -155,9 +168,9 @@ async function listarRankingGlobalJogador(idJogador, response) {
 
 async function listarRankingNacionalJogador(idJogador, pais, response) {
   try {
-    let resp = await jogadorModel.listarRankingNacionalSemLimite(pais);
+    let result = await jogadorModel.listarRankingNacionalSemLimite(pais);
 
-    let rankNacional = (resp.filter(jogador => {
+    let rankNacional = (result.filter(jogador => {
       return jogador.idJogador == idJogador;
     }));
 
@@ -170,11 +183,62 @@ async function listarRankingNacionalJogador(idJogador, pais, response) {
   }
 }
 
+async function obterHistorico(idJogador, response) {
+  try {
+    let result = await historicoModel.obterHistorico(idJogador);
+
+    return result;
+
+  } catch (e) {
+    console.log(e);
+    console.log("\nHouve um erro ao editar o perfil! Erro: ", e.sqlMessage);
+    response.status(500).json(e.sqlMessage);
+  }
+
+}
+
+function verificarEdicao(request, response) {
+  let idJogador = request.params.idJogadorServer;
+  let tokenJogador = request.params.tokenJogadorServer;
+
+  if (tokenJogador == undefined) {
+    response.status(403).send("Token indefinido.");
+  } else {
+    try {
+      jwt.verify(tokenJogador, config.secretKey, async (err, decoded) => {
+        console.log(err)
+        if (err != null) {
+          if (err.name == 'TokenExpiredError') {
+            response.status(403).send("Token Expirado");
+          }
+        
+        } else {
+          let result = (await userModel.verificarToken(decoded.email))[0];
+          if (result.idJogador == idJogador) {
+            response.json({
+              'permission': true
+            });
+          } else {
+            response.json({
+              'permission': false
+            });
+          }
+        } 
+      });
+    } catch (err) {
+      console.log(err);
+      response.status(500).json('Erro ao ler o token.');
+    }
+      
+  }
+}
+
 module.exports = {
   obterPaises,
   listarRankingGlobal,
   listarRankingNacional,
   listarPaisesCadastrados,
   obterImagem,
-  obterInfo
+  obterInfo,
+  verificarEdicao
 }

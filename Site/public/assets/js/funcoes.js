@@ -42,7 +42,7 @@ function startBackgroundVideo() {
     document.getElementsByClassName('background-gif')[0].play;
 }
 
-function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', countryFlags) {
+function setPlayerCountry(elementFlag, showName = false, countryName = 'BR', countryFlags) {
     let countryFlagUnicode = (countryFlags.filter(country => { return country.code == countryName }))[0].unicode;
     countryFlagUnicode = countryFlagUnicode.split(' ');
 
@@ -56,9 +56,6 @@ function setPlayerCountry(elementFlag, showName = 'Brasil', countryName = 'BR', 
         spanElement.innerHTML = showName;
         spanElement.classList.add('contry-name');
         elementFlag.appendChild(spanElement);
-    }
-    if (showName) {
-
     }
 
 

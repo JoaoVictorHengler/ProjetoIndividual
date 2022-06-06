@@ -92,7 +92,7 @@
                         <div class="username-password-container">
                             <label for="senha">Senha:</label>
                             <input type="password" id="senha" placeholder="Password">
-                            <i class="fa-solid fa-lock password" id="cadeado" onclick="mostrarSenha()"></i>
+                            <i class="fa-solid fa-lock password" id="cadeado" onclick="showPassword()"></i>
                         </div>
                         <div style="width: 90%; display: flex; justify-content: flex-start;">
                             <span style="font-size: 15px;">Não está cadastrado?</span>
@@ -120,20 +120,6 @@
             Swal.fire({
                 title: 'Erro',
                 text: 'Todos os campos são obrigatórios',
-                icon: 'error',
-                showConfirmButton: false,
-                showDenyButton: true,
-                denyButtonText: 'OK'
-            });
-            return;
-        }
-
-        let validacaoSenha = validarSenha(senhaJogador);
-
-        if (validacaoSenha != 'OK') {
-            Swal.fire({
-                title: 'Erro',
-                text: validacaoSenha,
                 icon: 'error',
                 showConfirmButton: false,
                 showDenyButton: true,
@@ -178,7 +164,7 @@
             } else {
                 Swal.fire({
                     title: 'Erro',
-                    text: 'Houve um erro ao realizar o login!',
+                    text: 'Não foi possível realizar o login!',
                     icon: 'error',
                     showConfirmButton: false,
                     showDenyButton: true,

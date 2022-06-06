@@ -3,3 +3,4 @@ node_modules
 package-lock.json
 public/assets/img/mapImg/*
 public/assets/img/playerImg/*
+src/config.json

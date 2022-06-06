@@ -1,6 +1,6 @@
 var userModel = require('../models/userModel');
-var sha512 = require('js-sha512');
 var jwt = require('jsonwebtoken');
+var config = require('../config.json');
 
 /* Fazendo... */
 function cadastrar(request, response) {
@@ -18,8 +18,8 @@ function cadastrar(request, response) {
   } else if (pais == undefined) {
     response.status(400).send("Seu País está undefined!");
   } else {
-    userModel.verificarEmail(email).then((resultado) => {
-      if (resultado.length == 0) {
+    userModel.verificarEmail(email).then((result) => {
+      if (result.length == 0) {
 
         userModel.cadastrar(nome, email, senha, pais).then(
           function (resp) {
@@ -45,23 +45,23 @@ function cadastrar(request, response) {
 function autenticar(request, response) {
   var email = request.body.emailServer;
   var senha = request.body.senhaServer;
-  console.log(request.body)
+
   if (email == undefined) {
     response.status(400).send("Seu Nome/Email está undefined!");
   } else if (senha == undefined) {
     response.status(400).send("Sua senha está indefinida!");
   } else {
-    userModel.autenticar(email, senha).then(async function (resp) {
-      console.log(`\nResultados encontrados: ${resp.length}`);
-      console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
+    userModel.autenticar(email, senha).then(async function (result) {
+      console.log(`\nResultados encontrados: ${result.length}`);
+      console.log(`Resultados: ${JSON.stringify(result)}`); // transforma JSON em String
 
-      if (resp.length == 1) {
-        var token = await jwt.sign({ 'email': email, 'senha': senha }, 'shhhhh', { 'expiresIn': '1d' });
+      if (result.length == 1) {
+        var token = await jwt.sign({ 'email': email, 'senha': senha }, config.secretKey, { 'expiresIn': '1d' });
         response.json({
           'token': token,
-          'id': resp[0].idJogador
+          'id': result[0].idJogador
         });
-      } else if (resp.length == 0) {
+      } else if (result.length == 0) {
         response.status(403).send("Email e/ou senha inválidos(s)");
       }
     }).catch(function (erro) {
@@ -83,11 +83,11 @@ function editarPerfil(request, response) {
   } else if (vrUtilizado == undefined) {
     response.status(400).send("O seu vrUtilizado está undefined!");
   } else {
-    userModel.editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, twitchLink, twitterLink).then(function (resp) {
-      console.log(`\nResultados encontrados: ${resp.length}`);
-      console.log(`Resultados: ${JSON.stringify(resp)}`); // transforma JSON em String
+    userModel.editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, twitchLink, twitterLink).then(function (result) {
+      console.log(`\nResultados encontrados: ${result.length}`);
+      console.log(`Resultados: ${JSON.stringify(result)}`); // transforma JSON em String
 
-      response.json(resp);
+      response.json(result);
     }).catch(function (erro) {
       console.log(erro);
       console.log("\nHouve um erro ao editar o perfil! Erro: ", erro.sqlMessage);

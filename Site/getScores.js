@@ -131,8 +131,9 @@ async function inserirPlayer(player) {
 
     if (checkPlayer.length == 0) {
         downloadImage(player.profilePicture, path.resolve(__dirname, 'public', 'assets', 'img', 'playerImg', `${numId}.jpg`));
+        if(player.scoreStats.replaysWatched == null) player.scoreStats.replaysWatched = 0;
         let resp = await executar(
-            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null);`
+            `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null, ${player.scoreStats.replaysWatched});`
         );
         console.log('Player ' + player.name + 'adicionado');
         return [resp.insertId, false];

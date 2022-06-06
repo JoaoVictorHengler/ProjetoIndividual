@@ -31,5 +31,9 @@ router.get("/obterInfo/:idJogadorServer", function (req, res) {
     jogadorController.obterInfo(req, res);
 });
 
+router.get("/verificarEdicao/:idJogadorServer&:tokenJogadorServer", function (req, res) {
+    jogadorController.verificarEdicao(req, res);
+});
+
 module.exports = router;
 

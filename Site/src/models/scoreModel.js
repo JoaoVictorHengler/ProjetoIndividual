@@ -2,7 +2,6 @@ var database = require('../database/config');
 
 // Lista os USERs da farmaceutica
 function listarScoresMapa(idMapa, nomeDificuldade) {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarScores():", idMapa, nomeDificuldade);
 
   var instrucao = `
     select pontuacao, round((pontuacao / maxPontuacao) * 100, 2) as precisao, pais, nome, comboMaximo, corteRuim, notasErradas, dataScore, maxPontuacao from Score 
@@ -16,7 +15,6 @@ function listarScoresMapa(idMapa, nomeDificuldade) {
 }
 
 function verificarNumPaginas(idMapa, nomeDificuldade) {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function verificarNumPaginas(): ", idMapa, nomeDificuldade);
 
   var instrucao = `
   select count(*) as 'qtdscores' from score
@@ -28,7 +26,6 @@ function verificarNumPaginas(idMapa, nomeDificuldade) {
 } 
 
 function listarScoresJogador(idJogador) {
-  console.log("ACESSEI O USER MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarScoresJogador():", idJogador);
 
   var instrucao = `
     select pontuacao, round((pontuacao / maxPontuacao) * 100, 2) as precisao, comboMaximo, corteRuim, notasErradas, dataScore, maxPontuacao, notas, nomeDificuldade,

@@ -9,15 +9,15 @@ function obterInformacoes(request, response) {
   if (idMapa == undefined) {
     response.status(400).send("Id do mapa está undefined!");
   } else {
-    mapaModel.obterInformacoes(idMapa).then(async (resp) => {
-      if (resp.length == 0) {
+    mapaModel.obterInformacoes(idMapa).then(async (result) => {
+      if (result.length == 0) {
         response.status(403).send("Não foi possível encontrar um mapa com esse id.");
       } else {
-        for (let i = 0; i < resp.length; i++) {
-          let diffsMapa = await dificuldadeModel.obterTodasDiffs(resp[i].idMapa);
-          resp[i].dificuldades = diffsMapa;
+        for (let i = 0; i < result.length; i++) {
+          let diffsMapa = await dificuldadeModel.obterTodasDiffs(result[i].idMapa);
+          result[i].dificuldades = diffsMapa;
         }
-        response.json(resp);
+        response.json(result);
       }
     }).catch(function (erro) {
       console.log(erro);
@@ -30,15 +30,19 @@ function obterInformacoes(request, response) {
 
 function listarMapas(request, response) {
   let pagina = request.params.paginaServer;
-  mapaModel.listarMapas((pagina * 8) - 8).then(async (respBdMapas) => {
-    if (respBdMapas.length == 0) {
+  mapaModel.listarMapas((pagina * 8) - 8).then(async (result) => {
+    if (result.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
-      for (let i = 0; i < respBdMapas.length; i++) {
-        let diffsMapa = await dificuldadeModel.obterTodasDiffs(respBdMapas[i].idMapa)
-        respBdMapas[i].dificuldades = diffsMapa;
+      for (let i = 0; i < result.length; i++) {
+        let diffsMapa = await dificuldadeModel.obterTodasDiffs(result[i].idMapa)
+        result[i].dificuldades = diffsMapa;
       }
-      obterQtdPaginas(response, respBdMapas);
+      let qtdPaginas = await obterQtdPaginas(response, result);
+      response.json({
+        'qtdPaginas': qtdPaginas,
+        'mapas': result
+      });
     }
   }).catch(function (erro) {
     console.log(erro);
@@ -47,16 +51,17 @@ function listarMapas(request, response) {
   })
 }
 
-function obterQtdPaginas(response, respBdMapas) {
-  mapaModel.verificarNumPaginas().then(async (respNumPaginas) => {
-    if (respNumPaginas.length == 0) {
+async function obterQtdPaginas(response) {
+  try {
+    let result = await mapaModel.verificarNumPaginas();
+    if (result.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
-      let qtdMapas = respNumPaginas[0].qtdmapas
+      let qtdMapas = result[0].qtdmapas
 
-      let pagina = 0;
+      let qtdPagina = 0;
       while (true) {
-        pagina++;
+        qtdPagina++;
         if (qtdMapas >= 8) {
           qtdMapas -= 8;
         }
@@ -64,17 +69,16 @@ function obterQtdPaginas(response, respBdMapas) {
           break;
         }
       }
-      response.json({
-        'qtdPaginas': pagina,
-        'mapas': respBdMapas
-      });
+      return qtdPagina;
+      
 
     }
-  }).catch(function (erro) {
-    console.log(erro);
-    console.log("\nHouve um erro ao listar os mapas! Erro: ", erro.sqlMessage);
-    response.status(500).json(erro.sqlMessage);
-  })
+  } catch (err) {
+    console.log(err);
+    console.log("\nHouve um erro ao listar os mapas! Erro: ", err.sqlMessage);
+    response.status(500).json(err.sqlMessage);
+  }
+
 }
 
 function obterImagem(request, response) {

@@ -11,12 +11,12 @@ function listarScores(request, response) {
   } else if (nomeDificuldade == undefined) {
     response.status(400).send("Nome da Dificuldade está undefined!");
   } else {
-    scoreModel.listarScoresMapa(idMapa, nomeDificuldade).then(async (resp) => {
+    scoreModel.listarScoresMapa(idMapa, nomeDificuldade).then(async (result) => {
       let qtdPaginas = await obterQtdScores(idMapa, nomeDificuldade);
       response.json({
         'qtdPaginas': qtdPaginas,
-        'scores': respBdScores
-      })
+        'scores': result
+      });
     }).catch(function (erro) {
       console.log(erro);
       console.log("\nHouve um erro ao listar os scores! Erro: ", erro.sqlMessage);
@@ -28,7 +28,7 @@ function listarScores(request, response) {
 
 async function obterQtdScores(idMapa, nomeDificuldade) {
   try {
-    let respNumPaginas = await scoreModel.verificarNumPaginas(idMapa, nomeDificuldade)
+    let respNumPaginas = await scoreModel.verificarNumPaginas(idMapa, nomeDificuldade);
     if (respNumPaginas.length == 0) {
       response.status(403).send("Não foi possível obter a quantidade de scores.");
     } else {
@@ -46,9 +46,7 @@ async function obterQtdScores(idMapa, nomeDificuldade) {
         }
       }
       return qtdPaginas
-
     }
-
   } catch (err) {
 
     console.log(err);
@@ -57,11 +55,6 @@ async function obterQtdScores(idMapa, nomeDificuldade) {
   }
 }
 
-/* function obterScoresPlayer() {
-
-} */
-
 module.exports = {
-  listarScores,
-  /* obterScoresPlayer */
+  listarScores
 }

@@ -78,7 +78,7 @@
     </div>
 
     <div class="banner">
-        <div class="img-container">    
+        <div class="img-container">
             <img src="./assets/img/bsbg.jpg" class="background-image">
             <i class="fa-solid fa-pen"></i>
         </div>
@@ -87,17 +87,18 @@
                 <div class="perfil-container">
                     <div class="player-header-container">
                         <div style="position: relative;">
-                            <img class="perfil-img" src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
+                            <img class="perfil-img" id="perfil-img"
+                                src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
                                 onerror="this.src='./assets/img/oculus.png'"> <!-- Mudar Imagem para local -->
-                                <i class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-pen"></i>
                         </div>
                         <div class="player-name-container">
-                            <span class="player-name">Shiro</span>
+                            <span class="player-name" id="player-name">Shiro</span>
                             <div class="flag-country" style="margin-left: 0px;">
                             </div>
                         </div>
                         <div class="player-position-info">
-    
+
                             <div class="global-container">
                                 <span>Posição Global:</span>
                                 <span id="posicaoGlobal">#150</span>
@@ -118,7 +119,7 @@
                             <canvas id="myChart" width="" height="90"></canvas>
                         </div>
                         <div class="round-border"></div>
-    
+
                         <div class="player-info">
                             <div class="player-info-label">
                                 <span>Vr Utilizado:</span>
@@ -127,13 +128,13 @@
                                 <span>Replays Assistidos por Outros:</span>
                             </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
                             <div class="player-info-label">
-    
-                                <span>Oculus</span>
-                                <span>100.00%</span>
-                                <span>32891489124712</span>
-                                <span>31231312312</span>
+
+                                <span id="vrUtilizado">Oculus</span>
+                                <span id="precisaoMedia">100.00%</span>
+                                <span id="pontuacaoTotal">32891489124712</span>
+                                <span id="replaysAssistidos">31231312312</span>
                             </div>
-    
+
                             <!-- <i class="fa-brands fa-youtube"></i> -->
                             <!-- <i class="fa-brands fa-twitch"></i> -->
                             <!-- <i class="fa-brands fa-twitter"></i> -->
@@ -152,7 +153,7 @@
                                 onclick="changeLabelColor(this)">Histórico</a>
                         </li>
                     </ul>
-    
+
                     <section class="player-label-container" id="eu_section">
                         <div class="player-label-title-container">
                             <h3 class="player-label-title">eu!</h3>
@@ -162,18 +163,14 @@
                                 <div id="editor-box"></div>
                             </div>
                         </div>
-                        <button onclick="cancelarDescricao()" class="button-login"
-                            style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Cancelar</button>
-                        <button onclick="enviarDescricao()" class="button-login"
-                            style="width: 100px; height: 40px; font-size: 15px; float: right; margin: 10px 20px 0px 0px">Feito</button>
                     </section>
-    
+
                     <section class="player-label-container" id="Classificacao_section">
                         <div class="player-label-title-container">
                             <h3 class="player-label-title">Classificação</h3>
                         </div>
                     </section>
-    
+
                     <section class="player-label-container" id="historico_section">
                         <div class="player-label-title-container">
                             <h3 class="player-label-title">Histórico</h3>
@@ -181,14 +178,15 @@
                     </section>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
 </body>
 
 <script>
-    ClassicEditor.create(document.querySelector('#editor-box'), {
+    function startEditor() {
+        ClassicEditor.create(document.getElementById('editor-box'), {
         licenseKey: '',
     })
         .then(editor => {
@@ -197,9 +195,6 @@
                 /* Enviar para o servidor a data */
                 console.log(editor.getData())
             });
-
-
-
         })
         .catch(error => {
             console.error('Oops, something went wrong!');
@@ -207,70 +202,15 @@
             console.warn('Build id: pkg0toth4spz-jl0u3y5i3cfk');
             console.error(error);
         });
-</script>
+    }
+    
+    function startDescription() {
+        document.getElementById('editor-box')
+    }
+</script> <!-- Editor -->
+
 
 <script>
-
-
-    
-    setPlayerInformations();
-    function getURLParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const idJogador = urlParams.get('id');
-        console.log(idJogador);
-        /* if (idJogador == null) {
-            window.location = `./ranking.html`;
-        } */
-        return idJogador;
-    }
-
-    function setPlayerInformations() {
-        let idJogador = getURLParams();
-        getPlayerInfo(idJogador);
-        /* setPlayerCountry(document.getElementsByClassName('flag-country'), true, 'Brasil'); */
-        playerPositionChart();
-    }
-
-    function getPlayerInfo(idJogador) {
-
-        
-
-        fetch(`/jogador/obterInfo/${idJogador}`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(function (response) {
-            console.log('Resposta: ', response);
-
-            if (response.ok) {
-                response.json().then(json => {
-                    console.log(json);
-
-
-                    
-                });
-
-
-            } else {
-                Swal.fire({
-                    title: 'Erro',
-                    text: 'Houve um erro ao carregar o perfil!',
-                    icon: 'error',
-                    showConfirmButton: false,
-                    showDenyButton: true,
-                    denyButtonText: 'OK',
-                    /* willClose: () => {
-                            window.location = `./ranking.html`;
-                        } */
-                });
-                throw ('Houve um erro ao carregar o perfil!');
-            }
-        }).catch(function (response) {
-            console.log(`ERRO: ${response}`);
-        })
-    }
-
     function playerPositionChart() {
         let labels = [];
         for (let i = 50; i > 0; i--) {
@@ -286,7 +226,7 @@
         }
 
         let positionsData = ['444', '449', '451', '454', '455', '457', '457', '457', '456', '457', '464', '465', '463', '465', '465', '464', '465', '465', '466', '467', '469', '470', '468', '470', '470', '473', '473', '474', '475', '475', '475', '491', '491', '491', '493', '494', '495', '497', '498', '501', '503', '503', '504', '504', '505', '506', '506', '493', '493', '490']
-        console.log(labels.length)
+        
         positionsData = positionsData.map((numString) => {
             let num = parseInt(numString);
             return num;
@@ -331,10 +271,113 @@
             config
         );
     }
+</script> <!-- Chart -->
+
+<script>
+    var allowCustomize = false;
+    
+    setPlayerInformations();
+
+    function getURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idJogador = urlParams.get('id');
+        
+        if (idJogador == null) {
+            window.location = `./ranking.html`;
+        }
+        if (sessionStorage.IDJOGADOR == idJogador) {
+            let token =  sessionStorage.TOKENJOGADOR;
+            if (token != undefined) {
+                letCustomize(idJogador, token);
+            }
+        }
+
+        return idJogador;
+    }
+
+    async function getCountryFlags() {
+        let response = await fetch(`/jogador/countryFlag`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let json = await response.json();
+            return json;
+        }
+    }
+
+    async function setPlayerInformations() {
+        let idJogador = getURLParams();
+        let countryFlags = await getCountryFlags();
+        getPlayerInfo(idJogador, countryFlags);
+        playerPositionChart();
+    }
+
+    function getPlayerInfo(idJogador, countryFlags) {
+        fetch(`/jogador/obterInfo/${idJogador}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    console.log(json);
+                    setPlayerInfo(idJogador, json, countryFlags);
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao carregar o perfil!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                    willClose: () => {
+                        window.location = `./ranking.html`;
+                    }
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
+    }
+
+    function setPlayerInfo(idJogador, json, countryFlags) {
+        let player = json;
+        let playerInfo = player.infoJogador;
+        document.getElementById('perfil-img').src = `./jogador/getImage/${idJogador}`;
+        document.getElementById('player-name').innerHTML = playerInfo.nome.trim();
+
+        let countryName = (countryFlags.filter(country => { return playerInfo.pais == country.code }))[0];
+
+        setPlayerCountry(document.getElementsByClassName('flag-country')[0], countryName.name, countryName.code, countryFlags);
+
+        document.getElementById('posicaoGlobal').innerHTML = `#${player.rankGlobal}`;
+        document.getElementById('posicaoNacional').innerHTML = `#${player.rankNacional}`;
+
+
+        if (playerInfo.vrUtilizado == null) playerInfo.vrUtilizado = 'Desconhecido';
+        document.getElementById('vrUtilizado').innerHTML = `${playerInfo.vrUtilizado}`;
+        document.getElementById('precisaoMedia').innerHTML = `${playerInfo.precisaoMedia}%`;
+        document.getElementById('pontuacaoTotal').innerHTML = `${playerInfo.pontuacaoTotal}`;
+        document.getElementById('replaysAssistidos').innerHTML = `${playerInfo.replaysAssistidos}`;
+
+
+    }
 
     function changeLabelColor(thisElement) {
         let documentLabel = document.getElementsByClassName('player-label-name');
-        console.log(documentLabel)
+
         for (let i = 0; i < documentLabel.length; i++) {
             let label = documentLabel[i];
             label.classList.remove('chosen');
@@ -361,6 +404,8 @@
         }
     }
 
+
+    
     function enviarDescricao() {
         let data = window.editor.getData();
         console.log(typeof data)
@@ -369,6 +414,99 @@
     function cancelarDescricao() {
         window.editor.setData('')
     }
+
+    function verifyDescription(token) {
+        
+    }
+
+    function editDescription() {
+        let cancelButton = createCancelButton();
+        let feitoButton = createFeitoButton();
+        
+        document.getElementsByClassName('editor-box-container').appendChild(cancelButton);
+        document.getElementsByClassName('editor-box-container').appendChild(feitoButton);
+    }
+
+    function letCustomize(idJogador, token) {
+
+        fetch(`/jogador/verificarEdicao/${idJogador}&${token}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    console.log(json);
+                    if (json.permission == true) {
+                        document.getElementById('editor-box').appendChild(editDescriptionButton());
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao obter a permissão para editar a descrição!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
+
+        document.getElementById('');
+    }
+
+    function createCancelButton() {
+        let cancelButton = document.createElement('button');
+        cancelButton.onclick = () => cancelarDescricao();
+        cancelButton.classList.add('button-login');
+        cancelButton.id = 'cancel-description';
+        cancelButton.style.width = '100px';
+        cancelButton.style.height = '40px';
+        cancelButton.style.fontSize = '15px';
+        cancelButton.style.float = 'right';
+        cancelButton.style.backgroundColor = 'red';
+        cancelButton.style.margin = ' 10px 20px 0px 0px';
+        cancelButton.innerHTML = 'Cancelar';
+        return cancelButton;
+    }
+
+    function createFeitoButton() {
+        let feitoButton = document.createElement('button');
+        feitoButton.onclick = () => enviarDescricao();
+        feitoButton.classList.add('button-login');
+        feitoButton.id = 'commit-description';
+        feitoButton.style.width = '100px';
+        feitoButton.style.height = '40px';
+        feitoButton.style.fontSize = '15px';
+        feitoButton.style.backgroundColor = 'green';
+        feitoButton.style.float = 'right';
+        feitoButton.style.margin = ' 10px 20px 0px 0px';
+        feitoButton.innerHTML = 'Feito';
+        return feitoButton;
+    }
+
+    function editDescriptionButton() {
+        let descriptionButton = document.createElement('button');
+        descriptionButton.onclick = () => cancelarDescricao();
+        descriptionButton.classList.add('button-login');
+        descriptionButton.id = 'cancel-description';
+        descriptionButton.style.width = '100px';
+        descriptionButton.style.height = '40px';
+        descriptionButton.style.fontSize = '15px';
+        descriptionButton.style.float = 'right';
+        descriptionButton.style.margin = ' 10px 20px 0px 0px';
+        descriptionButton.innerHTML = 'Editar';
+        return descriptionButton;
+    }
+
 </script>
 
 

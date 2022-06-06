@@ -68,17 +68,5 @@ create table Historico (
     diaRank Date
 );
 select * from historico;
-select * from score;
+select * from jogador;
 
-alter table jogador rename column OculosDeVrUsado to vrUtilizado;
-
-use gurasaber;
-
-select * from Jogador;
-select * from mapa;
-select pontuacao, round((pontuacao / maxPontuacao) * 100, 2) as precisao, comboMaximo, corteRuim, notasErradas, dataScore, maxPontuacao, notas, nomeDificuldade,
-nomeMusica, subNomeMusica, criadorMapa, artistaMusica
-from Score 
-                      join Jogador on fkJogador = idJogador and idJogador = 2
-                      join Dificuldade on fkDificuldade = idDificuldade
-                      join Mapa on idMapa = Dificuldade.fkMapa and idMapa = Score.fkMapa order by dataScore desc;
