@@ -35,5 +35,13 @@ router.get("/verificarEdicao/:idJogadorServer&:tokenJogadorServer", function (re
     jogadorController.verificarEdicao(req, res);
 });
 
+router.get("/obterDescricao/:idJogadorServer", function (req, res) {
+    jogadorController.obterDescricao(req, res);
+});
+
+router.post("/setarDescricao", function (req, res) {
+    jogadorController.setarDescricao(req, res);
+});
+
 module.exports = router;
 

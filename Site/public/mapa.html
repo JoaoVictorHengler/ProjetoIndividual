@@ -204,14 +204,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         idMapa = urlParams.get('idmapa');
         diff = urlParams.get('diff');
-        pagina = urlParams.get('page');
-        console.log(idMapa);
-        console.log(diff);
-        console.log(pagina);
+        pagina = parseInt(urlParams.get('page'));
         if (idMapa == null) {
             window.location.href = `./mapas.html`;
             window.focus();
-        } else if (pagina == null) {
+        } else if (isNaN(pagina)) {
             pagina = 1;
         }
     }
@@ -258,7 +255,7 @@
     }
 
     function getScores(mapa, higherDiff) {
-        fetch(`/score/listarScores/${idMapa}&${higherDiff.nomeDificuldade}`, {
+        fetch(`/score/listarScores/${idMapa}&${higherDiff.nomeDificuldade}&${pagina}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"

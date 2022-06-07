@@ -22,9 +22,9 @@ function listarRankingGlobal(minValue) {
     (select count(*) from Dificuldade 
     join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
     and Jogador.idJogador = fkJogador and round((pontuacao / maxPontuacao) * 100, 2) >= 65 and round((pontuacao / maxPontuacao) * 100, 2) < 80 group by fkJogador) as 'A'
-    from Jogador join score on idJogador = fkJogador group by idJogador order by ppTotal desc limit ${minValue}, 8;`;
+    from Jogador join score on idJogador = fkJogador group by idJogador order by ppTotal desc limit ${minValue}, 20;`;
 
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -51,9 +51,9 @@ function listarRankingNacional(pais, minValue) {
     (select count(*) from Dificuldade 
     join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
     and Jogador.idJogador = fkJogador and round((pontuacao / maxPontuacao) * 100, 2) >= 65 and round((pontuacao / maxPontuacao) * 100, 2) < 80 group by fkJogador) as 'A'
-    from Jogador join score on idJogador = fkJogador and pais = '${pais}' group by idJogador order by ppTotal desc limit ${minValue}, 8;`;
+    from Jogador join score on idJogador = fkJogador and pais = '${pais}' group by idJogador order by ppTotal desc limit ${minValue}, 20;`;
 
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -62,7 +62,7 @@ function listarPaisesCadastrados() {
 
     var instrucao = `select pais from jogador group by pais;`;
 
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -71,7 +71,7 @@ function verificarNumPaginas() {
     var instrucao = `
     select count(*) as 'qtdJogadores' from Jogador;
     `;
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -80,7 +80,7 @@ function listarRankingGlobalSemLimite() {
     var instrucao = `select idJogador, pais, ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankJogador'
     from Jogador join score on idJogador = fkJogador group by idJogador order by rankJogador desc;`;
 
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -91,7 +91,7 @@ function listarRankingNacionalSemLimite(pais) {
     ROW_NUMBER() OVER (order by	sum(pontosDePerformace) desc) as 'rankJogador'
     from Jogador join score on idJogador = fkJogador and Jogador.pais = '${pais}' group by idJogador order by rankJogador desc;`;
 
-    console.log("Executando a instrução SQL: \n" + instrucao);
+    
     return database.executar(instrucao);
 }
 
@@ -110,7 +110,6 @@ function obterInfo(idJogador) {
         replaysAssistidos
       from Jogador where idJogador = ${idJogador} group by idJogador;`;
   
-    console.log("Executando a instrução SQL: \n" + instrucao.replaceAll('\n', ''));
     return database.executar(instrucao);
 }
 

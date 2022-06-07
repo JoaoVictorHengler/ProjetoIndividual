@@ -80,9 +80,10 @@ async function getPlayerInfo() {
                 let level = await search(`https://api.beatsaver.com/maps/hash/${playerScores[i].leaderboard.songHash}`);
 
                 let idMapa = await inserirMapa(level);
-
-                for (let i = 0; i < level.versions[0].diffs.length; i++) {
-                    await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
+                if (idMapa != -1) {
+                    for (let i = 0; i < level.versions[0].diffs.length; i++) {
+                        await inserirDificuldade(idMapa, level.versions[0].diffs[i], i);
+                    }
                 }
             }
 
@@ -135,7 +136,7 @@ async function inserirPlayer(player) {
         let resp = await executar(
             `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null, ${player.scoreStats.replaysWatched});`
         );
-        console.log('Player ' + player.name + 'adicionado');
+        console.log('Player ' + player.name + ' adicionado');
         return [resp.insertId, false];
     } else {
         return [checkPlayer[0].idJogador, true];
@@ -143,20 +144,20 @@ async function inserirPlayer(player) {
 }
 /* Feito, Mas subtrair datas*/
 async function inserirHistorico(fkPlayer, rankGlobal = null) {
-    let diaHistorico = await executar(`SELECT * from Historico where diaRank = '${new Date().toISOString().split('T')[0]}';`);
+    let diaHistorico = await executar(`SELECT * from Historico where diaRank = '${new Date().toISOString().split('T')[0]}' and fkJogador = ${fkPlayer};`);
+
     if (rankGlobal == null) {
         let playerInfo = (await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador and idJogador = ${fkPlayer} group by idJogador;`))[0];
         rankGlobal = playerInfo.rankGlobal;
     }
     if (diaHistorico.length == 0) {
-        let ultimoHistorico = await executar('select idHistorico from historico order by idHistorico desc limit 0, 1');
+        let ultimoHistorico = await executar(`select idHistorico from historico where fkJogador = ${fkPlayer} order by idHistorico desc limit 0, 1`);
+
         if (ultimoHistorico.length == 0) {
             let i = 1;
-            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}');`
-                );
+            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}');`);
         } else {
-            await executar(
-                `INSERT INTO Historico SELECT ${fkPlayer}, idHistorico + 1, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}' from historico order by idHistorico desc limit 0, 1;`);
+            await executar(`insert into Historico values (${fkPlayer}, ${ultimoHistorico[0].idHistorico + 1}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}')`);
         }
         
         console.log('Historico adicionado');
@@ -177,7 +178,7 @@ async function inserirMapa(mapa) {
         return resp.insertId;
     } else {
         console.log('Mapa ' + mapa.metadata.songName.replaceAll(/'/g, "\\'") + ' Já existe.')
-        return mapas[0].idMapa;
+        return -1;
     }
 
 

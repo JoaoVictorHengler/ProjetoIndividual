@@ -61,13 +61,12 @@ async function obterQtdPaginas(response) {
 
       let qtdPagina = 0;
       while (true) {
-        qtdPagina++;
-        if (qtdMapas >= 8) {
-          qtdMapas -= 8;
-        }
-        if (qtdMapas < 8) {
+        if (qtdMapas <= 0) {
           break;
         }
+
+        qtdPagina++;
+        qtdMapas -= 20;
       }
       return qtdPagina;
       

@@ -1,10 +1,10 @@
 var historicoModel = require('../models/historicoModel');
 var jogadorModel = require('../models/jogadorModel');
-var scoreModel = require('../models/scoreModel');
 var userModel = require('../models/userModel');
-var path = require('Path');
-var jwt = require('jsonwebtoken');
-var config = require('../config.json');
+const path = require('Path');
+const jwt = require('jsonwebtoken');
+const config = require('../config.json');
+const { readFileSync, writeFileSync } = require('fs');
 
 function obterPaises(request, response) {
   let fileLocation = path.join(__dirname, `../../public/assets/country_flags.json`);
@@ -14,7 +14,8 @@ function obterPaises(request, response) {
 function listarRankingGlobal(request, response) {
   let pagina = request.params.paginaServer;
 
-  jogadorModel.listarRankingGlobal((pagina * 8) - 8).then(async (result) => {
+  jogadorModel.listarRankingGlobal((pagina * 20) - 20).then(async (result) => {
+
     if (result.length == 0) {
       response.status(403).send("Não foi possível listar os jogadores.");
     } else {
@@ -38,15 +39,15 @@ function listarRankingNacional(request, response) {
   if (paisEscolhido == undefined) {
     response.status(403).send("Pais não foi passado.");
   } else {
-    jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 8) - 8).then(async (result) => {
+    jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 20) - 20).then(async (result) => {
       if (result.length == 0) {
         response.status(403).send("Não foi possível listar os jogadores.");
       } else {
         let qtdPaginas = await obterQtdPaginas(response, result);
-      response.json({
-        'qtdPaginas': qtdPaginas,
-        'jogadores': result
-      });
+        response.json({
+          'qtdPaginas': qtdPaginas,
+          'jogadores': result
+        });
       }
     }).catch(function (erro) {
       console.log(erro);
@@ -65,19 +66,20 @@ async function obterQtdPaginas(response) {
     } else {
       let qtdJogadores = result[0].qtdJogadores
 
+
       let qtdPaginas = 0;
       while (true) {
-        qtdPaginas++;
-        if (qtdJogadores >= 8) {
-          qtdJogadores -= 8;
-        }
-        if (qtdJogadores < 8) {
+        if (qtdJogadores <= 0) {
           break;
         }
+
+        qtdPaginas++;
+        qtdJogadores -= 20;
+
       }
       return qtdPaginas;
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     console.log("\nHouve um erro ao listar os mapas! Erro: ", err.sqlMessage);
     response.status(500).json(err.sqlMessage);
@@ -117,27 +119,25 @@ function obterInfo(request, response) {
     response.status(400).send("Seu id está undefined!");
   } else {
     jogadorModel.obterInfo(idJogador).then(async function (result) {
-      
+
       if (result.length == 0) {
         response.status(400).send("Usuário não cadastrado!");
       }
       let rankGlobal = (await listarRankingGlobalJogador(idJogador, response))[0];
       if (rankGlobal == undefined) {
-          response.json({
-            'infoJogador': result[0],
-            'rankGlobal': 0,
-            'rankNacional': 0
-          });
-          return;
+        response.json({
+          'infoJogador': result[0],
+          'rankGlobal': 0,
+          'rankNacional': 0
+        });
+        return;
       }
       let rankNacional = (await listarRankingNacionalJogador(idJogador, rankGlobal.pais, response))[0];
-      let scores = await scoreModel.listarScoresJogador(idJogador);
       let historico = await obterHistorico(idJogador, response);
       response.json({
         'infoJogador': result[0],
         'rankGlobal': rankGlobal.rankJogador,
         'rankNacional': rankNacional.rankJogador,
-        'scores': scores,
         'historico': historico
       });
 
@@ -211,7 +211,7 @@ function verificarEdicao(request, response) {
           if (err.name == 'TokenExpiredError') {
             response.status(403).send("Token Expirado");
           }
-        
+
         } else {
           let result = (await userModel.verificarToken(decoded.email))[0];
           if (result.idJogador == idJogador) {
@@ -223,14 +223,85 @@ function verificarEdicao(request, response) {
               'permission': false
             });
           }
-        } 
+        }
       });
     } catch (err) {
       console.log(err);
       response.status(500).json('Erro ao ler o token.');
     }
-      
+
   }
+}
+
+function obterDescricao(request, response) {
+  let idJogador = request.params.idJogadorServer;
+
+  if (idJogador == undefined) {
+    response.status(403).send("Id do Jogador está inválido.");
+  } else {
+    let [users, user] = encontrarArquivoEUsuario(idJogador);
+
+    if (user.length == 0) {
+      response.json({
+        'descricao': ''
+      });
+      return;
+    } else {
+      response.json({
+        'descricao': user[0].descricao
+      });
+    }
+  }
+}
+
+function setarDescricao(request, response) {
+  let idJogador = request.body.idJogadorServer;
+  let dadosDescricao = request.body.dadosDescricaoServer
+
+  console.log('IdJogador: ', idJogador)
+  if (idJogador == undefined) {
+    response.status(403).send("Id do Jogador está inválido.");
+  } else if (dadosDescricao == undefined) {
+    response.status(403).send("Dados da descrição inválidos.");
+  } else {
+
+    try {
+      let [users, user] = encontrarArquivoEUsuario(idJogador);
+
+      if (user.length == 0) {
+        users.push({
+          "idJogador": idJogador,
+          "descricao": dadosDescricao
+        });
+      } else {
+        user[0].descricao = dadosDescricao;
+      }
+
+      writeFileSync(fileLocation, JSON.stringify({ "usuarios": users }));
+      console.log('Edição de perfil Concluída.')
+      response.json({
+        'status': true,
+        'descricao': user[0].descricao
+      });
+      return;
+    } catch (err) {
+      console.log(err);
+      response.status(500).json('Erro ao editar o perfil');
+    }
+
+
+
+  }
+}
+
+function encontrarArquivoEUsuario(idJogador) {
+  let fileLocation = path.join(__dirname, `../../public/assets/userDescription.json`);
+  let users = JSON.parse(readFileSync(fileLocation, { encoding: 'utf8', flag: 'r' })).usuarios;
+
+  let user = users.filter(user => {
+    return user.idJogador == idJogador;
+  });
+  return [users, user];
 }
 
 module.exports = {
@@ -240,5 +311,7 @@ module.exports = {
   listarPaisesCadastrados,
   obterImagem,
   obterInfo,
-  verificarEdicao
+  verificarEdicao,
+  obterDescricao,
+  setarDescricao
 }

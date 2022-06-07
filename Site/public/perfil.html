@@ -161,6 +161,7 @@
                         <div class="editor-box-container">
                             <div style="width: 97%; height: fit-content;">
                                 <div id="editor-box"></div>
+                                <div id="editor-buttons" style="width: 100%"></div>
                             </div>
                         </div>
                     </section>
@@ -185,35 +186,36 @@
 </body>
 
 <script>
+
     function startEditor() {
         ClassicEditor.create(document.getElementById('editor-box'), {
-        licenseKey: '',
-    })
-        .then(editor => {
-            window.editor = editor;
-            editor.model.document.on('change:data', () => {
-                /* Enviar para o servidor a data */
-                console.log(editor.getData())
-            });
+            licenseKey: '',
         })
-        .catch(error => {
-            console.error('Oops, something went wrong!');
-            console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
-            console.warn('Build id: pkg0toth4spz-jl0u3y5i3cfk');
-            console.error(error);
-        });
+            .then(editor => {
+                window.editor = editor;
+                editor.model.document.on('change:data', () => {
+                    /* Enviar para o servidor a data */
+                    console.log(editor.getData());
+                });
+                editDescription();
+            })
+            .catch(error => {
+                console.error('Oops, something went wrong!');
+                console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                console.warn('Build id: pkg0toth4spz-jl0u3y5i3cfk');
+                console.error(error);
+            });
     }
-    
+
     function startDescription() {
         document.getElementById('editor-box')
     }
 </script> <!-- Editor -->
 
-
 <script>
-    function playerPositionChart() {
+    function playerPositionChart(datas) {
         let labels = [];
-        for (let i = 50; i > 0; i--) {
+        /* for (let i = 50; i > 0; i--) {
             let msg;
             if (i == 1) {
                 msg = 'Agora';
@@ -223,10 +225,21 @@
                 msg = `${i} Dias atrás`;
             }
             labels.push(msg);
-        }
+        } */
+        let positionsData = [];
+        datas.forEach(element => {
+            positionsData.push(element.rankGlobal);
+            for (let i = 0; i < 25; i++) {
+                let date = new Date().getDate()
+                let month = ("0" + (new Date().getMonth() + 1)).slice(-2);
+                let year = new Date().getFullYear();
 
-        let positionsData = ['444', '449', '451', '454', '455', '457', '457', '457', '456', '457', '464', '465', '463', '465', '465', '464', '465', '465', '466', '467', '469', '470', '468', '470', '470', '473', '473', '474', '475', '475', '475', '491', '491', '491', '493', '494', '495', '497', '498', '501', '503', '503', '504', '504', '505', '506', '506', '493', '493', '490']
-        
+                let dateRank = subDate(`${year}-${month}-${date}`, i);
+                
+                if(dateRank == element.diaRank.split('T')[0]) labels.push(element.diaRank.split('T')[0]);
+            }
+        });
+
         positionsData = positionsData.map((numString) => {
             let num = parseInt(numString);
             return num;
@@ -271,28 +284,25 @@
             config
         );
     }
-</script> <!-- Chart -->
-
-<script>
-    var allowCustomize = false;
-    
     setPlayerInformations();
 
     function getURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const idJogador = urlParams.get('id');
-        
+        let pagina = parseInt(urlParams.get('page'));
+
         if (idJogador == null) {
             window.location = `./ranking.html`;
         }
         if (sessionStorage.IDJOGADOR == idJogador) {
-            let token =  sessionStorage.TOKENJOGADOR;
+            let token = sessionStorage.TOKENJOGADOR;
             if (token != undefined) {
                 letCustomize(idJogador, token);
             }
         }
+        if (isNaN(pagina)) pagina = 1;
 
-        return idJogador;
+        return [idJogador, pagina];
     }
 
     async function getCountryFlags() {
@@ -312,13 +322,15 @@
     }
 
     async function setPlayerInformations() {
-        let idJogador = getURLParams();
+        let [idJogador, pagina] = getURLParams();
         let countryFlags = await getCountryFlags();
         getPlayerInfo(idJogador, countryFlags);
-        playerPositionChart();
+
+        carregarDescricao(idJogador);
+        getPlayerScores(idJogador, 'recent', pagina)
     }
 
-    function getPlayerInfo(idJogador, countryFlags) {
+    function getPlayerInfo(idJogador, countryFlags, pagina) {
         fetch(`/jogador/obterInfo/${idJogador}`, {
             method: 'GET',
             headers: {
@@ -331,6 +343,7 @@
                 response.json().then(json => {
                     console.log(json);
                     setPlayerInfo(idJogador, json, countryFlags);
+                    playerPositionChart(json.historico);
                 });
 
             } else {
@@ -404,27 +417,90 @@
         }
     }
 
-
-    
     function enviarDescricao() {
         let data = window.editor.getData();
-        console.log(typeof data)
+        let idJogador = sessionStorage.IDJOGADOR;
+
+        fetch(`/jogador/setarDescricao`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idJogadorServer: idJogador,
+                dadosDescricaoServer: data,
+            })
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    console.log(json);
+                    window.editor.data = json.descricao;
+                    document.getElementById('editor-buttons').innerHTML = '';
+                    document.getElementById('editor-box').innerHTML = window.editor.data;
+                    document.getElementById('editor-box').style.display = 'block';
+                    document.getElementsByClassName('ck ck-reset ck-editor ck-rounded-corners')[0].remove();
+
+                    document.getElementById('editor-buttons').appendChild(editDescriptionButton());
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao obter a permissão para editar a descrição!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
+    }
+
+    function carregarDescricao(idJogador) {
+
+        fetch(`/jogador/obterDescricao/${idJogador}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    document.getElementById('editor-box').innerHTML = json.descricao;
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao obter a permissão para editar a descrição!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
     }
 
     function cancelarDescricao() {
-        window.editor.setData('')
-    }
-
-    function verifyDescription(token) {
-        
+        window.location.reload();
     }
 
     function editDescription() {
         let cancelButton = createCancelButton();
         let feitoButton = createFeitoButton();
-        
-        document.getElementsByClassName('editor-box-container').appendChild(cancelButton);
-        document.getElementsByClassName('editor-box-container').appendChild(feitoButton);
+        document.getElementById('editor-buttons').appendChild(cancelButton);
+        document.getElementById('editor-buttons').appendChild(feitoButton);
     }
 
     function letCustomize(idJogador, token) {
@@ -441,7 +517,7 @@
                 response.json().then(json => {
                     console.log(json);
                     if (json.permission == true) {
-                        document.getElementById('editor-box').appendChild(editDescriptionButton());
+                        document.getElementById('editor-buttons').appendChild(editDescriptionButton());
                     }
                 });
 
@@ -460,10 +536,10 @@
             console.log(`ERRO: ${response}`);
         })
 
-        document.getElementById('');
     }
 
     function createCancelButton() {
+        console.log('teste')
         let cancelButton = document.createElement('button');
         cancelButton.onclick = () => cancelarDescricao();
         cancelButton.classList.add('button-login');
@@ -472,7 +548,7 @@
         cancelButton.style.height = '40px';
         cancelButton.style.fontSize = '15px';
         cancelButton.style.float = 'right';
-        cancelButton.style.backgroundColor = 'red';
+        cancelButton.style.backgroundColor = '#ca3434';
         cancelButton.style.margin = ' 10px 20px 0px 0px';
         cancelButton.innerHTML = 'Cancelar';
         return cancelButton;
@@ -486,7 +562,7 @@
         feitoButton.style.width = '100px';
         feitoButton.style.height = '40px';
         feitoButton.style.fontSize = '15px';
-        feitoButton.style.backgroundColor = 'green';
+        feitoButton.style.backgroundColor = '#81ca34';
         feitoButton.style.float = 'right';
         feitoButton.style.margin = ' 10px 20px 0px 0px';
         feitoButton.innerHTML = 'Feito';
@@ -495,9 +571,12 @@
 
     function editDescriptionButton() {
         let descriptionButton = document.createElement('button');
-        descriptionButton.onclick = () => cancelarDescricao();
+        descriptionButton.onclick = () => {
+            document.getElementById('edit-description').remove();
+            startEditor();
+        }
         descriptionButton.classList.add('button-login');
-        descriptionButton.id = 'cancel-description';
+        descriptionButton.id = 'edit-description';
         descriptionButton.style.width = '100px';
         descriptionButton.style.height = '40px';
         descriptionButton.style.fontSize = '15px';
@@ -505,6 +584,43 @@
         descriptionButton.style.margin = ' 10px 20px 0px 0px';
         descriptionButton.innerHTML = 'Editar';
         return descriptionButton;
+    }
+
+    function getPlayerScores(idJogador, type, pagina) {
+        fetch(`/score/listarScoresJogador/${idJogador}&${type}&${pagina}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    console.log('Scores: ', json);
+
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao obter os scores do jogador!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
+    }
+
+    function subDate(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() - days);
+        return result.toISOString().substring(0, 10);
     }
 
 </script>

@@ -14,9 +14,14 @@ var mapaRouter = require("./src/routes/mapa");
 var scoreRouter = require("./src/routes/score");
 var jogador = require("./src/routes/jogador");
 
+  var bodyParser = require('body-parser');
+
+  app.use(bodyParser.json({limit: '5000000mb'}));
+  app.use(bodyParser.urlencoded({limit: '5000000mb', extended: false}));
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
 
 app.use(cors());
 
@@ -33,3 +38,5 @@ app.listen(PORTA, function () {
     \t\tSe "producao", você está se conectando ao banco REMOTO (SQL Server em nuvem Azure) \n
     \t\t\t\tPara alterar o ambiente, comente ou descomente as linhas 1 ou 2 no arquivo 'app.js'`);
 });
+
+

@@ -7,7 +7,7 @@ function cadastrar(nome, email, senha, pais) {
     insert into Jogador(nome, email, senha, pais, replaysAssistidos) values ('${nome}', '${email}', SHA2('${senha}', 512), '${pais}', 0);
   `;
 
-  console.log("Executando a instrução SQL: \n" + instrucao);
+  
   return database.executar(instrucao);
 }
 
@@ -17,7 +17,7 @@ function verificarEmail(email) {
     select email from Jogador where email = '${email}';
   `;
 
-  console.log("Executando a instrução SQL: \n" + instrucao);
+  
   return database.executar(instrucao);
 }
 
@@ -27,7 +27,7 @@ function autenticar(nomeEmail, senha) {
     select * from Jogador where (email = '${nomeEmail}')and senha = SHA2('${senha}', 512);
   `;
 
-  console.log("Executando a instrução SQL: \n" + instrucao);
+  
   return database.executar(instrucao);
 }
 
@@ -37,7 +37,7 @@ function editarPerfil(idJogador, nome, email, senha, vrUtilizado, youtubeLink, t
     update Jogador set nome = '${nome}', email = '${email}', senha = '${senha}', vrUtilizado = '${vrUtilizado}', youtubeLink = '${youtubeLink}', twitchLink = '${twitchLink}', twitterLink = '${twitterLink}' where idJogador = '${idJogador}';
   `;
 
-  console.log("Executando a instrução SQL: \n" + instrucao);
+  
   return database.executar(instrucao);
 }
 
@@ -45,7 +45,7 @@ function verificarToken(email) {
 
   var instrucao = `select idJogador from Jogador where email = '${email}';`;
 
-  console.log("Executando a instrução SQL: \n" + instrucao);
+  
   return database.executar(instrucao);
 }
 

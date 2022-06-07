@@ -11,7 +11,7 @@
     <title>Mapas</title>
 </head>
 
-<body>
+<body onload="obterMapas()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -98,14 +98,14 @@
 </body>
 <script>
     var pagina = 1;
-    obterMapas();
+    
 
     function verifyPage() {
         const urlParams = new URLSearchParams(window.location.search);
         const page = urlParams.get('page');
         if (page < 1) pagina =  1;
         else if (page == undefined) pagina = 1;
-        else pagina = page;
+        else pagina = parseInt(page);
     }
 
     async function obterMapas() {

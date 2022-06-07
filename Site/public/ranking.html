@@ -118,12 +118,12 @@
 
     function getURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
-        let paginaParam = urlParams.get('page');
+        let paginaParam = parseInt(urlParams.get('page'));
         let typeOfRankingParam = urlParams.get('typeOfRanking');
         if (typeOfRankingParam != null) {
             document.getElementById('type-of-ranking').value = typeOfRankingParam;
         }
-        if (paginaParam == null) {
+        if (isNaN(paginaParam)) {
             paginaParam = 1;
         }
         return paginaParam;
@@ -161,7 +161,6 @@
 
             if (response.ok) {
                 response.json().then(async json => {
-                    console.log(json);
 
                     let selectElement = document.getElementById('type-of-ranking');
 
@@ -175,7 +174,7 @@
 
                     paginaParam = await getURLParams();
                     let playersInfo = await getRanking(countryFlags, paginaParam);
-
+                    console.log('Jogadores: ', playersInfo);
                     let paginas = playersInfo.qtdPaginas;
                     let players = playersInfo.jogadores;
                     loadPages(paginas);
@@ -217,9 +216,14 @@
             trElement.classList.add('mini-ranking-container');
             if (players[i].S == null) players[i].S = 0
             if (players[i].A == null) players[i].A = 0
+            
+            let playerRank;
+            if (paginaParam != 1) playerRank = i + 1 + (10 * parseInt(paginaParam));
+            else playerRank = i + 1;
 
             trElement.innerHTML = `<td>
-                                <div class="mini-ranking-title-container">
+                <div class="mini-ranking-title-container">
+                    <span>#${playerRank}</span>
                                     <img class="player-img"
                                         src="/jogador/getImage/${players[i].idJogador}">
                                     <div class="flag-country"><span>${players[i].pais}</span></div>
@@ -309,12 +313,21 @@
 
     function unloadPlayers() {
         let tableElement = document.getElementById('table-ranking');
-        tableElement.innerHTML = '';
+        tableElement.innerHTML = `<tr>
+                            <th></th>
+                            <th>Precisão Média</th>
+                            <th>Mapas Jogados</th>
+                            <th>Pontuação Total</th>
+                            <th>SS</th>
+                            <th>S</th>
+                            <th>A</th>
+                        </tr>`;
     }
 
     async function changeCountry() {
         unloadPlayers();
         let playersInfo = await getRanking(countryFlags, paginaParam);
+        
         let players = playersInfo.jogadores;
         loadPlayers(players);
         setCountry();
