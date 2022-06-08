@@ -16,6 +16,17 @@
 
 */
 
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&family=Ubuntu:wght@500&display=swap'); */
+
+@font-face {
+    font-family: NunitoTitle;
+    src: url('./assets/font/static/Nunito-ExtraBold.ttf') format('truetype');
+
+    /* opentype - otf
+        truetype - ttf
+    */
+}
+
 body,
 html {
     height: 100%;
@@ -37,7 +48,8 @@ html {
 
     margin: 0;
     padding: 0;
-    font-family: Torus, Inter, "Helvetica Neue", Tahoma, Arial, "Hiragino Kaku Gothic ProN", Meiryo, "Microsoft YaHei", "Apple SD Gothic Neo", sans-serif;
+    font-family: 'Nunito', sans-serif;
+    /* font-family: 'Ubuntu', sans-serif; */
 }
 
 input {
@@ -132,7 +144,8 @@ input {
 }
 
 .container-index-title {
-    font-size: 29px;
+    font-size: 70px;
+    font-weight: 900;
     text-align: center;
 }
 
@@ -252,7 +265,6 @@ input {
     font-size: 17px;
     font-weight: 600;
     background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg") repeat scroll 0% 0%;
-    background-repeat: no-repeat !important;
     background-size: cover !important;
     color: #e3ebed;
     text-shadow: 2px 2px 0 #000;
