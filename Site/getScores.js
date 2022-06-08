@@ -13,7 +13,7 @@ var allPromises = [];
 const limitePlayers = 30;
 const limiteScoresPlayer = 30;
 const tipoScore = 'top';
-const country = 'br';
+const country = ['br', 'us', 'jp'];
 const onlyGetPosition = false;
 
 
@@ -46,14 +46,17 @@ var mySqlConfig = {
     database: "guraSaber",
     password: "pateta@123",
 };
+var conexao = mysql.createConnection(mySqlConfig);
 
 async function main() {
-    var players = (await search(`https://scoresaber.com/api/players?countries=${country}&withMetadata=true`)).players;
-    for (let i = 0; i < limitePlayers; i++) {
-        console.log(`Carregando id: ${players[i].id}`)
-        let playerInfoPromise = search(`https://scoresaber.com/api/player/${players[i].id}/full`);
-        let playerScoresPromise = search(`https://scoresaber.com/api/player/${players[i].id}/scores?limit=${limiteScoresPlayer}&sort=${tipoScore}&withMetadata=true`);
-        allPromises.push(Promise.all([playerInfoPromise, playerScoresPromise]));
+    for (let j = 0; j < country.length; j++) {
+        var players = (await search(`https://scoresaber.com/api/players?countries=${country[j]}&withMetadata=true`)).players;
+        for (let i = 0; i < limitePlayers; i++) {
+            console.log(`Carregando id: ${players[i].id}`)
+            let playerInfoPromise = search(`https://scoresaber.com/api/player/${players[i].id}/full`);
+            let playerScoresPromise = search(`https://scoresaber.com/api/player/${players[i].id}/scores?limit=${limiteScoresPlayer}&sort=${tipoScore}&withMetadata=true`);
+            allPromises.push(Promise.all([playerInfoPromise, playerScoresPromise]));
+        }
     }
     setInterval(() => {
         requestNum = 0;
@@ -95,6 +98,7 @@ async function getPlayerInfo() {
     });
     return
 }
+
 console.log('Limite Players: ', limitePlayers);
 console.log('Limite Scores: ', limiteScoresPlayer);
 console.log('Tipo Scores: ', tipoScore);
@@ -253,7 +257,6 @@ function executar(instrucao) {
     // VERIFICA A VARIÁVEL DE AMBIENTE SETADA EM app.js
     /* console.log(instrucao); */
     return new Promise(function (resolve, reject) {
-        var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect();
         conexao.query(instrucao.replaceAll('\n', ''), function (erro, resultados) {
             conexao.end();
