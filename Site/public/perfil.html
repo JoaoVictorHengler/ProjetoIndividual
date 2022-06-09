@@ -167,15 +167,30 @@
                     </section>
 
                     <section class="player-label-container" id="Classificacao_section">
-                        <div class="player-label-title-container">
-                            <h3 class="player-label-title">Classificação</h3>
+                        <div style="width: 100%;">
+                            <div class="player-label-title-container">
+                                <h3 class="player-label-title">Classificação</h3>
+                            </div>
                         </div>
+                        
+                        <ul id="melhores-scores">
+                            <li></li>
+                        </ul>
+                            <div class="pages-list">
+                                <ul class="pages" style="color: white;">
+                                </ul>
+                            </div>
                     </section>
 
                     <section class="player-label-container" id="historico_section">
                         <div class="player-label-title-container">
                             <h3 class="player-label-title">Histórico</h3>
                         </div>
+                        <ul id="recentes-scores"></ul>
+                            <div class="pages-list">
+                                <ul class="pages" style="color: white;">
+                                </ul>
+                            </div>
                     </section>
                 </div>
             </div>
@@ -235,8 +250,14 @@
                 let year = new Date().getFullYear();
 
                 let dateRank = subDate(`${year}-${month}-${date}`, i);
-                
-                if(dateRank == element.diaRank.split('T')[0]) labels.push(element.diaRank.split('T')[0]);
+
+                if (dateRank == element.diaRank.split('T')[0]) {
+                    let msg;
+                    if (i == 0) msg = 'Hoje';
+                    else if (i == 1) msg = 'Ontem';
+                    else msg = `${i} Dias atrás`
+                    labels.push(msg);
+                }
             }
         });
 
@@ -598,7 +619,8 @@
             if (response.ok) {
                 response.json().then(json => {
                     console.log('Scores: ', json);
-
+                    loadPages(json.qtdPaginas, pagina, idJogador);
+                    
                 });
 
             } else {
@@ -621,6 +643,70 @@
         var result = new Date(date);
         result.setDate(result.getDate() - days);
         return result.toISOString().substring(0, 10);
+    }
+
+    function loadPages(totalPaginas, pagina, idJogador) {
+        let pagesElement = document.getElementsByClassName('pages');
+        for (let k = 0; k < pagesElement.length; k++) {
+
+            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina);
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                let pageElement = document.createElement('li');
+                pageElement.classList.add("page-num");
+                if (pagina == i) {
+                    pageElement.classList.add('selected')
+                    pageElement.style.opacity = '0.5';
+                    pageElement.style.cursor = 'default';
+                } else {
+                    pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina) };
+                }
+                pageElement.innerHTML += i;
+                pageElement.id = `page-#${i}`
+                pagesElement[k].appendChild(pageElement);
+            }
+            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina);
+        }
+    }
+
+    function createAntButton(element, totalPaginas, idJogador, pagina) {
+        let antPage = document.createElement('li');
+        antPage.innerHTML = '<span>Ant</span>';
+        if (pagina == 1) {
+            antPage.style.opacity = '0.5';
+            antPage.style.cursor = 'default';
+        } else {
+            antPage.onclick = () => { reloadPage(false, totalPaginas) };
+        }
+        element.appendChild(antPage);
+    }
+
+    function createNextButton(element, totalPaginas, idJogador, pagina) {
+        let proxPage = document.createElement('li');
+        proxPage.innerHTML = '<span>Próx</span>';
+        if (pagina == totalPaginas) {
+            proxPage.style.opacity = '0.5';
+            proxPage.style.cursor = 'default';
+        } else {
+            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, pagina) };
+        }
+        element.appendChild(proxPage);
+    }
+
+    function reloadPage(nextPage, totalPaginas, idJogador, pagina) {
+        if (!isNaN(parseInt(nextPage))) {
+            pagina = parseInt(nextPage);
+        } else {
+            if (nextPage) {
+                if (pagina == totalPaginas && pagina >= 1) return;
+                pagina += 1;
+            } else {
+                if (pagina <= 1) return;
+                pagina -= 1;
+            }
+        }
+        window.location.href = `./perfil.html?id=${idJogador}&page=${pagina}`;
+        window.focus();
     }
 
 </script>

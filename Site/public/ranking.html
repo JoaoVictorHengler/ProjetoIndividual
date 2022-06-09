@@ -267,7 +267,7 @@
                     pageElement.style.opacity = '0.5';
                     pageElement.style.cursor = 'default';
                 } else {
-                    pageElement.onclick = () => { reloadPage(i) };
+                    pageElement.onclick = () => { reloadPage(i, totalPaginas) };
                 }
                 pageElement.innerHTML += i;
                 pageElement.id = `page-#${i}`
@@ -306,7 +306,7 @@
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
-            proxPage.onclick = () => { reloadPage(true), totalPaginas };
+            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
         }
         element.appendChild(proxPage);
     }

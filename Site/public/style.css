@@ -1726,6 +1726,28 @@ input {
     justify-content: center;
 }
 
+.player-label-container#Classificacao_section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#melhores-scores {
+    margin-top: 10px;
+    width: 95%;
+    height: 100%;
+
+    list-style: none;
+}
+
+#melhores-scores li {
+    width: 100%;
+    height: 45px;
+    background-color: #1c293c;
+    border-radius: 5px;
+}
+
 /* Fim Perfil */
 
 /* ------------------------------------------------------------------------------------------------------------------------------------- */

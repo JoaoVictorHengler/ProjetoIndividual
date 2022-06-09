@@ -5,6 +5,7 @@ const path = require('Path');
 const jwt = require('jsonwebtoken');
 const config = require('../config.json');
 const { readFileSync, writeFileSync } = require('fs');
+const fileLocation = path.join(__dirname, `../../public/assets/userDescription.json`);
 
 function obterPaises(request, response) {
   let fileLocation = path.join(__dirname, `../../public/assets/country_flags.json`);
@@ -295,7 +296,6 @@ function setarDescricao(request, response) {
 }
 
 function encontrarArquivoEUsuario(idJogador) {
-  let fileLocation = path.join(__dirname, `../../public/assets/userDescription.json`);
   let users = JSON.parse(readFileSync(fileLocation, { encoding: 'utf8', flag: 'r' })).usuarios;
 
   let user = users.filter(user => {
