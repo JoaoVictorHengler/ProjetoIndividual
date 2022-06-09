@@ -66,7 +66,7 @@ function listarScoresJogador(request, response) {
   if (idJogador == undefined) {
     response.status(400).send("Id do Jogador está undefined!");
   } else {
-    scoreModel.listarScoresJogador(idJogador, (pagina * 20) - 20, type).then(async (result) => {
+    scoreModel.listarScoresJogador(idJogador, (pagina * 6) - 6, type).then(async (result) => {
       let qtdPaginas = await obterQtdPaginasJogador(idJogador);
       response.json({
         'qtdPaginas': qtdPaginas,
@@ -95,7 +95,7 @@ async function obterQtdPaginasJogador(idJogador) {
         }
 
         qtdPaginas++;
-        qtdScores -= 20;
+        qtdScores -= 6;
       }
       return qtdPaginas
     }

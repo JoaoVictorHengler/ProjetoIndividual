@@ -11,7 +11,7 @@
     <title>Mapas</title>
 </head>
 
-<body onload="obterMapas()">
+<body onload="verifyPage(), obterMapas()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -98,18 +98,17 @@
 </body>
 <script>
     var pagina = 1;
-    
+
 
     function verifyPage() {
         const urlParams = new URLSearchParams(window.location.search);
         const page = urlParams.get('page');
-        if (page < 1) pagina =  1;
+        if (page < 1) pagina = 1;
         else if (page == undefined) pagina = 1;
         else pagina = parseInt(page);
     }
 
     async function obterMapas() {
-        await verifyPage()
         fetch(`/mapa/listarMapas/${pagina}`, {
             method: 'GET',
             headers: {
@@ -140,12 +139,6 @@
         let mesesPtBr = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
         let listMapas = document.getElementsByClassName('mapa-list-container');
         let listItem = document.createElement('li');
-        let listElements = document.getElementsByClassName('mapa-list-item');
-        let listItems = [];
-
-        for (let i = 0; i < listElements.length; i++) {
-            listItems.push(listElements[i]);
-        }
 
         listItem.classList.add('mapa-list-item');
         listItem.id = `#${mapa.idMapa}`;
@@ -200,27 +193,77 @@
     }
 
     function loadPages(totalPaginas) {
+
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
             createAntButton(pagesElement[k], totalPaginas);
 
-            for (let i = 1; i <= totalPaginas; i++) {
-                let pageElement = document.createElement('li');
-                pageElement.classList.add("page-num");
-                if (pagina == i) {
-                    pageElement.classList.add('selected')
-                    pageElement.style.opacity = '0.5';
-                    pageElement.style.cursor = 'default';
-                } else {
-                    pageElement.onclick = () => { reloadPage(i, totalPaginas) };
+            printFirstPage(totalPaginas, pagesElement[k]);
+
+            for (let i = pagina - 1; i < pagina + 2; i++) {
+                if (i >= totalPaginas) break;
+                console.log(i)
+                if (i > 1 ) {
+                    printPage(i, totalPaginas, pagesElement[k]);
                 }
-                pageElement.innerHTML += i;
-                pageElement.id = `page-#${i}`
-                pagesElement[k].appendChild(pageElement);
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
+                
+            printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
         }
+    }
+
+    function printFirstPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        }
+        pageElement.onclick = () => { reloadPage(1, totalPaginas) };
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (pagina == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            }
+            pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        }
+        pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
     }
 
     function createAntButton(element, totalPaginas) {
@@ -247,7 +290,12 @@
         element.appendChild(proxPage);
     }
 
-    function reloadPage(nextPage, totalPaginas) {
+    async function reloadPage(nextPage, totalPaginas) {
+        let paginaElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < paginaElement.length; i++) {
+            paginaElement[i].innerHTML = '';
+        }
+        document.getElementsByClassName('mapa-list-container')[0].innerHTML = '';
         if (!isNaN(parseInt(nextPage))) {
             pagina = nextPage;
         } else {
@@ -259,8 +307,12 @@
                 pagina -= 1;
             }
         }
-        window.location.href = `./mapas.html?page=${pagina}`;
-        window.focus();
+
+        obterMapas();
+        setTimeout(() => {
+        }, 350);
+        /* window.location.href = `./mapas.html?page=${pagina}`;
+        window.focus(); */
     }
 </script>
 

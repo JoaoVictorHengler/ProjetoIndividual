@@ -28,17 +28,17 @@ function verificarNumPaginas(idMapa, nomeDificuldade) {
 function listarScoresJogador(idJogador, minValue, type) {
 
   var instrucao = `
-    select idMapa, nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, nomeDificuldade, notas, maxPontuacao, pontuacao, round((pontuacao / maxPontuacao) * 100, 2) as precisao,
-    comboMaximo, corteRuim, notasErradas, dataScore
+    select idMapa, nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, nomeDificuldade, round((pontuacao / maxPontuacao) * 100, 2) as precisao,
+    comboMaximo, corteRuim, notasErradas, dataScore, pontosDePerformace
                       from Score 
                       join Jogador on fkJogador = idJogador and idJogador = ${idJogador}
                       join Dificuldade on fkDificuldade = idDificuldade
                       join Mapa on idMapa = Dificuldade.fkMapa and idMapa = Score.fkMapa order by
   `;
   
-  if (type == 'top') instrucao += ' pontosDePerformace desc';
+  if (type == 'top') instrucao += ' pontosDePerformace desc ';
   else instrucao += ' dataScore desc '
-  instrucao += `limit ${minValue}, 20;`;
+  instrucao += `limit ${minValue}, 6;`;
 
 
   

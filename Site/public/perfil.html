@@ -172,25 +172,13 @@
                                 <h3 class="player-label-title">Classificação</h3>
                             </div>
                         </div>
-                        
-                        <ul id="melhores-scores">
-                            <li></li>
-                        </ul>
-                            <div class="pages-list">
-                                <ul class="pages" style="color: white;">
-                                </ul>
-                            </div>
-                    </section>
 
-                    <section class="player-label-container" id="historico_section">
-                        <div class="player-label-title-container">
-                            <h3 class="player-label-title">Histórico</h3>
+                        <ul id="melhores-scores">
+                        </ul>
+                        <div class="pages-list">
+                            <ul class="pages" style="color: white;">
+                            </ul>
                         </div>
-                        <ul id="recentes-scores"></ul>
-                            <div class="pages-list">
-                                <ul class="pages" style="color: white;">
-                                </ul>
-                            </div>
                     </section>
                 </div>
             </div>
@@ -348,7 +336,7 @@
         getPlayerInfo(idJogador, countryFlags);
 
         carregarDescricao(idJogador);
-        getPlayerScores(idJogador, 'recent', pagina)
+        getPlayerScores(idJogador, 'top', pagina, document.getElementById('melhores-scores'))
     }
 
     function getPlayerInfo(idJogador, countryFlags, pagina) {
@@ -607,7 +595,7 @@
         return descriptionButton;
     }
 
-    function getPlayerScores(idJogador, type, pagina) {
+    function getPlayerScores(idJogador, type, pagina, element) {
         fetch(`/score/listarScoresJogador/${idJogador}&${type}&${pagina}`, {
             method: 'GET',
             headers: {
@@ -619,8 +607,11 @@
             if (response.ok) {
                 response.json().then(json => {
                     console.log('Scores: ', json);
-                    loadPages(json.qtdPaginas, pagina, idJogador);
-                    
+                    loadPages(json.qtdPaginas, pagina, idJogador, element);
+                    for (let i = 0; i < json.scores.length; i++) {
+                        if (i == 6) break;
+                        setScores(json.scores[i], element)
+                    }
                 });
 
             } else {
@@ -645,55 +636,128 @@
         return result.toISOString().substring(0, 10);
     }
 
-    function loadPages(totalPaginas, pagina, idJogador) {
+    function setScores(score, element) {
+        let liElement = document.createElement('li');
+        liElement.onclick = () => { goToMapaPage(score.idMapa, score.nomeDificuldade) };
+        liElement.innerHTML = `<div class="player-score-info-container">
+                                    <img src="/mapa/getImage/${score.hashMapa}">
+                                    <div class="player-score-info">
+                                        <div class="player-score-info-mapa-name">
+                                            <div>
+                                                <span>${score.nomeMusica}</span>
+                                                <span>por ${score.artistaMusica}</span>  
+                                            </div>
+                                            <div>
+                                                <span>mapeado por ${score.criadorMapa}</span>
+                                                <span style="color: #475b7e">Há x Dias</span>
+                                            </div>
+                                        </div>
+                                        <div class="player-score-info-score-info">
+                                            <span>${score.precisao}%</span>
+                                        </div>
+                                        <div class="player-score-info-score-info ${score.nomeDificuldade.toLowerCase()}">
+                                            <span>${score.pontosDePerformace}</span>
+                                            <span style="color: #5e6bea">pp</span>
+                                        </div>
+                                    </div>
+                                </div>`;
+        element.appendChild(liElement);
+    }
+
+    function loadPages(totalPaginas, pagina, idJogador, elementScore) {
+
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
-            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina);
-
+            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina, elementScore);
+            console.log(totalPaginas)
             for (let i = 1; i <= totalPaginas; i++) {
                 let pageElement = document.createElement('li');
                 pageElement.classList.add("page-num");
-                if (pagina == i) {
-                    pageElement.classList.add('selected')
-                    pageElement.style.opacity = '0.5';
+                
+                if (totalPaginas >= 5 && (i-1) == 5 && totalPaginas >= 6) {
+
+                    pageElement.innerHTML += '...';
+
                     pageElement.style.cursor = 'default';
+                    pagesElement[k].appendChild(pageElement);
+                    printLastPage(i, totalPaginas, pagesElement[k], pagina, idJogador, elementScore);
+                    break;
                 } else {
-                    pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina) };
+                    if (pagina == i) {
+                        pageElement.classList.add('selected')
+                        pageElement.style.opacity = '0.5';
+                        pageElement.style.cursor = 'default';
+                    } else {
+                        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
+                    }
+                    pageElement.innerHTML += i;
+                    pageElement.id = `page-#${i}`;
+
                 }
-                pageElement.innerHTML += i;
-                pageElement.id = `page-#${i}`
                 pagesElement[k].appendChild(pageElement);
+
             }
-            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina);
+            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina, elementScore);
         }
     }
 
-    function createAntButton(element, totalPaginas, idJogador, pagina) {
+    function printLastPage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas - 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+            printLastButOnePage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore)
+        }
+        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastButOnePage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas - 2) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        }
+        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
+        pageElement.innerHTML += totalPaginas - 1;
+        pageElement.id = `page-#${totalPaginas - 1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function createAntButton(element, totalPaginas, idJogador, pagina, elementScore) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
         if (pagina == 1) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
-            antPage.onclick = () => { reloadPage(false, totalPaginas) };
+            antPage.onclick = () => { reloadPage(false, totalPaginas, elementScore) };
         }
         element.appendChild(antPage);
     }
 
-    function createNextButton(element, totalPaginas, idJogador, pagina) {
+    function createNextButton(element, totalPaginas, idJogador, pagina, elementScore) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
         if (pagina == totalPaginas) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
-            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, pagina) };
+            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, pagina, elementScore) };
         }
         element.appendChild(proxPage);
     }
 
-    function reloadPage(nextPage, totalPaginas, idJogador, pagina) {
+    function reloadPage(nextPage, totalPaginas, idJogador, pagina, elementScore) {
         if (!isNaN(parseInt(nextPage))) {
             pagina = parseInt(nextPage);
         } else {
@@ -705,10 +769,19 @@
                 pagina -= 1;
             }
         }
-        window.location.href = `./perfil.html?id=${idJogador}&page=${pagina}`;
-        window.focus();
+
+        elementScore.innerHTML = '';
+        let filtroScore = 'top';
+        if (elementScore.id != 'melhores-scores') filtroScore = 'recent';
+        document.getElementsByClassName('pages')[0].innerHTML = '';
+        getPlayerScores(idJogador, filtroScore, pagina, elementScore);
+        /* window.focus(); */
     }
 
+    function goToMapaPage(idMapa, diff) {
+        window.location.href = `./mapa.html?idmapa=${idMapa}&diff=${diff}`;
+        window.focus();
+    }
 </script>
 
 

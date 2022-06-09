@@ -46,7 +46,6 @@ var mySqlConfig = {
     database: "guraSaber",
     password: "pateta@123",
 };
-var conexao = mysql.createConnection(mySqlConfig);
 
 async function main() {
     for (let j = 0; j < country.length; j++) {
@@ -257,6 +256,7 @@ function executar(instrucao) {
     // VERIFICA A VARIÁVEL DE AMBIENTE SETADA EM app.js
     /* console.log(instrucao); */
     return new Promise(function (resolve, reject) {
+        var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect();
         conexao.query(instrucao.replaceAll('\n', ''), function (erro, resultados) {
             conexao.end();

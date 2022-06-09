@@ -84,7 +84,7 @@
                 </div>
                 <div class="container-index-title-container">
                     <div class="container-index-title">
-                        <h1>Bem vindo ao Gura Saber</h1>
+                        <h1 style="font-size: 60px;">Bem vindo ao Gura Saber</h1>
                     </div>
                     <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber
@@ -103,7 +103,7 @@
             <div class="pattern-dots-regular" style="color: white;">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
-                        <span>Possuímos uma variedade de mapas</span>
+                        <h2 style="font-size: 60px;">Possuímos uma variedade de mapas</h2>
                     </div>
                     <!-- <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
@@ -424,7 +424,7 @@
             <div class="pattern-dots-regular" style="flex-direction: row-reverse; color: black;">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
-                        <span>Possuimos uma tela de ranking</span>
+                        <h2 style="font-size: 60px;">Possuímos uma tela de ranking</h1>
                     </div>
                     <!--  <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
@@ -433,57 +433,222 @@
                 <div class="mini-ranking reveal">
                     <div>
                         <img class="gura-gif" src="assets/img/gura-tambor.webp">
-                        <table class="mini-ranking-table">
-                            <tr>
-                                <th></th>
-                                <th>Precisão Média</th>
-                                <th>Mapas Jogados</th>
-                                <th>Pontuação Total</th>
-                                <th>SS</th>
-                                <th>S</th>
-                                <th>A</th>
-                            </tr>
-                            <tr class="mini-ranking-container ">
+                        <table class="mini-ranking-table" id="table-ranking">
+                            <tbody>
+                                <tr>
+                                    <th></th>
+                                    <th>Precisão Média</th>
+                                    <th>Mapas Jogados</th>
+                                    <th>Pontuação Total</th>
+                                    <th>SS</th>
+                                    <th>S</th>
+                                    <th>A</th>
+                                </tr>
+                            </tbody>
+                            <tr class="mini-ranking-container">
                                 <td>
                                     <div class="mini-ranking-title-container">
-                                        <img class="player-img"
-                                            src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg">
-                                        <div class="flag-country">
-                                        </div>
-                                        <a class="mini-ranking-title title-ranking">Nome</a>
+                                        <span style="margin-right: 10px;">#1</span>
+                                        <img class="player-img" src="/jogador/getImage/31">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">cerret</a>
                                     </div>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        95.00%
-                                    </span>
+                                    <span>97.10%</span>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        1.500
-                                    </span>
+                                    <span>30</span>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        1.08 Trilhões
-                                    </span>
+                                    <span>11407.33 pp</span>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        30.000
-                                    </span>
+                                    <span>30</span>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        30.000
-                                    </span>
+                                    <span>0</span>
                                 </td>
                                 <td class="mini-ranking-title">
-                                    <span>
-                                        30.000
-                                    </span>
+                                    <span>0</span>
                                 </td>
                             </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#2</span>
+                                        <img class="player-img" src="/jogador/getImage/32">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">Garsh</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>96.97%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>11337.78 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#3</span>
+                                        <img class="player-img" src="/jogador/getImage/33">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">Fudgy</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>97.08%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>11208.03 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#4</span>
+                                        <img class="player-img" src="/jogador/getImage/35">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">ACC | Kira</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>97.35%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>11162.42 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#5</span>
+                                        <img class="player-img" src="/jogador/getImage/34">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">[udon]</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>96.86%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>11146.49 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#6</span>
+                                        <img class="player-img" src="/jogador/getImage/36">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">Reddek</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>96.75%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>10949.30 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+                            <tr class="mini-ranking-container">
+                                <td>
+                                    <div class="mini-ranking-title-container">
+                                        <span style="margin-right: 10px;">#7</span>
+                                        <img class="player-img" src="/jogador/getImage/37">
+                                        <div class="flag-country"><img draggable="false" class="emoji" alt="🇺🇸"
+                                                src="https://twemoji.maxcdn.com/v/14.0.2/72x72/1f1fa-1f1f8.png"></div>
+                                        <a class="mini-ranking-title title-ranking">Astrella</a>
+                                    </div>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>96.72%</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>10802.81 pp</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>30</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                                <td class="mini-ranking-title">
+                                    <span>0</span>
+                                </td>
+                            </tr>
+
                         </table>
                     </div>
 
@@ -494,7 +659,7 @@
             <div class="pattern-dots-regular">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
-                        <h1>Edite o seu perfil</h1>
+                        <h2 style="font-size: 60px">Edite o seu perfil</h2>
                     </div>
                     <!-- <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber</h4>
@@ -506,7 +671,7 @@
             <div class="pattern-dots-regular" style="flex-direction: row-reverse; color: black;">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
-                        <h1>É fácil criar a sua conta</h1>
+                        <h2 style="font-size: 60px;">É fácil criar a sua conta</h2>
                     </div>
                     <div class="paragraph-container">
                         <h4 class="paragraph">1. Clique no botão de cadastro.</h4>
@@ -542,7 +707,6 @@
 
     function revealTable() {
         let reveals = document.getElementsByClassName('reveal-table'); /* Documento para revelar */
-        console.log(reveals)
         for (let i = 0; i < reveals.length; i++) {
             let windowHeight = window.innerHeight; /* tamanho da página */
             let revealTop = reveals[i].getBoundingClientRect().top; /* canto superior da div */
