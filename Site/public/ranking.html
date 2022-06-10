@@ -131,7 +131,8 @@
 
     async function main() {
         countryFlags = await getCountryFlags();
-        await getDataBaseCountries(countryFlags);
+        paginaParam = await getURLParams();
+        await getDataBaseCountries();
     }
 
     async function getCountryFlags() {
@@ -150,7 +151,7 @@
         }
     }
 
-    function getDataBaseCountries(countryFlags) {
+    function getDataBaseCountries() {
         fetch('/jogador/listarPaisesCadastrados', {
             method: 'GET',
             headers: {
@@ -172,12 +173,12 @@
                         selectElement.appendChild(countryOptionElement);
                     }
 
-                    paginaParam = await getURLParams();
+                    
                     let playersInfo = await getRanking(countryFlags, paginaParam);
                     console.log('Jogadores: ', playersInfo);
                     let paginas = playersInfo.qtdPaginas;
                     let players = playersInfo.jogadores;
-                    loadPages(paginas);
+                    loadPages(paginas, paginaParam);
                     loadPlayers(players);
                     setCountry();
                 })
@@ -209,73 +210,107 @@
         }
     }
 
-    function loadPlayers(players) {
-        let tableElement = document.getElementById('table-ranking');
-        for (let i = 0; i < players.length; i++) {
-            let trElement = document.createElement('tr');
-            trElement.classList.add('mini-ranking-container');
-            if (players[i].S == null) players[i].S = 0
-            if (players[i].A == null) players[i].A = 0
-            
-            let playerRank;
-            if (paginaParam != 1) playerRank = i + 1 + (10 * parseInt(paginaParam));
-            else playerRank = i + 1;
-
-            trElement.innerHTML = `<td>
-                <div class="mini-ranking-title-container">
-                    <span style="margin-right: 10px;">#${playerRank}</span>
-                                    <img class="player-img"
-                                        src="/jogador/getImage/${players[i].idJogador}">
-                                    <div class="flag-country"><span>${players[i].pais}</span></div>
-                                    <a class="mini-ranking-title title-ranking">${players[i].nome}</a>
-                                </div>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].precisaoMedia}%</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].mapasJogados}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].ppTotal} pp</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].SS}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].S}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].A}</span>
-                            </td>`;
-            tableElement.appendChild(trElement);
-        }
-    }
-
     function loadPages(totalPaginas) {
+
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
             createAntButton(pagesElement[k], totalPaginas);
 
-            for (let i = 1; i <= totalPaginas; i++) {
-                let pageElement = document.createElement('li');
-                pageElement.classList.add("page-num");
-                console.log(paginaParam);
-                if (paginaParam == i) {
-                    pageElement.classList.add('selected')
-                    pageElement.style.opacity = '0.5';
-                    pageElement.style.cursor = 'default';
-                } else {
-                    pageElement.onclick = () => { reloadPage(i, totalPaginas) };
+            printFirstPage(totalPaginas, pagesElement[k]);
+
+            for (let i = pagina - 1; i < pagina + 2; i++) {
+                if (i >= totalPaginas) break;
+                console.log(i)
+                if (i > 1 ) {
+                    printPage(i, totalPaginas, pagesElement[k]);
                 }
-                pageElement.innerHTML += i;
-                pageElement.id = `page-#${i}`
-                pagesElement[k].appendChild(pageElement);
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
+                
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
         }
     }
+
+    function printFirstPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
+        }
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (pagina == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+            }
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+        }
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function createAntButton(element, totalPaginas) {
+        let antPage = document.createElement('li');
+        antPage.innerHTML = '<span>Ant</span>';
+        if (pagina == 1 || totalPaginas == 0) {
+            antPage.style.opacity = '0.5';
+            antPage.style.cursor = 'default';
+        } else {
+            antPage.onclick = () => { reloadPage(false) };
+        }
+        element.appendChild(antPage);
+    }
+
+    function createNextButton(element, totalPaginas) {
+        let proxPage = document.createElement('li');
+        proxPage.innerHTML = '<span>Próx</span>';
+        if (pagina == totalPaginas || totalPaginas == 0) {
+            proxPage.style.opacity = '0.5';
+            proxPage.style.cursor = 'default';
+        } else {
+            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
+        }
+        element.appendChild(proxPage);
+    }
+
 
     function setCountry() {
         let flagElements = document.getElementsByClassName('flag-country');
@@ -284,31 +319,6 @@
             flagElements[i].innerHTML = '';
             setPlayerCountry(flagElements[i], false, countryName, countryFlags);
         }
-    }
-
-    function createAntButton(element, totalPaginas) {
-        let antPage = document.createElement('li');
-        antPage.innerHTML = '<span>Ant</span>';
-        if (paginaParam == 1) {
-            antPage.style.opacity = '0.5';
-            antPage.style.cursor = 'default';
-
-        } else {
-            antPage.onclick = () => { reloadPage(false), totalPaginas };
-        }
-        element.appendChild(antPage);
-    }
-
-    function createNextButton(element, totalPaginas) {
-        let proxPage = document.createElement('li');
-        proxPage.innerHTML = '<span>Próx</span>';
-        if (paginaParam == totalPaginas) {
-            proxPage.style.opacity = '0.5';
-            proxPage.style.cursor = 'default';
-        } else {
-            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
-        }
-        element.appendChild(proxPage);
     }
 
     function unloadPlayers() {
@@ -327,13 +337,18 @@
     async function changeCountry() {
         unloadPlayers();
         let playersInfo = await getRanking(countryFlags, paginaParam);
-        
+
         let players = playersInfo.jogadores;
         loadPlayers(players);
         setCountry();
     }
 
     function reloadPage(nextPage, totalPaginas) {
+        let paginaElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < paginaElement.length; i++) {
+            paginaElement[i].innerHTML = '';
+        }
+
         if (!isNaN(parseInt(nextPage))) {
             paginaParam = nextPage;
         } else {
@@ -345,9 +360,20 @@
                 paginaParam -= 1;
             }
         }
-        let typeOfRanking = document.getElementById('type-of-ranking').value;
-        window.location.href = `./ranking.html?page=${paginaParam}&typeOfRanking=${typeOfRanking}`;
-        window.focus();
+        
+
+        document.getElementById('table-ranking').innerHTML = `<tr>
+                            <th></th>
+                            <th>Precisão Média</th>
+                            <th>Mapas Jogados</th>
+                            <th>Pontuação Total</th>
+                            <th>SS</th>
+                            <th>S</th>
+                            <th>A</th>
+                        </tr>`;
+        getDataBaseCountries();
+        /* window.location.href = `./ranking.html?page=${paginaParam}&typeOfRanking=${typeOfRanking}`;
+        window.focus(); */
     }
 </script>
 

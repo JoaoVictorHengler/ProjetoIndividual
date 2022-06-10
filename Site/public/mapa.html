@@ -114,7 +114,7 @@
                             <span id="mapa-artist"></span>
                             <span id="mapa-creator"></span>
                         </div>
-                        <img id="map-img"src="">
+                        <img id="map-img" src="">
                     </div>
                     <div class="mapa-main-info">
                         <div>
@@ -192,14 +192,14 @@
             console.log('Resposta: ', response);
 
             if (response.ok) {
-                response.json().then( async json => {
+                response.json().then(async json => {
                     countryJson = json;
                 })
             }
-            
+
         });
     }
-    
+
     function getMapaParams() {
         const urlParams = new URLSearchParams(window.location.search);
         idMapa = urlParams.get('idmapa');
@@ -239,13 +239,13 @@
                         mapa.dificuldades[i].nomeDificuldade = convertDiffs(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
                     }
 
-                    if (diff == null) diff = { 'nomeDificuldade': higherDiff.nomeDificuldade};
+                    if (diff == null) diff = { 'nomeDificuldade': higherDiff.nomeDificuldade };
                     else {
                         diff = {
                             'nomeDificuldade': diff
                         };
                     }
-                    
+
                     getScores(mapa, diff);
 
                 })
@@ -264,7 +264,7 @@
             console.log('Resposta: ', responseScores);
 
             if (responseScores.ok) {
-                responseScores.json().then( async jsonScores => {
+                responseScores.json().then(async jsonScores => {
                     console.log(jsonScores);
                     var totalPaginas = 0;
                     let informacao = jsonScores
@@ -273,9 +273,9 @@
                     loadMapInfo(mapa.nomeMusica, mapa.artistaMusica, mapa.criadorMapa, mapa.hashMapa,
                         scores.length, mapa.bpmMapa, mapa.duracaoMapa,
                         new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
-                    
+
                     for (let i = 0; i < mapa.dificuldades.length; i++) {
-                
+
                         if (mapa.dificuldades[i].nomeDificuldade == higherDiff.nomeDificuldade) loadDiffInfo(mapa.dificuldades[i])
                         await loadDiffs(mapa.dificuldades[i].nomeDificuldade, higherDiff.nomeDificuldade)
                     }
@@ -305,7 +305,7 @@
         }
         if (score.comboMaximo == notes) {
             colorCombo = `style="color: green;"`;
-            
+
         }
         let metric = getMetrics(score.precisao);
         scoreElement.classList.add('mapa-list-scores');
@@ -323,38 +323,90 @@
     }
 
     function loadPages(totalPaginas) {
+
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
             createAntButton(pagesElement[k], totalPaginas);
 
-            for (let i = 0; i < totalPaginas; i++) {
-                let pageElement = document.createElement('li');
-                pageElement.classList.add("page-num");
-                if (i == 0) {
-                    pageElement.classList.add('selected');
-                    pageElement.style.cursor = 'default';
-                    pageElement.style.opacity = '0.5';
+            printFirstPage(totalPaginas, pagesElement[k]);
+            
+            for (let i = pagina - 1; i < pagina + 2; i++) {
+                if (i >= totalPaginas) break;
+                console.log(i)
+                if (i > 1) {
+                    printPage(i, totalPaginas, pagesElement[k]);
                 }
-                pageElement.innerHTML += i + 1;
-                pageElement.id = `page-#${i + 1}`;
-                pagesElement[k].appendChild(pageElement);
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
 
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
-
         }
+    }
+
+    function printFirstPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
+        }
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (pagina == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+            }
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+        }
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
     }
 
     function createAntButton(element, totalPaginas) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
-        if (pagina == 1) {
+        if (pagina == 1 | totalPaginas == 0) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
-
         } else {
-            antPage.onclick = () => { reloadPage(false, totalPaginas) };
+            antPage.onclick = () => { reloadPage(false) };
         }
         element.appendChild(antPage);
     }
@@ -362,7 +414,7 @@
     function createNextButton(element, totalPaginas) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
-        if (pagina == totalPaginas) {
+        if (pagina == totalPaginas || totalPaginas == 0) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
@@ -370,6 +422,7 @@
         }
         element.appendChild(proxPage);
     }
+
 
     function loadMapInfo(name, artist, creator, hash, qtdScores, bpmMapa, duracaoMapa, uploadMapa) {
         let nameElement = document.getElementById('mapa-name');
@@ -504,6 +557,10 @@
     }
 
     function reloadPage(nextPage, totalPaginas, otherDiff = null) {
+        let paginaElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < paginaElement.length; i++) {
+            paginaElement[i].innerHTML = '';
+        }
         if (otherDiff != null) {
             diff = otherDiff;
         } else {
@@ -520,8 +577,20 @@
             }
         }
 
-        window.location.href = `./mapa.html?idmapa=${idMapa}&page=${pagina}&diff=${diff}`;
-        window.focus();
+        document.getElementById('table-scores').innerHTML = `<tr class="mapa-list-table-title">
+                        <th><span>Rank</span></th>
+                        <th></th>
+                        <th>Pontuação</th>
+                        <th>Precisão</th>
+                        <th></th>
+                        <th>Jogador</th>
+                        <th>Combo Máximo</th>
+                        <th>Erros</th>
+                        <th>Tempo</th>
+                    </tr>`;
+        document.getElementById('types-of-diffs-container').innerHTML = '';
+
+        obterInformacoesMapa();
     }
 
     function loadDiffInfo(diff) {
@@ -532,12 +601,12 @@
         let qtdBombasElement = document.getElementById('qtd-bombas');
         let qtdParedesElement = document.getElementById('qtd-paredes');
         let notasPSegundoElement = document.getElementById('notas-p-segundo');
-        nomeDiffElement.innerHTML = diff.nomeDificuldade; 
-        njsElement.innerHTML = diff.njs; 
-        qtdNotasElement.innerHTML = diff.notas; 
-        qtdBombasElement.innerHTML = diff.bombas; 
-        qtdParedesElement.innerHTML = diff.obstaculos;  
-        notasPSegundoElement.innerHTML = diff.notasPSegundo; 
+        nomeDiffElement.innerHTML = diff.nomeDificuldade;
+        njsElement.innerHTML = diff.njs;
+        qtdNotasElement.innerHTML = diff.notas;
+        qtdBombasElement.innerHTML = diff.bombas;
+        qtdParedesElement.innerHTML = diff.obstaculos;
+        notasPSegundoElement.innerHTML = diff.notasPSegundo;
     }
 
     function getMetrics(acc) {

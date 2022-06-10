@@ -210,7 +210,7 @@
                 if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
                 
-            printLastPage(totalPaginas, pagesElement[k]);
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
         }
     }
@@ -223,8 +223,9 @@
             pageElement.classList.add('selected');
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
         }
-        pageElement.onclick = () => { reloadPage(1, totalPaginas) };
         pageElement.innerHTML += 1;
         pageElement.id = `page-#${1}`;
         pagesElement.appendChild(pageElement);
@@ -238,8 +239,9 @@
                 pageElement.classList.add('selected');
                 pageElement.style.cursor = 'default';
                 pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
             }
-            pageElement.onclick = () => { reloadPage(num, totalPaginas) };
             pageElement.innerHTML += num;
             pageElement.id = `page-#${num}`;
         } else {
@@ -259,8 +261,9 @@
             pageElement.classList.add('selected');
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
         }
-        pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
         pageElement.innerHTML += totalPaginas;
         pageElement.id = `page-#${totalPaginas}`;
         pagesElement.appendChild(pageElement);
@@ -269,7 +272,7 @@
     function createAntButton(element, totalPaginas) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
-        if (pagina == 1) {
+        if (pagina == 1 || totalPaginas == 0) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
@@ -281,7 +284,7 @@
     function createNextButton(element, totalPaginas) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
-        if (pagina == totalPaginas) {
+        if (pagina == totalPaginas || totalPaginas == 0) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {

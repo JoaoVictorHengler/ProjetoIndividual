@@ -216,6 +216,7 @@
 </script> <!-- Editor -->
 
 <script>
+    var pagina;
     function playerPositionChart(datas) {
         let labels = [];
         /* for (let i = 50; i > 0; i--) {
@@ -298,7 +299,7 @@
     function getURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const idJogador = urlParams.get('id');
-        let pagina = parseInt(urlParams.get('page'));
+        wpagina = parseInt(urlParams.get('page'));
 
         if (idJogador == null) {
             window.location = `./ranking.html`;
@@ -331,7 +332,7 @@
     }
 
     async function setPlayerInformations() {
-        let [idJogador, pagina] = getURLParams();
+        let [idJogador] = getURLParams();
         let countryFlags = await getCountryFlags();
         getPlayerInfo(idJogador, countryFlags);
 
@@ -664,95 +665,103 @@
         element.appendChild(liElement);
     }
 
-    function loadPages(totalPaginas, pagina, idJogador, elementScore) {
+    function loadPages(totalPaginas) {
 
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
-            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina, elementScore);
-            console.log(totalPaginas)
-            for (let i = 1; i <= totalPaginas; i++) {
-                let pageElement = document.createElement('li');
-                pageElement.classList.add("page-num");
-                
-                if (totalPaginas >= 5 && (i-1) == 5 && totalPaginas >= 6) {
+            createAntButton(pagesElement[k], totalPaginas);
 
-                    pageElement.innerHTML += '...';
+            printFirstPage(totalPaginas, pagesElement[k]);
 
-                    pageElement.style.cursor = 'default';
-                    pagesElement[k].appendChild(pageElement);
-                    printLastPage(i, totalPaginas, pagesElement[k], pagina, idJogador, elementScore);
-                    break;
-                } else {
-                    if (pagina == i) {
-                        pageElement.classList.add('selected')
-                        pageElement.style.opacity = '0.5';
-                        pageElement.style.cursor = 'default';
-                    } else {
-                        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
-                    }
-                    pageElement.innerHTML += i;
-                    pageElement.id = `page-#${i}`;
-
+            for (let i = pagina - 1; i < pagina + 2; i++) {
+                if (i >= totalPaginas) break;
+                console.log(i)
+                if (i > 1) {
+                    printPage(i, totalPaginas, pagesElement[k]);
                 }
-                pagesElement[k].appendChild(pageElement);
-
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
-            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina, elementScore);
+
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
+            createNextButton(pagesElement[k], totalPaginas);
         }
     }
 
-    function printLastPage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore) {
+    function printFirstPage(totalPaginas, pagesElement) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
 
-        if (pagina == totalPaginas - 1) {
+        if (pagina == 1) {
             pageElement.classList.add('selected');
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
-            printLastButOnePage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore)
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
         }
-        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (pagina == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+            }
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (pagina == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+        }
         pageElement.innerHTML += totalPaginas;
         pageElement.id = `page-#${totalPaginas}`;
         pagesElement.appendChild(pageElement);
     }
 
-    function printLastButOnePage(i, totalPaginas, pagesElement, pagina, idJogador, elementScore) {
-        let pageElement = document.createElement('li');
-        pageElement.classList.add("page-num");
-
-        if (pagina == totalPaginas - 2) {
-            pageElement.classList.add('selected');
-            pageElement.style.cursor = 'default';
-            pageElement.style.opacity = '0.5';
-        }
-        pageElement.onclick = () => { reloadPage(i, totalPaginas, idJogador, pagina, elementScore) };
-        pageElement.innerHTML += totalPaginas - 1;
-        pageElement.id = `page-#${totalPaginas - 1}`;
-        pagesElement.appendChild(pageElement);
-    }
-
-    function createAntButton(element, totalPaginas, idJogador, pagina, elementScore) {
+    function createAntButton(element, totalPaginas) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
-        if (pagina == 1) {
+        if (pagina == 1 || totalPaginas == 0) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
-            antPage.onclick = () => { reloadPage(false, totalPaginas, elementScore) };
+            antPage.onclick = () => { reloadPage(false) };
         }
         element.appendChild(antPage);
     }
 
-    function createNextButton(element, totalPaginas, idJogador, pagina, elementScore) {
+    function createNextButton(element, totalPaginas) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
-        if (pagina == totalPaginas) {
+        if (pagina == totalPaginas || totalPaginas == 0) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
-            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, pagina, elementScore) };
+            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
         }
         element.appendChild(proxPage);
     }
