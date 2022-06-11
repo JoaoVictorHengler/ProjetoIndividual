@@ -15,10 +15,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    <title>Home</title>
+    <title>Perfil</title>
 </head>
 
-<body>
+<body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -65,14 +65,6 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user"></i>
-            <div class="user-info">
-                <span id="username">UserName</span>
-                <span id="global">Global: #150</span>
-                <span id="nacional">Nacional: #1</span>
-
-            </div>
-            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
         </div>
 
     </div>
@@ -80,20 +72,28 @@
     <div class="banner">
         <div class="img-container">
             <img src="./assets/img/bsbg.jpg" class="background-image">
-            <i class="fa-solid fa-pen"></i>
+            <i class="fa-solid fa-pen" onclick="editImage('background')"></i>
+            <input type="file" id="arquivo-background" accept="image/png, image/gif, image/jpeg"
+                style="display: none; cursor: pointer;" onchange="sendImage(this)">
         </div>
         <div class="perfil-banner">
             <div class="pattern-dots-regular">
                 <div class="perfil-container">
                     <div class="player-header-container">
                         <div style="position: relative;">
-                            <img class="perfil-img" id="perfil-img"
-                                src="https://cdn.scoresaber.com/avatars/76561198993744552.jpg"
+                            <img class="perfil-img" id="perfil-img" src="./assets/img/oculus.png"
                                 onerror="this.src='./assets/img/oculus.png'"> <!-- Mudar Imagem para local -->
-                            <i class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-pen" onclick="editImage('')"></i>
+                            <form action="">
+                                <input type="file" id="arquivo-perfil" accept="image/png, image/gif, image/jpeg"
+                                style="display: none; cursor: pointer;" onchange="sendImage(this)">
+                            </form>
                         </div>
                         <div class="player-name-container">
-                            <span class="player-name" id="player-name">Shiro</span>
+                            <div style="position: relative;">
+                                <span class="player-name" id="player-name"></span>
+                                <i class="fa-solid fa-pen" style="bottom: -25px; right: 0px;"></i>
+                            </div>
                             <div class="flag-country" style="margin-left: 0px;">
                             </div>
                         </div>
@@ -101,11 +101,11 @@
 
                             <div class="global-container">
                                 <span>Posição Global:</span>
-                                <span id="posicaoGlobal">#150</span>
+                                <span id="posicaoGlobal">#0</span>
                             </div>
                             <div class="nacional-container">
                                 <span>Posição Nacional:</span>
-                                <span id="posicaoNacional">#1</span>
+                                <span id="posicaoNacional">#0</span>
                             </div>
                         </div>
                         <div class="hide-background-container">
@@ -129,10 +129,10 @@
                             </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
                             <div class="player-info-label">
 
-                                <span id="vrUtilizado">Oculus</span>
-                                <span id="precisaoMedia">100.00%</span>
-                                <span id="pontuacaoTotal">32891489124712</span>
-                                <span id="replaysAssistidos">31231312312</span>
+                                <span id="vrUtilizado">Desconhecido</span>
+                                <span id="precisaoMedia">0.00%</span>
+                                <span id="pontuacaoTotal">0</span>
+                                <span id="replaysAssistidos">0</span>
                             </div>
 
                             <!-- <i class="fa-brands fa-youtube"></i> -->
@@ -154,9 +154,12 @@
                         </li>
                     </ul>
 
-                    <section class="player-label-container" id="eu_section">
-                        <div class="player-label-title-container">
-                            <h3 class="player-label-title">eu!</h3>
+                    <section class="player-label-container" id="eu_section"
+                        style="display: flex; align-items: center; flex-direction: column;">
+                        <div style="width: 95%;">
+                            <div class="player-label-title-container">
+                                <h3 class="player-label-title">eu!</h3>
+                            </div>
                         </div>
                         <div class="editor-box-container">
                             <div style="width: 97%; height: fit-content;">
@@ -167,13 +170,19 @@
                     </section>
 
                     <section class="player-label-container" id="Classificacao_section">
-                        <div style="width: 100%;">
+                        <div style="width: 95%; position: relative; display: flex;">
                             <div class="player-label-title-container">
                                 <h3 class="player-label-title">Classificação</h3>
                             </div>
+                            <div class="player-select-type-score">
+                                <ul>
+                                    <li class="type-scores">Top</li>
+                                    <li class="type-scores">Recente</li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <ul id="melhores-scores">
+                        <ul id="scores-player-list">
                         </ul>
                         <div class="pages-list">
                             <ul class="pages" style="color: white;">
@@ -216,36 +225,26 @@
 </script> <!-- Editor -->
 
 <script>
+
     var pagina;
-    function playerPositionChart(datas) {
+    function playerPositionChart(historico) {
         let labels = [];
-        /* for (let i = 50; i > 0; i--) {
-            let msg;
-            if (i == 1) {
-                msg = 'Agora';
-            } else if (i == 2) {
-                msg = 'Ontem';
-            } else {
-                msg = `${i} Dias atrás`;
-            }
-            labels.push(msg);
-        } */
         let positionsData = [];
-        datas.forEach(element => {
-            positionsData.push(element.rankGlobal);
+        historico.forEach(dataHistorico => {
             for (let i = 0; i < 25; i++) {
                 let date = new Date().getDate()
                 let month = ("0" + (new Date().getMonth() + 1)).slice(-2);
                 let year = new Date().getFullYear();
 
-                let dateRank = subDate(`${year}-${month}-${date}`, i);
+                let today = subDate(`${year}-${month}-${date}`, i);
 
-                if (dateRank == element.diaRank.split('T')[0]) {
+                if (today == dataHistorico.diaRank.split('T')[0]) {
                     let msg;
                     if (i == 0) msg = 'Hoje';
                     else if (i == 1) msg = 'Ontem';
                     else msg = `${i} Dias atrás`
                     labels.push(msg);
+                    positionsData.push(dataHistorico.rankGlobal);
                 }
             }
         });
@@ -263,8 +262,8 @@
                 borderColor: 'rgb(58, 82, 125)',
                 data: positionsData,
                 tension: 0.4,
-                pointRadius: 0,
-                hoverPointRadius: 0
+                pointRadius: 1.2,
+                hoverPointRadius: 1.2
             }]
         };
 
@@ -294,6 +293,7 @@
             config
         );
     }
+
     setPlayerInformations();
 
     function getURLParams() {
@@ -337,7 +337,8 @@
         getPlayerInfo(idJogador, countryFlags);
 
         carregarDescricao(idJogador);
-        getPlayerScores(idJogador, 'top', pagina, document.getElementById('melhores-scores'))
+        document.getElementsByClassName('type-scores')[0].classList.add('selected');
+        getPlayerScores(idJogador, pagina)
     }
 
     function getPlayerInfo(idJogador, countryFlags, pagina) {
@@ -351,7 +352,6 @@
 
             if (response.ok) {
                 response.json().then(json => {
-                    console.log(json);
                     setPlayerInfo(idJogador, json, countryFlags);
                     playerPositionChart(json.historico);
                 });
@@ -445,7 +445,6 @@
 
             if (response.ok) {
                 response.json().then(json => {
-                    console.log(json);
                     window.editor.data = json.descricao;
                     document.getElementById('editor-buttons').innerHTML = '';
                     document.getElementById('editor-box').innerHTML = window.editor.data;
@@ -525,9 +524,12 @@
 
             if (response.ok) {
                 response.json().then(json => {
-                    console.log(json);
                     if (json.permission == true) {
                         document.getElementById('editor-buttons').appendChild(editDescriptionButton());
+                        let editImageElement = document.getElementsByClassName('fa-pen');
+                        for (let i = 0; i < editImageElement.length; i++) {
+                            editImageElement[i].style.display = 'block';
+                        }
                     }
                 });
 
@@ -549,7 +551,6 @@
     }
 
     function createCancelButton() {
-        console.log('teste')
         let cancelButton = document.createElement('button');
         cancelButton.onclick = () => cancelarDescricao();
         cancelButton.classList.add('button-login');
@@ -596,7 +597,17 @@
         return descriptionButton;
     }
 
-    function getPlayerScores(idJogador, type, pagina, element) {
+    function getPlayerScores(idJogador, pagina) {
+        let typesScores = document.getElementsByClassName('type-scores');
+        for (let i = 0; i < typesScores.length; i++) {
+            if (typesScores[i].classList.contains('selected')) {
+                type = typesScores[i].innerHTML.toLocaleLowerCase() == 'top' ? 'top' : 'recent'
+                typesScores[i].onclick = () => { };
+            } else {
+                typesScores[i].onclick = () => { changeScores(typesScores[i], idJogador, pagina) };
+            }
+        }
+
         fetch(`/score/listarScoresJogador/${idJogador}&${type}&${pagina}`, {
             method: 'GET',
             headers: {
@@ -607,8 +618,10 @@
 
             if (response.ok) {
                 response.json().then(json => {
-                    console.log('Scores: ', json);
-                    loadPages(json.qtdPaginas, pagina, idJogador, element);
+                    /* console.log('Scores: ', json); */
+                    loadPages(json.qtdPaginas, pagina, idJogador, type);
+
+                    let element = document.getElementById('scores-player-list');
                     for (let i = 0; i < json.scores.length; i++) {
                         if (i == 6) break;
                         setScores(json.scores[i], element)
@@ -645,7 +658,7 @@
                                     <div class="player-score-info">
                                         <div class="player-score-info-mapa-name">
                                             <div>
-                                                <span>${score.nomeMusica}</span>
+                                                <span class="title-ranking" style="font-size: 16px;">${score.nomeMusica}</span>
                                                 <span>por ${score.artistaMusica}</span>  
                                             </div>
                                             <div>
@@ -665,30 +678,30 @@
         element.appendChild(liElement);
     }
 
-    function loadPages(totalPaginas) {
+    function loadPages(totalPaginas, pagina, idJogador, type) {
 
         let pagesElement = document.getElementsByClassName('pages');
         for (let k = 0; k < pagesElement.length; k++) {
 
-            createAntButton(pagesElement[k], totalPaginas);
+            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina, type);
 
-            printFirstPage(totalPaginas, pagesElement[k]);
+            printFirstPage(totalPaginas, pagesElement[k], idJogador, pagina, type);
 
             for (let i = pagina - 1; i < pagina + 2; i++) {
                 if (i >= totalPaginas) break;
-                console.log(i)
+
                 if (i > 1) {
-                    printPage(i, totalPaginas, pagesElement[k]);
+                    printPage(i, totalPaginas, pagesElement[k], idJogador, pagina, type);
                 }
-                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k], idJogador, pagina, type);
             }
 
-            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
-            createNextButton(pagesElement[k], totalPaginas);
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k], idJogador, pagina, type);
+            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina, type);
         }
     }
 
-    function printFirstPage(totalPaginas, pagesElement) {
+    function printFirstPage(totalPaginas, pagesElement, idJogador, pagina, type) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
 
@@ -697,14 +710,14 @@
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
         } else {
-            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
+            pageElement.onclick = () => { reloadPage(1, totalPaginas, idJogador, pagina, type) };
         }
         pageElement.innerHTML += 1;
         pageElement.id = `page-#${1}`;
         pagesElement.appendChild(pageElement);
     }
 
-    function printPage(num, totalPaginas, pagesElement) {
+    function printPage(num, totalPaginas, pagesElement, idJogador, pagina, type) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
         if (num != '...') {
@@ -713,7 +726,7 @@
                 pageElement.style.cursor = 'default';
                 pageElement.style.opacity = '0.5';
             } else {
-                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+                pageElement.onclick = () => { reloadPage(num, totalPaginas, idJogador, pagina, type) };
             }
             pageElement.innerHTML += num;
             pageElement.id = `page-#${num}`;
@@ -726,7 +739,7 @@
         pagesElement.appendChild(pageElement);
     }
 
-    function printLastPage(totalPaginas, pagesElement) {
+    function printLastPage(totalPaginas, pagesElement, idJogador, pagina, type) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
 
@@ -735,38 +748,38 @@
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
         } else {
-            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas, idJogador, pagina, type) };
         }
         pageElement.innerHTML += totalPaginas;
         pageElement.id = `page-#${totalPaginas}`;
         pagesElement.appendChild(pageElement);
     }
 
-    function createAntButton(element, totalPaginas) {
+    function createAntButton(element, totalPaginas, idJogador, pagina, type) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
         if (pagina == 1 || totalPaginas == 0) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
-            antPage.onclick = () => { reloadPage(false) };
+            antPage.onclick = () => { reloadPage(false, totalPaginas, idJogador, pagina, type) };
         }
         element.appendChild(antPage);
     }
 
-    function createNextButton(element, totalPaginas) {
+    function createNextButton(element, totalPaginas, idJogador, pagina, type) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
         if (pagina == totalPaginas || totalPaginas == 0) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
-            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
+            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, pagina, type) };
         }
         element.appendChild(proxPage);
     }
 
-    function reloadPage(nextPage, totalPaginas, idJogador, pagina, elementScore) {
+    function reloadPage(nextPage, totalPaginas, idJogador, pagina, type) {
         if (!isNaN(parseInt(nextPage))) {
             pagina = parseInt(nextPage);
         } else {
@@ -779,11 +792,12 @@
             }
         }
 
+        let elementScore = document.getElementById('scores-player-list');
+
         elementScore.innerHTML = '';
-        let filtroScore = 'top';
-        if (elementScore.id != 'melhores-scores') filtroScore = 'recent';
+
         document.getElementsByClassName('pages')[0].innerHTML = '';
-        getPlayerScores(idJogador, filtroScore, pagina, elementScore);
+        getPlayerScores(idJogador, pagina);
         /* window.focus(); */
     }
 
@@ -791,6 +805,23 @@
         window.location.href = `./mapa.html?idmapa=${idMapa}&diff=${diff}`;
         window.focus();
     }
+
+    function changeScores(element, idJogador, pagina) {
+        document.getElementsByClassName('selected')[0].classList.remove('selected');
+        element.classList.add('selected');
+
+        document.getElementById('scores-player-list').innerHTML = '';
+
+        document.getElementsByClassName('pages')[0].innerHTML = '';
+
+        getPlayerScores(idJogador, pagina);
+    }
+
+    function editImage(type) {
+        if (type == 'background') document.getElementById('arquivo-background').click();
+        else document.getElementById('arquivo-perfil').click();
+    }
+
 </script>
 
 

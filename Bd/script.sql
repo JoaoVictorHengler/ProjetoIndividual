@@ -67,6 +67,7 @@ create table Historico (
     rankGlobal int NOT NULL,
     diaRank Date
 );
+
 select * from historico;
 select * from jogador;
 

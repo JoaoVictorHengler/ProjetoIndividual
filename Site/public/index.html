@@ -14,7 +14,7 @@
     <title>Home</title>
 </head>
 
-<body>
+<body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -59,14 +59,6 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user"></i>
-            <div class="user-info">
-                <span id="username">UserName</span>
-                <span id="global">Global: #150</span>
-                <span id="nacional">Nacional: #1</span>
-
-            </div>
-            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
         </div>
 
     </div>
@@ -92,7 +84,7 @@
                     </div>
                     <div class="container-index-button" style="justify-content: center;">
                         <!-- <button class="login" onclick="goToLoginOrSingUp('login')">Login</button> -->
-                        <button class="cadastro" onclick="goToLoginOrSingUp('')"
+                        <button class="cadastro" onclick="goToLoginOrSignUp('')"
                             style="width: 250px; height: 60px;">Cadastre-se</button>
                     </div>
                 </div>

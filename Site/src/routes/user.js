@@ -15,6 +15,10 @@ router.post("/editarPerfil", function (req, res) {
     userController.editarPerfil(req, res);
 });
 
+router.post("/verificarToken", function (req, res) {
+    userController.verificarToken(req, res);
+});
+
 /* 
     Fazer:
         Cadastro Testar

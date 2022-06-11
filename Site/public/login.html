@@ -16,7 +16,7 @@
     <title>Login</title>
 </head>
 
-<body>
+<body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -62,14 +62,6 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user"></i>
-            <div class="user-info">
-                <span id="username">UserName</span>
-                <span id="global">Global: #150</span>
-                <span id="nacional">Nacional: #1</span>
-
-            </div>
-            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
         </div>
 
     </div>

@@ -15,7 +15,7 @@
     <title>Mapa</title>
 </head>
 
-<body onload="getMapaParams(), obterInformacoesMapa(), getCountryFlags()">
+<body onload="verifyAuth(), getMapaParams(), obterInformacoesMapa(), getCountryFlags()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
             <input id="search-user" type="text" placeholder="Pesquisar...">
@@ -62,14 +62,6 @@
         </div>
 
         <div class="user-container">
-            <i class="fa-solid fa-user" id="user"></i>
-            <div class="user-info">
-                <span id="username">UserName</span>
-                <span id="global">Global: #150</span>
-                <span id="nacional">Nacional: #1</span>
-
-            </div>
-            <i class="fa-solid fa-right-to-bracket" id="logOut"></i>
         </div>
 
     </div>
@@ -333,7 +325,7 @@
             
             for (let i = pagina - 1; i < pagina + 2; i++) {
                 if (i >= totalPaginas) break;
-                console.log(i)
+
                 if (i > 1) {
                     printPage(i, totalPaginas, pagesElement[k]);
                 }
@@ -406,7 +398,7 @@
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
-            antPage.onclick = () => { reloadPage(false) };
+            antPage.onclick = () => { reloadPage(false, reloadPage) };
         }
         element.appendChild(antPage);
     }

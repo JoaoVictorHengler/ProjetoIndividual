@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs');
 var sql = require('mssql');
 var mysql = require("mysql2");
+var { readFileSync, writeFileSync } = require('fs');
+var fileLocation = path.join(__dirname, `./Inserts.txt`);
 
 
 var requestNum = 0;
@@ -147,7 +149,12 @@ async function inserirPlayer(player) {
 }
 /* Feito, Mas subtrair datas*/
 async function inserirHistorico(fkPlayer, rankGlobal = null) {
-    let diaHistorico = await executar(`SELECT * from Historico where diaRank = '${new Date().toISOString().split('T')[0]}' and fkJogador = ${fkPlayer};`);
+    let date = new Date().getDate()
+    let month = ("0" + (new Date().getMonth() + 1)).slice(-2);
+    let year = new Date().getFullYear();
+
+    let today = `${year}-${month}-${date}`;
+    let diaHistorico = await executar(`SELECT * from Historico where diaRank = '${today}' and fkJogador = ${fkPlayer};`);
 
     if (rankGlobal == null) {
         let playerInfo = (await executar(`select idJogador, sum(pontosDePerformace), ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankGlobal' from jogador join score on idJogador = fkJogador and idJogador = ${fkPlayer} group by idJogador;`))[0];
@@ -158,9 +165,9 @@ async function inserirHistorico(fkPlayer, rankGlobal = null) {
 
         if (ultimoHistorico.length == 0) {
             let i = 1;
-            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}');`);
+            await executar(`INSERT INTO Historico values (${fkPlayer}, ${i}, ${rankGlobal}, '${today}');`);
         } else {
-            await executar(`insert into Historico values (${fkPlayer}, ${ultimoHistorico[0].idHistorico + 1}, ${rankGlobal}, '${new Date().toISOString().split('T')[0]}')`);
+            await executar(`insert into Historico values (${fkPlayer}, ${ultimoHistorico[0].idHistorico + 1}, ${rankGlobal}, '${today}')`);
         }
         
         console.log('Historico adicionado');
@@ -169,6 +176,7 @@ async function inserirHistorico(fkPlayer, rankGlobal = null) {
 }
 /* Feito */
 async function inserirMapa(mapa) {
+    if (mapa.versions == undefined) return -1;
     let mapas = await executar(
         `select idMapa from Mapa where hashMapa like '${mapa.versions[0].hash.toLowerCase()}';`
     );
@@ -256,6 +264,9 @@ function executar(instrucao) {
     // VERIFICA A VARIÁVEL DE AMBIENTE SETADA EM app.js
     /* console.log(instrucao); */
     return new Promise(function (resolve, reject) {
+        let dados = readFileSync(fileLocation, { encoding: 'utf8', flag: 'r' })
+        dados += `\n${instrucao}`;
+        writeFileSync(fileLocation, dados);
         var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect();
         conexao.query(instrucao.replaceAll('\n', ''), function (erro, resultados) {

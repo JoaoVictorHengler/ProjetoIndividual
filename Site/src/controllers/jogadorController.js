@@ -304,6 +304,10 @@ function encontrarArquivoEUsuario(idJogador) {
   return [users, user];
 }
 
+function editarImagemPerfil(request, response) {
+  console.log(request.body);
+}
+
 module.exports = {
   obterPaises,
   listarRankingGlobal,
@@ -313,5 +317,6 @@ module.exports = {
   obterInfo,
   verificarEdicao,
   obterDescricao,
-  setarDescricao
+  setarDescricao,
+  editarImagemPerfil
 }

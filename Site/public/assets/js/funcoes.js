@@ -30,7 +30,7 @@ function showRewritePassword() {
     }
 }
 
-function goToLoginOrSingUp(type) {
+function goToLoginOrSignUp(type) {
     if (type == 'login') {
         window.location.href = "./login.html"
     } else {
@@ -59,4 +59,48 @@ function setPlayerCountry(elementFlag, showName = false, countryName = 'BR', cou
     }
 
 
+}
+
+async function verifyAuth() {
+    if (sessionStorage.TOKENJOGADOR != undefined) {
+        let response = await fetch(`/user/verificarToken`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "tokenJogadorServer": sessionStorage.TOKENJOGADOR,
+                "idJogadorServer": sessionStorage.IDJOGADOR
+            })
+        })
+        if (response.ok) {
+            let json = await response.json();
+
+            
+
+            let player = json;
+            document.getElementsByClassName('user-container')[0].innerHTML = `
+                <i class="fa-solid fa-user" id="user"></i>
+                <div class="user-info">
+                    <span id="username">${player.infoJogador.nome}</span>
+                    <span id="global">Global: #${player.rankGlobal}</span>
+                    <span id="nacional">Nacional: #${player.rankNacional}</span>
+                </div>
+                <i class="fa-solid fa-right-to-bracket" id="logOut" onclick="logOff()"></i>`;
+        } else {
+            document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
+            document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+        }
+
+    } else {
+        document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
+        document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+    }
+}
+
+function logOff() {
+    sessionStorage.removeItem('TOKENJOGADOR');
+    sessionStorage.removeItem('IDJOGADOR');
+
+    window.location = './index.html';
 }

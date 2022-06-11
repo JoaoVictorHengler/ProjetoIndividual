@@ -43,5 +43,9 @@ router.post("/setarDescricao", function (req, res) {
     jogadorController.setarDescricao(req, res);
 });
 
+router.post("/editarImagem", function (req, res) {
+    jogadorController.editarImagemPerfil(req, res);
+});
+
 module.exports = router;
 

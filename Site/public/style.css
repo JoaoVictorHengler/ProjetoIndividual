@@ -19,13 +19,14 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&family=Ubuntu:wght@500&display=swap'); */
 
 @font-face {
-    font-family: NunitoTitle;
+    font-family: Nunito;
     src: url('./assets/font/static/Nunito-ExtraBold.ttf') format('truetype');
 
     /* opentype - otf
-        truetype - ttf
-    */
+        truetype - ttf */
+   
 }
+
 
 body,
 html {
@@ -283,7 +284,7 @@ input {
 }
 
 .pattern-dots-regular .mini-ranking .mini-ranking-container .mini-ranking-title-container {
-    width: 150px;
+    width: 200px;
 }
 
 
@@ -305,6 +306,7 @@ input {
     text-align: center;
     font-size: 15px;
     padding: 0px 10px 0px 10px;
+    text-decoration: none;
 }
 
 .title-ranking {
@@ -369,7 +371,7 @@ input {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     overflow: hidden;
     transition: width 1s ease;
     box-sizing: border-box;
@@ -439,6 +441,10 @@ input {
     color: #484652;
     font-weight: bold;
     font-size: 18px;
+}
+
+.nav-bar-item:nth-child(5), .nav-bar-item:nth-child(6) {
+    display: none;
 }
 
 .nav-bar-item {
@@ -517,9 +523,11 @@ input {
 }
 
 .user-container #username {
+    white-space: nowrap;
     font-size: 18px;
     font-weight: 500;
     color: #5C83BD;
+    text-align: center;
 }
 
 .user-container i {
@@ -545,11 +553,12 @@ input {
 /* Mouse em cima Menu*/
 
 #perfil-menu:hover .user-info {
-    width: 40%;
+    width: 45%;
     opacity: 0.8;
     border-radius: 5px;
     padding: 5px 10px 5px 10px;
     background-color: hsla(216, 35%, 34%, 0.8);
+    overflow: hidden;
 }
 
 #perfil-menu:hover #search {
@@ -582,6 +591,10 @@ input {
     position: relative;
 }
 
+.fa-pen {
+    display: none;
+}
+
 .img-container .fa-pen {
     position: absolute;
     bottom: 2%;
@@ -591,6 +604,7 @@ input {
     padding: 10px;
     color: hsl(0deg 0% 100% / 60%);
     z-index: 100;
+    cursor: pointer;
 }
 
 .banner {
@@ -1545,7 +1559,7 @@ input {
 
 .perfil-img {
     height: 110px;
-    border-radius: 40px;
+    border-radius: 20px;
     transform: translateY(-30px);
     margin-left: 50px;
 }
@@ -1648,18 +1662,6 @@ input {
     margin-top: 2px;
 }
 
-/* .fa-youtube {
-    color: red;
-}
-
-.fa-twitch {
-    color: #6441a5;
-}
-
-.fa-twitter {
-    color: #1da1f2;
-} */
-
 .position-chart {
     width: 60%;
     height: fit-content;
@@ -1694,8 +1696,6 @@ input {
     color: #9FB1CC;
 }
 
-
-
 .chosen {
     color: hsl(333, 40%, 100%);
 }
@@ -1715,7 +1715,6 @@ input {
     height: fit-content;
     margin-top: 10px;
     border-bottom: 2px solid #2d3e5f;
-    margin-left: 20px;
     padding: 0 2px 5px 2px;
     text-align: center
 }
@@ -1747,25 +1746,25 @@ input {
     flex-direction: column;
 }
 
-#melhores-scores {
+#scores-player-list {
     margin-top: 10px;
     width: 95%;
     height: 100%;
     list-style: none;
 }
 
-#melhores-scores li {
+#scores-player-list li {
     width: 100%;
     height: 60px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#melhores-scores li:not(:first-child) {
+#scores-player-list li:not(:first-child) {
     margin-top: 10px;
 }
 
-#melhores-scores li img {
+#scores-player-list li img {
     height: 100px;
     position: relative;
 }
@@ -1800,13 +1799,14 @@ input {
     justify-content: center;
     flex-direction: column;
     font-size: 16px;
+    overflow: hidden;
     
 }
 .player-score-info-mapa-name div span:nth-child(2) {
-    font-size: 13px;
+    font-size: 14px;
 }
 .player-score-info-mapa-name div:nth-child(2) span:nth-child(1) {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .player-score-info-score-info {
@@ -1824,12 +1824,12 @@ input {
     background-color: #344a6a;
 }
 
-#melhores-scores li:hover .player-score-info {
+#scores-player-list li:hover .player-score-info {
     background-color: #1f2d42;
     width: 95%;
 }
 
-#melhores-scores li:hover .player-score-info div:nth-child(3){
+#scores-player-list li:hover .player-score-info div:nth-child(3){
     background-color: #3d557a;
 
 }
@@ -1852,6 +1852,50 @@ input {
 
 .player-score-info div:nth-child(3).easy {
     border-left: 2px solid rgba(60, 180, 114);
+}
+
+.player-select-type-score {
+    background-color: #1c293c;
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    border-radius: 5px;
+}
+
+.player-select-type-score ul {
+    width: 100%;
+    height: 100%;
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.player-select-type-score ul li {
+    height: 90%;
+    width: 36%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 15px 0px 15px;
+    border-radius: 5px;
+}
+
+.player-select-type-score ul li.selected {
+    background-color: #314668;
+}
+
+.player-select-type-score ul li.selected:hover {
+    cursor: auto;
+}
+
+.player-select-type-score ul li:hover {
+    cursor: pointer;
+    background-color: #314668;
 }
 
 /* Fim Perfil */

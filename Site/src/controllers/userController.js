@@ -1,4 +1,5 @@
 var userModel = require('../models/userModel');
+var jogadorController = require('../controllers/jogadorController');
 var jwt = require('jsonwebtoken');
 var config = require('../config.json');
 
@@ -72,6 +73,44 @@ function autenticar(request, response) {
   }
 }
 
+function verificarToken(request, response) {
+  var tokenJogador = request.body.tokenJogadorServer;
+  var idJogador = request.body.idJogadorServer;
+  request.params.idJogadorServer = idJogador;
+
+  if (tokenJogador == undefined) {
+    response.json({
+      'permission': false
+    });
+  } else {
+    try {
+      jwt.verify(tokenJogador, config.secretKey, async (err, decoded) => {
+        console.log(err)
+        if (err != null) {
+          if (err.name == 'TokenExpiredError') {
+            response.json({
+              'permission': false
+            });
+          }
+
+        } else {
+          let result = (await userModel.verificarToken(decoded.email))[0];
+          if (result.idJogador == idJogador) {
+            await jogadorController.obterInfo(request, response);
+          } else {
+            response.json({
+              'permission': false
+            });
+          }
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      response.status(500).json('Erro ao ler o token.');
+    }
+  }
+}
+
 function editarPerfil(request, response) {
   let idJogador = request.body.idJogadorServer;
   let email = request.body.emailServer;
@@ -100,4 +139,5 @@ module.exports = {
   cadastrar,
   autenticar,
   editarPerfil,
+  verificarToken
 }
