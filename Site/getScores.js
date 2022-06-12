@@ -136,7 +136,7 @@ async function inserirPlayer(player) {
     }
 
     if (checkPlayer.length == 0) {
-        downloadImage(player.profilePicture, path.resolve(__dirname, 'public', 'assets', 'img', 'playerImg', `${numId}.jpg`));
+        downloadImage(player.profilePicture, path.resolve(__dirname, 'public', 'assets', 'img', 'playerImg', `${numId}.png`));
         if(player.scoreStats.replaysWatched == null) player.scoreStats.replaysWatched = 0;
         let resp = await executar(
             `INSERT INTO Jogador values (null, '${player.name.replaceAll(/'/g, "\\'")}', 'Teste@${numId}.com', SHA2('teste', 512), '${player.country}', '${player.id}', null, ${player.scoreStats.replaysWatched});`
@@ -181,7 +181,7 @@ async function inserirMapa(mapa) {
         `select idMapa from Mapa where hashMapa like '${mapa.versions[0].hash.toLowerCase()}';`
     );
     if (mapas.length == 0) {
-        downloadImage(mapa.versions[0].coverURL, path.resolve(__dirname, 'public', 'assets', 'img', 'mapImg', `${mapa.versions[0].hash.toLowerCase()}.jpg`));
+        downloadImage(`https://cdn.scoresaber.com/covers/${mapa.versions[0].hash}`, path.resolve(__dirname, 'public', 'assets', 'img', 'mapImg', `${mapa.versions[0].hash.toLowerCase()}.png`));
         let resp = await executar(
             `INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, bpmMapa, duracaoMapa, dataUploadMapa) VALUES ('${mapa.metadata.songName.replaceAll(/'/g, "\\'")}', '${mapa.metadata.songSubName.replaceAll(/'/g, "\\'")}', '${mapa.metadata.levelAuthorName.replaceAll(/'/g, "\\'")}','${mapa.metadata.songAuthorName.replaceAll(/'/g, "\\'")}', '${mapa.versions[0].hash.toLowerCase()}', '${mapa.metadata.bpm}', '${mapa.metadata.duration}', '${mapa.createdAt.substring(0, 10) + ' ' + mapa.createdAt.substring(11, 19)}')`
         );
