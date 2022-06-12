@@ -11,12 +11,8 @@ router.get("/listarScoresJogador/:idJogadorServer&:typeServer&:paginaServer", fu
     scoreController.listarScoresJogador(req, res);
 });
 
-
-/* 
-    Fazer:
-        Pegar informações
-        Scores de X player
-
-*/
+router.get("/listarScoresFavoritosJogador/:idJogadorServer&:paginaServer", function (req, res) {
+    scoreController.listarScoresFavoritosJogador(req, res);
+});
 
 module.exports = router;

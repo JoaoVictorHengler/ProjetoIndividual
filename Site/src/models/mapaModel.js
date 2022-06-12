@@ -11,12 +11,17 @@ function obterInformacoes(idMapa) {
   return database.executar(instrucao);
 }
 
-function listarMapas(minValue) {
+function listarMapas(minValue, fkJogador) {
 
+  if (fkJogador == 'undefined') fkJogador = '';
+  else fkJogador = `, (select scoreFavorito from score where score.fkMapa = m1.idMapa and fkJogador = ${fkJogador} group by fkMapa) as 'ehFavorito'`;
   var instrucao = `
-  select m1.*, (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito', (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores' from Mapa m1 order by qtdScores desc limit ${minValue}, 20;
+  select m1.*, 
+  (select count(*) from Score where Score.fkMapa = m1.idMapa and scoreFavorito = 1 group by fkMapa) as 'qtdMapaFavorito',
+   (select count(*) from Score where Score.fkMapa = m1.idMapa group by fkMapa) as 'qtdScores'
+   ${fkJogador}
+    from Mapa m1 order by qtdScores desc limit ${minValue}, 20;
   `;
-  
   return database.executar(instrucao);
 }
 

@@ -55,5 +55,9 @@ router.get("/favoritarMapa/:idJogadorServer&:idMapaServer&:tipoServer", function
     jogadorController.favoritarMapa(req, res);
 });
 
+router.get("/editarNick/:idJogadorServer&:nickJogadorServer", function (req, res) {
+    jogadorController.editarNick(req, res);
+});
+
 module.exports = router;
 

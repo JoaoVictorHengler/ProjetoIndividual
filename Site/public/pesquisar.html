@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -38,12 +39,7 @@
                         <span class="nav-bar-name" id="ranking">Ranking</span>
                     </a>
                 </li>
-                <li class="nav-bar-item">
-                    <a href="./ultimosScores.html">
-                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
-                    </a>
-                </li>
+                
                 <li class="nav-bar-item here">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
@@ -145,7 +141,7 @@
         }
 
         let selectedType = document.getElementsByClassName('selected')[0].innerHTML.toLowerCase().trim();
-        console.log(selectedType);
+        console.log('Procurar tipo: ', selectedType);
         if (selectedType == 'jogador') searchJogador(text.replaceAll("'", ""));
         else searchMapa(text);
     }
@@ -162,20 +158,41 @@
 
         if (response.ok) {
             let json = await response.json();
+            console.log('Procura Feita');
             let qtdPaginas = json.qtdPaginas;
             let jogadores = json.jogadores;
+            if (jogadores.length == 0) {
+                Swal.fire({
+                    title: 'Erro',
+                    imageUrl: './assets/img/gura-error.gif',
+                    imageHeight: 150,
+                    text: 'Não existe nenhum jogador com esse nome',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                return;
+            }
             appendPlayers(jogadores);
 
             loadPages(qtdPaginas);
-
+        } else {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Erro ao procurar o nome jogador',
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
         }
     }
 
     function appendPlayers(jogadores) {
         for (let i = 0; i < jogadores.length; i++) {
-                let liElement = document.createElement('li');
-                liElement.classList.add('player-list-item');
-                liElement.innerHTML = `
+            let liElement = document.createElement('li');
+            liElement.classList.add('player-list-item');
+            liElement.innerHTML = `
                             <div class="player-info-container">
                                 <img src="./jogador/getImage/${jogadores[i].idJogador}">
                                 <div class="player-info">
@@ -185,15 +202,15 @@
                                     <span>${jogadores[i].nome}</span>
                                 </div>
                             </div>`;
-                liElement.onclick = () => {window.location = `./perfil.html?id=${jogadores[i].idJogador}`;}
-                document.getElementById('search-list-container').appendChild(liElement);
-            }
-            let flagsCountry = document.getElementsByClassName('flag-country');
-            for (let i = 0; i < flagsCountry.length; i++) {
-                let nameCountry = (flagsCountry[i].innerHTML).trim();
-                flagsCountry[i].innerHTML = '';
-                setPlayerCountry(flagsCountry[i], false, nameCountry, countryFlags);
-            }
+            liElement.onclick = () => { window.location = `./perfil.html?id=${jogadores[i].idJogador}`; }
+            document.getElementById('search-list-container').appendChild(liElement);
+        }
+        let flagsCountry = document.getElementsByClassName('flag-country');
+        for (let i = 0; i < flagsCountry.length; i++) {
+            let nameCountry = (flagsCountry[i].innerHTML).trim();
+            flagsCountry[i].innerHTML = '';
+            setPlayerCountry(flagsCountry[i], false, nameCountry, countryFlags);
+        }
     }
     async function searchMapa(text) {
         let response = await fetch(`/mapa/procurar/${text}&${pagina}`, {
@@ -206,7 +223,19 @@
         console.log('Resposta: ', response);
 
         if (response.ok) {
+            console.log('Mapas procurados.')
             let informacao = await response.json();
+            if (informacao.qtdPaginas == 0) {
+                        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Não existe nenhum mapa com esse nome.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+                    }
             let totalMapas = informacao.mapas;
             totalPaginas = informacao.qtdPaginas;
             loadPages(totalPaginas);
@@ -236,6 +265,7 @@
 
         if (response.ok) {
             let json = await response.json();
+            console.log('Informações dos países obtidas.');
             return json;
         }
     }
@@ -417,12 +447,11 @@
 
                                 </div>
                                 <div class="mapa-other-options">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <i class="fa-solid fa-heart"></i>
                                     <a href="https://r2cdn.beatsaver.com/${mapa.hashMapa}.zip"><i class="fa-solid fa-file-arrow-down" ></i></a>
                                     
                                 </div>`;
         listMapas.appendChild(listItem);
+        console.log('Mapa adicionado');
 
     }
 

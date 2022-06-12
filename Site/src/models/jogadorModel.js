@@ -97,7 +97,7 @@ function listarRankingNacionalSemLimite(pais) {
 
 function obterInfo(idJogador) {
   
-    var instrucao = `select nome, pais, idScoresaber, vrUtilizado,
+    var instrucao = `select idJogador, nome, pais, idScoresaber, vrUtilizado,
       (select round(avg(round(pontuacao / maxPontuacao * 100, 2)),2 ) as 'precisao' from Dificuldade 
         join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
         and Jogador.idJogador = fkJogador group by fkJogador) as 'precisaoMedia',
@@ -128,13 +128,19 @@ function favoritarMapa(idJogador, idMapa, tipo) {
     let instrucao;
     if (tipo == 'love') {
         instrucao = `
-            update score set scoreFavorito = true where fkJogador = ${idJogador} and fkMapa = ${idMapa};
+            update score set scoreFavorito = 1 where fkJogador = ${idJogador} and fkMapa = ${idMapa};
         `;
     } else {
         instrucao = `
-            update score set scoreFavorito = false where fkJogador = ${idJogador} and fkMapa = ${idMapa};
+            update score set scoreFavorito = 0 where fkJogador = ${idJogador} and fkMapa = ${idMapa};
         `;
     }
+    return database.executar(instrucao);
+}
+
+function editarNick(idJogador, nickJogador) {
+    let instrucao = `
+    update jogador set nome = '${nickJogador}' where fkJogador = ${idJogador};`;
 
     return database.executar(instrucao);
 }
@@ -148,5 +154,6 @@ module.exports = {
     listarRankingNacionalSemLimite,
     obterInfo,
     procurar,
-    favoritarMapa
+    favoritarMapa,
+    editarNick
 };

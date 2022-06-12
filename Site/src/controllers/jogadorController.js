@@ -318,16 +318,11 @@ async function procurar(request, response) {
     response.status(403).send("Nome do Jogador está Undefined.");
   } else {
     jogadorModel.procurar(nomeJogador, (pagina * 20) - 20).then(async (result) => {
-
-      if (result.length == 0) {
-        response.status(403).send("Não foi possível listar os jogadores.");
-      } else {
-        let qtdPaginas = await obterQtdPaginas(response, result.length);
-        response.json({
-          'qtdPaginas': qtdPaginas,
-          'jogadores': result
-        });
-      }
+      let qtdPaginas = await obterQtdPaginas(response, result.length);
+      response.json({
+        'qtdPaginas': qtdPaginas,
+        'jogadores': result
+      });
     });
   }
 }
@@ -340,12 +335,29 @@ async function favoritarMapa(request, response) {
 
   if (idJogador == undefined) {
     response.status(403).send("Id do Jogador está Undefined.");
-  }else if (idMapa == undefined) {
+  } else if (idMapa == undefined) {
     response.status(403).send("Id do Mapa está Undefined.");
-  }else if (tipo == undefined) {
+  } else if (tipo == undefined) {
     response.status(403).send("Tipo está Undefined.");
   } else {
     let resultado = await jogadorModel.favoritarMapa(idJogador, idMapa, tipo)
+    
+    response.json({ 'response': true });
+  }
+}
+
+async function editarNick(request, response) {
+  let idJogador = request.params.idJogadorServer;
+  let nickJogador = request.params.nickJogadorServer;
+
+  if (idJogador == undefined) {
+    response.status(403).send("Id do Jogador está Undefined.");
+  } else if (nickJogador == undefined) {
+    response.status(403).send("Nome do Jogador está Undefined.");
+  } else {
+    let resultado = await jogadorModel.editarNick(idJogador, nickJogador)
+    
+    response.json({ 'response': true });
   }
 }
 
@@ -361,5 +373,6 @@ module.exports = {
   setarDescricao,
   editarImagemPerfil,
   procurar,
-  favoritarMapa
+  favoritarMapa,
+  editarNick
 }

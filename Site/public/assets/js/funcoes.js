@@ -80,7 +80,7 @@ async function verifyAuth() {
 
             let player = json;
             document.getElementsByClassName('user-container')[0].innerHTML = `
-                <i class="fa-solid fa-user" id="user"></i>
+                <i class="fa-solid fa-user" id="user" onclick="window.location = '/perfil.html?id=${player.infoJogador.idJogador}'"></i>
                 <div class="user-info">
                     <span id="username">${player.infoJogador.nome}</span>
                     <span id="global">Global: #${player.rankGlobal}</span>
@@ -88,13 +88,13 @@ async function verifyAuth() {
                 </div>
                 <i class="fa-solid fa-right-to-bracket" id="logOut" onclick="logOff()"></i>`;
         } else {
+            document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
             document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
-            document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
         }
 
     } else {
+        document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
         document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
-        document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
     }
 }
 

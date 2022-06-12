@@ -46,6 +46,26 @@ function listarScoresJogador(idJogador, minValue, type) {
 
 }
 
+function listarScoresFavoritosJogador(idJogador, minValue) {
+
+  var instrucao = `
+    select idMapa, nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMapa, nomeDificuldade, round((pontuacao / maxPontuacao) * 100, 2) as precisao,
+    comboMaximo, corteRuim, notasErradas, dataScore, pontosDePerformace
+                      from Score 
+                      join Jogador on fkJogador = idJogador and idJogador = ${idJogador}
+                      join Dificuldade on fkDificuldade = idDificuldade
+                      join Mapa on idMapa = Dificuldade.fkMapa and idMapa = Score.fkMapa 
+                      where Score.scoreFavorito = 1
+  `;
+
+  instrucao += `limit ${minValue}, 6;`;
+
+
+  
+  return database.executar(instrucao);
+
+}
+
 function verificarNumPaginasJogador(idJogador) {
 
   var instrucao = `
@@ -55,10 +75,20 @@ function verificarNumPaginasJogador(idJogador) {
   return database.executar(instrucao);
 } 
 
+function verificarNumPaginasFavoritoJogador(idJogador) {
+
+  var instrucao = `
+  select count(*) as 'qtdscores' from score where fkJogador = ${idJogador} and score.scoreFavorito = 1;
+  `;
+  
+  return database.executar(instrucao);
+} 
 
 module.exports = {
   listarScoresMapa,
   verificarNumPaginas,
   listarScoresJogador,
-  verificarNumPaginasJogador
+  verificarNumPaginasJogador,
+  listarScoresFavoritosJogador,
+  verificarNumPaginasFavoritoJogador
 }

@@ -246,6 +246,17 @@
         console.log(response);
         if (response.ok) {
             let json = await response.json();
+            if (json.qtdPaginas == 0) {
+                        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Não existe nenhum jogador cadastrado.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+                    }
             return json;
         }
     }

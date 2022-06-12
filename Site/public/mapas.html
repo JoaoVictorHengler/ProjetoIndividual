@@ -12,10 +12,10 @@
     <title>Mapas</title>
 </head>
 
-<body onload="verifyAuth(), verifyPage(), obterMapas()">
+<body onload="verifyAuthMapas(), verifyPage()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            
+
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
@@ -33,12 +33,7 @@
                         <span class="nav-bar-name" id="ranking">Ranking</span>
                     </a>
                 </li>
-                <li class="nav-bar-item">
-                    <a href="./ultimosScores.html">
-                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
-                    </a>
-                </li>
+                
                 <li class="nav-bar-item">
                     <a href="./pesquisar.html">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -97,6 +92,45 @@
 <script>
     var pagina = 1;
 
+    async function verifyAuthMapas() {
+        if (sessionStorage.TOKENJOGADOR != undefined) {
+            let response = await fetch(`/user/verificarToken`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "tokenJogadorServer": sessionStorage.TOKENJOGADOR,
+                    "idJogadorServer": sessionStorage.IDJOGADOR
+                })
+            })
+            if (response.ok) {
+                let json = await response.json();
+
+
+
+                let player = json;
+
+                document.getElementsByClassName('user-container')[0].innerHTML = `
+                <i class="fa-solid fa-user" id="user" onclick="window.location = '/perfil.html?id=${player.infoJogador.idJogador}'"></i>
+                <div class="user-info">
+                    <span id="username">${player.infoJogador.nome}</span>
+                    <span id="global">Global: #${player.rankGlobal}</span>
+                    <span id="nacional">Nacional: #${player.rankNacional}</span>
+                </div>
+                <i class="fa-solid fa-right-to-bracket" id="logOut" onclick="logOff()"></i>`;
+
+                obterMapas();
+            } else {
+                document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+                document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
+            }
+
+        } else {
+            document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+            document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
+        }
+    }
 
     function verifyPage() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -107,7 +141,12 @@
     }
 
     async function obterMapas() {
-        fetch(`/mapa/listarMapas/${pagina}`, {
+        let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
+        let url;
+
+        if (userContainerElement == '') url = `/mapa/listarMapas/${pagina}&undefined`;
+        else url = `/mapa/listarMapas/${pagina}&${sessionStorage.IDJOGADOR}`;
+        fetch(url, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -120,6 +159,17 @@
                 response.json().then(json => {
                     console.log(json);
                     let informacao = json;
+                    if (json.qtdPaginas == 0) {
+                        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Não possui nenhum mapa cadastrado.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+                    }
                     let totalMapas = informacao.mapas;
                     totalPaginas = informacao.qtdPaginas;
                     loadPages(totalPaginas);
@@ -155,6 +205,14 @@
                     </li>
                 `;
         }
+        let heart;
+        if (mapa.ehFavorito != null && mapa.ehFavorito != 0) {
+            heart = `<i class="fa-regular fa-heart" style="display:none;" onclick="loveMapa(${mapa.idMapa}, ${mapa.ehFavorito})"></i>
+                    <i class="fa-solid fa-heart" style="display:block;" onclick="unLoveMapa(${mapa.idMapa}, ${mapa.ehFavorito})"></i>`;
+        } else {
+            heart = `<i class="fa-regular fa-heart" style="display:block;" onclick="loveMapa(${mapa.idMapa}, ${mapa.ehFavorito})"></i>
+                    <i class="fa-solid fa-heart" style="display:none;" onclick="unLoveMapa(${mapa.idMapa}, ${mapa.ehFavorito})"></i>`;
+        }
         listItem.innerHTML += `
                                 <img class="mapa-image" src="/mapa/getImage/${mapa.hashMapa}">
                                 <div class="mapa-info" onclick="mudarPaginaMapa(${mapa.idMapa})" style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/${mapa.hashMapa}) repeat scroll 0% 0%;">
@@ -164,7 +222,7 @@
                                     <div class="mapa-other-infos">
                                         <i class="fa-regular fa-heart"></i>
                                         <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
-                                        <span>${mapa.qtdMapaFavorito}</span>
+                                        <span id="#${mapa.idMapa}favorite">${mapa.qtdMapaFavorito}</span>
                                         <i class="fa-solid fa-play"></i>
                                         <span>${mapa.qtdScores}</span>
                                         <i class="fa-regular fa-circle-check"></i>
@@ -176,8 +234,7 @@
 
                                 </div>
                                 <div class="mapa-other-options">
-                                    <i class="fa-regular fa-heart" onclick="loveMapa(${mapa.idMapa})"></i>
-                                    <i class="fa-solid fa-heart" onclick="unLoveMapa(${mapa.idMapa})"></i>
+                                    ${heart}
                                     <a href="https://r2cdn.beatsaver.com/${mapa.hashMapa}.zip"><i class="fa-solid fa-file-arrow-down" ></i></a>
                                     
                                 </div>`;
@@ -186,7 +243,7 @@
 
     }
 
-    async function loveMapa(idMapa) {
+    async function loveMapa(idMapa, isFavorite) {
         let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
         if (userContainerElement == '') {
             Swal.fire({
@@ -199,11 +256,28 @@
             });
             return;
         } else {
+            if (isFavorite == null) {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Você deve jogar o mapa para curtir',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                return;
+            } else {
+            }
             let mapaElement = document.getElementById(`#${idMapa}`);
             let requestLove = await sendLoveRequest(idMapa, 'love');
+            if (requestLove.response == true) {
+                let qtdFavorite = document.getElementById(`#${idMapa}favorite`).innerHTML;
+                    document.getElementById(`#${idMapa}favorite`).innerHTML = parseInt(qtdFavorite) + 1;
+                mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'block';
+                mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'none';
+            } else {
 
-            mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'block';
-            mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'none';
+            }
         }
     }
 
@@ -219,12 +293,12 @@
         console.log('Resposta: ', response);
 
         if (response.ok) {
-            let json = await response.json()
+            return await response.json();
         }
 
     }
 
-    async function unLoveMapa(idMapa) {
+    async function unLoveMapa(idMapa, isFavorite) {
         let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
         if (userContainerElement == '') {
             Swal.fire({
@@ -237,10 +311,27 @@
             });
             return;
         } else {
-            let mapaElement = document.getElementById(`#${idMapa}`);
-            let requestLove = await sendLoveRequest(idMapa, 'unlove');
-            mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'none';
-            mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'block';
+            if (isFavorite == null) {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Você deve jogar o mapa para curtir',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                return;
+            } else {
+                let mapaElement = document.getElementById(`#${idMapa}`);
+                let requestLove = await sendLoveRequest(idMapa, 'unlove');
+                if (requestLove.response == true) {
+                    let qtdFavorite = document.getElementById(`#${idMapa}favorite`).innerHTML;
+                    document.getElementById(`#${idMapa}favorite`).innerHTML = parseInt(qtdFavorite) - 1;
+                    mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'none';
+                    mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'block';
+                }
+
+            }
         }
     }
 
@@ -261,12 +352,12 @@
             for (let i = pagina - 1; i < pagina + 2; i++) {
                 if (i >= totalPaginas) break;
 
-                if (i > 1 ) {
+                if (i > 1) {
                     printPage(i, totalPaginas, pagesElement[k]);
                 }
                 if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k]);
             }
-                
+
             if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
         }

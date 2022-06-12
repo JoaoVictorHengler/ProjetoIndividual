@@ -1428,7 +1428,7 @@ input {
 }
 
 .mini-container .mapa-info #mapa-creator {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .mini-container img {
@@ -1833,25 +1833,25 @@ input {
     flex-direction: column;
 }
 
-#scores-player-list {
+#scores-player-list, #scores-favorite-player-list {
     margin-top: 10px;
     width: 95%;
     height: 100%;
     list-style: none;
 }
 
-#scores-player-list li {
+#scores-player-list li, #scores-favorite-player-list li {
     width: 100%;
     height: 60px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#scores-player-list li:not(:first-child) {
+#scores-player-list li:not(:first-child), #scores-favorite-player-list li:not(:first-child) {
     margin-top: 10px;
 }
 
-#scores-player-list li img {
+#scores-player-list li img, #scores-favorite-player-list li img {
     height: 100px;
     position: relative;
 }
@@ -1916,12 +1916,12 @@ input {
     background-color: #344a6a;
 }
 
-#scores-player-list li:hover .player-score-info {
+#scores-player-list li:hover .player-score-info, #scores-favorite-player-list li:hover .player-score-info {
     background-color: #1f2d42;
     width: 95%;
 }
 
-#scores-player-list li:hover .player-score-info div:nth-child(3) {
+#scores-player-list li:hover .player-score-info div:nth-child(3), #scores-favorite-player-list li:hover .player-score-info div:nth-child(3) {
     background-color: #3d557a;
 
 }

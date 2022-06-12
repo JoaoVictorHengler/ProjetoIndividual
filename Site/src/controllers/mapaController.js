@@ -30,7 +30,9 @@ function obterInformacoes(request, response) {
 
 function listarMapas(request, response) {
   let pagina = request.params.paginaServer;
-  mapaModel.listarMapas((pagina * 20) - 20).then(async (result) => {
+  let idJogador = request.params.idJogadorServer;
+
+  mapaModel.listarMapas((pagina * 20) - 20, idJogador).then(async (result) => {
     if (result.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {

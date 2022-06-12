@@ -7,7 +7,7 @@ router.get("/obterInformacoes/:idMapaServer", function (req, res) {
     mapaController.obterInformacoes(req, res);
 });
 
-router.get("/listarMapas/:paginaServer", function (req, res) {
+router.get("/listarMapas/:paginaServer&:idJogadorServer", function (req, res) {
     mapaController.listarMapas(req, res);
 });
 

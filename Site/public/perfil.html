@@ -41,12 +41,7 @@
                         <span class="nav-bar-name" id="ranking">Ranking</span>
                     </a>
                 </li>
-                <li class="nav-bar-item">
-                    <a href="./ultimosScores.html">
-                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
-                    </a>
-                </li>
+                
                 <li class="nav-bar-item">
                     <a href="./pesquisar.html">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -97,7 +92,7 @@
                         <div class="player-name-container">
                             <div>
                                 <span class="player-name" id="player-name"></span>
-                                <i class="fa-solid fa-pen"></i>
+                                <i class="fa-solid fa-pen" onclick="editName()"></i>
                             </div>
                             <div class="flag-country">
                             </div>
@@ -202,7 +197,7 @@
                             </div>
                         </div>
 
-                        <ul id="scores-player-list">
+                        <ul id="scores-favorite-player-list">
                         </ul>
                         <div class="pages-list">
                             <ul class="pages" style="color: white;">
@@ -225,10 +220,9 @@
         })
             .then(editor => {
                 window.editor = editor;
-                editor.model.document.on('change:data', () => {
-                    /* Enviar para o servidor a data */
+                /* editor.model.document.on('change:data', () => {
                     console.log(editor.getData());
-                });
+                }); */
                 editDescription();
             })
             .catch(error => {
@@ -247,7 +241,8 @@
 <script>
 
     var pagina;
-    var paginaFavorito;
+    var paginaFavorito = 1;
+
     function playerPositionChart(historico) {
         let labels = [];
         let positionsData = [];
@@ -347,6 +342,7 @@
         console.log('Resposta: ', response);
 
         if (response.ok) {
+            console.log('Informações dos países obtidas.');
             let json = await response.json();
             return json;
         }
@@ -360,6 +356,7 @@
         carregarDescricao(idJogador);
         document.getElementsByClassName('type-scores')[0].classList.add('selected');
         getPlayerScores(idJogador, pagina)
+        getPlayerScoresFavorite(idJogador);
     }
 
     function getPlayerInfo(idJogador, countryFlags, pagina) {
@@ -373,6 +370,7 @@
 
             if (response.ok) {
                 response.json().then(json => {
+                    console.log('Informação do jogador obtido');
                     setPlayerInfo(idJogador, json, countryFlags);
                     playerPositionChart(json.historico);
                 });
@@ -503,6 +501,7 @@
 
             if (response.ok) {
                 response.json().then(json => {
+                    console.log('Descrição do jogador obtida.');
                     document.getElementById('editor-box').innerHTML = json.descricao;
                 });
 
@@ -546,6 +545,7 @@
             if (response.ok) {
                 response.json().then(json => {
                     if (json.permission == true) {
+                        console.log('Permissão para editar concedida.')
                         document.getElementById('editor-buttons').appendChild(editDescriptionButton());
                         let editImageElement = document.getElementsByClassName('fa-pen');
                         for (let i = 0; i < editImageElement.length; i++) {
@@ -640,6 +640,18 @@
             if (response.ok) {
                 response.json().then(json => {
                     /* console.log('Scores: ', json); */
+                    if (json.qtdPaginas == 0) {
+                        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Esse jogador não possui nenhum score.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+                    }
+                    console.log('Scores do jogador obtidos.');
                     loadPages(json.qtdPaginas, pagina, idJogador, type);
 
                     let element = document.getElementById('scores-player-list');
@@ -677,7 +689,6 @@
 
         let metric = getMetrics(score.precisao);
         if (metric == 'SSS') metric = 'perfect';
-        console.log(metric);
 
 
         liElement.innerHTML = `<div class="player-score-info-container">
@@ -722,21 +733,21 @@
         let pagesElement = document.getElementsByClassName('pages');
 
 
-            createAntButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
+        createAntButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
 
-            printFirstPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
+        printFirstPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
 
-            for (let i = pagina - 1; i < pagina + 2; i++) {
-                if (i >= totalPaginas) break;
+        for (let i = pagina - 1; i < pagina + 2; i++) {
+            if (i >= totalPaginas) break;
 
-                if (i > 1) {
-                    printPage(i, totalPaginas, pagesElement[0], idJogador, pagina, type);
-                }
-                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[0], idJogador, pagina, type);
+            if (i > 1) {
+                printPage(i, totalPaginas, pagesElement[0], idJogador, pagina, type);
             }
+            if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[0], idJogador, pagina, type);
+        }
 
-            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
-            createNextButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
+        if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
+        createNextButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
     }
 
     function printFirstPage(totalPaginas, pagesElement, idJogador, pagina, type) {
@@ -860,29 +871,30 @@
         else document.getElementById('arquivo-perfil').click();
     }
     /* Favoritos */
-    function loadPagesFavoritos(totalPaginas, paginaFavorito, idJogador) {
+
+    function loadPagesFavoritos(totalPaginas, idJogador) {
 
         let pagesElement = document.getElementsByClassName('pages');
 
-            createAntButton(pagesElement[1], totalPaginas, idJogador, paginaFavorito);
+        createAntButtonFavorite(pagesElement[1], totalPaginas, idJogador);
 
-            printFirstPage(totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+        printFirstPageFavorite(totalPaginas, pagesElement[1], idJogador);
 
-            for (let i = paginaFavorito - 1; i < paginaFavorito + 2; i++) {
-                if (i >= totalPaginas) break;
+        for (let i = paginaFavorito - 1; i < paginaFavorito + 2; i++) {
+            if (i >= totalPaginas) break;
 
-                if (i > 1) {
-                    printPage(i, totalPaginas, pagesElement[1], idJogador, paginaFavorito);
-                }
-                if (i == paginaFavorito + 1) printPage('...', totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+            if (i > 1) {
+                printPageFavorite(i, totalPaginas, pagesElement[1], idJogador);
             }
+            if (i == paginaFavorito + 1) printPageFavorite('...', totalPaginas, pagesElement[1], idJogador);
+        }
 
-            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[1], idJogador, paginaFavorito);
-            createNextButton(pagesElement[1], totalPaginas, idJogador, paginaFavorito);
-        
+        if (totalPaginas > 1) printLastPageFavorite(totalPaginas, pagesElement[1], idJogador);
+        createNextButtonFavorite(pagesElement[1], totalPaginas, idJogador);
+
     }
 
-    function printFirstPage(totalPaginas, pagesElement, idJogador, paginaFavorito) {
+    function printFirstPageFavorite(totalPaginas, pagesElement, idJogador) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
 
@@ -891,14 +903,14 @@
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
         } else {
-            pageElement.onclick = () => { reloadPage(1, totalPaginas, idJogador, paginaFavorito) };
+            pageElement.onclick = () => { reloadPageFavorite(1, totalPaginas, idJogador) };
         }
         pageElement.innerHTML += 1;
         pageElement.id = `page-#${1}`;
         pagesElement.appendChild(pageElement);
     }
 
-    function printPage(num, totalPaginas, pagesElement, idJogador, paginaFavorito) {
+    function printPageFavorite(num, totalPaginas, pagesElement, idJogador) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
         if (num != '...') {
@@ -907,7 +919,7 @@
                 pageElement.style.cursor = 'default';
                 pageElement.style.opacity = '0.5';
             } else {
-                pageElement.onclick = () => { reloadPage(num, totalPaginas, idJogador, paginaFavorito) };
+                pageElement.onclick = () => { reloadPageFavorite(num, totalPaginas, idJogador) };
             }
             pageElement.innerHTML += num;
             pageElement.id = `page-#${num}`;
@@ -920,7 +932,7 @@
         pagesElement.appendChild(pageElement);
     }
 
-    function printLastPage(totalPaginas, pagesElement, idJogador, paginaFavorito) {
+    function printLastPageFavorite(totalPaginas, pagesElement, idJogador) {
         let pageElement = document.createElement('li');
         pageElement.classList.add("page-num");
 
@@ -929,38 +941,38 @@
             pageElement.style.cursor = 'default';
             pageElement.style.opacity = '0.5';
         } else {
-            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas, idJogador, paginaFavorito) };
+            pageElement.onclick = () => { reloadPageFavorite(totalPaginas, totalPaginas, idJogador) };
         }
         pageElement.innerHTML += totalPaginas;
         pageElement.id = `page-#${totalPaginas}`;
         pagesElement.appendChild(pageElement);
     }
 
-    function createAntButton(element, totalPaginas, idJogador, paginaFavorito) {
+    function createAntButtonFavorite(element, totalPaginas, idJogador) {
         let antPage = document.createElement('li');
         antPage.innerHTML = '<span>Ant</span>';
         if (paginaFavorito == 1 || totalPaginas == 0) {
             antPage.style.opacity = '0.5';
             antPage.style.cursor = 'default';
         } else {
-            antPage.onclick = () => { reloadPage(false, totalPaginas, idJogador, paginaFavorito) };
+            antPage.onclick = () => { reloadPageFavorite(false, totalPaginas, idJogador) };
         }
         element.appendChild(antPage);
     }
 
-    function createNextButton(element, totalPaginas, idJogador, paginaFavorito) {
+    function createNextButtonFavorite(element, totalPaginas, idJogador) {
         let proxPage = document.createElement('li');
         proxPage.innerHTML = '<span>Próx</span>';
         if (paginaFavorito == totalPaginas || totalPaginas == 0) {
             proxPage.style.opacity = '0.5';
             proxPage.style.cursor = 'default';
         } else {
-            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, paginaFavorito) };
+            proxPage.onclick = () => { reloadPageFavorite(true, totalPaginas, idJogador) };
         }
         element.appendChild(proxPage);
     }
 
-    function reloadPage(nextPage, totalPaginas, idJogador, paginaFavorito) {
+    function reloadPageFavorite(nextPage, totalPaginas, idJogador) {
         if (!isNaN(parseInt(nextPage))) {
             paginaFavorito = parseInt(nextPage);
         } else {
@@ -973,15 +985,102 @@
             }
         }
 
-        let elementScore = document.getElementById('scores-player-list');
+        let elementScore = document.getElementById('scores-favorite-player-list');
 
         elementScore.innerHTML = '';
 
-        document.getElementsByClassName('pages')[0].innerHTML = '';
-        getPlayerScores(idJogador, paginaFavorito);
+        document.getElementsByClassName('pages')[1].innerHTML = '';
+        getPlayerScoresFavorite(idJogador);
         /* window.focus(); */
     }
 
+    function getPlayerScoresFavorite(idJogador) {
+
+        fetch(`/score/listarScoresFavoritosJogador/${idJogador}&${paginaFavorito}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (response) {
+            console.log('Resposta: ', response);
+
+            if (response.ok) {
+                response.json().then(json => {
+                    /* console.log('Scores: ', json); */
+                    if (json.qtdPaginas == 0) {
+                        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Esse jogador não possui nenhum score.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+                    }
+                    console.log('Scores favoritos do jogador obtidos.')
+                    loadPagesFavoritos(json.qtdPaginas, idJogador);
+
+                    let element = document.getElementById('scores-favorite-player-list');
+                    for (let i = 0; i < json.scores.length; i++) {
+                        if (i == 6) break;
+                        setScores(json.scores[i], element)
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Houve um erro ao obter os scores do jogador!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK',
+                });
+                throw ('Houve um erro ao carregar o perfil!');
+            }
+        }).catch(function (response) {
+            console.log(`ERRO: ${response}`);
+        })
+    }
+
+    /* Editar Nick */
+
+    function editName() {
+        Swal.fire({
+            title: 'Submit your Github username',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Atualizar',
+            showLoaderOnConfirm: true,
+            preConfirm: (nick) => {
+                return fetch(`/jogador/editarNome/${nick}`, {
+                    method: "GET"
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(
+                            `Erro ao editar o nick: ${error}`
+                        )
+                    })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: `Nick Atualizado`,
+                })
+            }
+        })
+    }
 </script>
 
 

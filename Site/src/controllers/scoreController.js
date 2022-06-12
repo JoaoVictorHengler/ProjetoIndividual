@@ -107,7 +107,57 @@ async function obterQtdPaginasJogador(idJogador) {
   }
 }
 
+async function obterQtdPaginasFavoritoJogador(idJogador) {
+  try {
+    let respNumPaginas = await scoreModel.verificarNumPaginasFavoritoJogador(idJogador);
+    if (respNumPaginas.length == 0) {
+      response.status(403).send("Não foi possível obter a quantidade de scores.");
+    } else {
+      let qtdScores = respNumPaginas[0].qtdscores
+
+      let qtdPaginas = 0;
+      while (true) {
+        if (qtdScores <= 0) {
+          break;
+        }
+
+        qtdPaginas++;
+        qtdScores -= 6;
+      }
+      return qtdPaginas
+    }
+  } catch (err) {
+
+    console.log(err);
+    console.log("\nHouve um erro ao listar os scores! Erro: ", err.sqlMessage);
+    response.status(500).json(err.sqlMessage);
+  }
+}
+
+function listarScoresFavoritosJogador(request, response) {
+  let idJogador = request.params.idJogadorServer;
+  let pagina = request.params.paginaServer;
+
+  if (pagina == undefined) pagina = 1;
+  if (idJogador == undefined) {
+    response.status(400).send("Id do Jogador está undefined!");
+  } else {
+    scoreModel.listarScoresFavoritosJogador(idJogador, (pagina * 6) - 6).then(async (result) => {
+      let qtdPaginas = await obterQtdPaginasFavoritoJogador(idJogador);
+      response.json({
+        'qtdPaginas': qtdPaginas,
+        'scores': result
+      });
+    }).catch(function (erro) {
+      console.log(erro);
+      console.log("\nHouve um erro ao listar os scores! Erro: ", erro.sqlMessage);
+      response.status(500).json(erro.sqlMessage);
+    })
+  }
+}
+
 module.exports = {
   listarScores,
   listarScoresJogador,
+  listarScoresFavoritosJogador
 }
