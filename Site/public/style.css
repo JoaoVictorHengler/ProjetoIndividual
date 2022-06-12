@@ -758,7 +758,6 @@ input {
     position: absolute;
     right: 0;
     transition: width 1s cubic-bezier(.14, .66, .67, 1.02);
-    background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://cdn.scoresaber.com/covers/EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400.png") repeat scroll 0% 0%;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1654,8 +1653,8 @@ input {
 
 .player-name-container div:nth-child(1) .fa-pen {
     position: absolute;
-    bottom: 2%;
-    right: -20%;
+    bottom: 15%;
+    right: -29%;
 }
 
 .player-name-container div:nth-child(2) {
