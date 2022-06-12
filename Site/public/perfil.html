@@ -246,6 +246,7 @@
     function playerPositionChart(historico) {
         let labels = [];
         let positionsData = [];
+        if (historico == undefined) historico = [];
         historico.forEach(dataHistorico => {
             for (let i = 0; i < 25; i++) {
                 let date = new Date().getDate()
@@ -410,6 +411,8 @@
 
         if (playerInfo.vrUtilizado == null) playerInfo.vrUtilizado = 'Desconhecido';
         document.getElementById('vrUtilizado').innerHTML = `${playerInfo.vrUtilizado}`;
+        if (playerInfo.precisaoMedia == null) playerInfo.precisaoMedia = 0;
+        if (playerInfo.pontuacaoTotal == null) playerInfo.pontuacaoTotal = 0;
         document.getElementById('precisaoMedia').innerHTML = `${playerInfo.precisaoMedia}%`;
         document.getElementById('pontuacaoTotal').innerHTML = `${playerInfo.pontuacaoTotal}`;
         document.getElementById('replaysAssistidos').innerHTML = `${playerInfo.replaysAssistidos}`;
@@ -441,6 +444,7 @@
             arrow.classList.remove('fa-chevron-down');
             arrow.classList.add('fa-chevron-up');
             container[0].style.height = '250px';
+            if (editImageElement[0].style.display == 'none') return;
             editImageElement[0].style.display = 'block';
 
         }
@@ -548,9 +552,9 @@
                         console.log('Permissão para editar concedida.')
                         document.getElementById('editor-buttons').appendChild(editDescriptionButton());
                         let editImageElement = document.getElementsByClassName('fa-pen');
-                        for (let i = 0; i < editImageElement.length; i++) {
-                            editImageElement[i].style.display = 'block';
-                        }
+                        /* for (let i = 0; i < editImageElement.length; i++) {
+                        } */
+                        editImageElement[2].style.display = 'block';
                     }
                 });
 
@@ -640,6 +644,7 @@
             if (response.ok) {
                 response.json().then(json => {
                     /* console.log('Scores: ', json); */
+                    console.log(json)
                     if (json.qtdPaginas == 0) {
                         Swal.fire({
                             imageUrl: './assets/img/gura-error.gif',
@@ -690,7 +695,7 @@
         let metric = getMetrics(score.precisao);
         if (metric == 'SSS') metric = 'perfect';
 
-
+        /* <span>Há x Dias</span> */
         liElement.innerHTML = `<div class="player-score-info-container">
                                     <img src="/mapa/getImage/${score.hashMapa}">
                                     <div class="player-score-info">
@@ -701,7 +706,7 @@
                                             </div>
                                             <div>
                                                 <span>mapeado por ${score.criadorMapa}</span>
-                                                <span>Há x Dias</span>
+                                                
                                             </div>
                                         </div>
                                         <div class="player-score-info-score-info">
@@ -1011,7 +1016,7 @@
                         Swal.fire({
                             imageUrl: './assets/img/gura-error.gif',
                             imageHeight: 150,
-                            text: 'Esse jogador não possui nenhum score.',
+                            text: 'Esse jogador não possui nenhum score favorito.',
                             showConfirmButton: false,
                             showDenyButton: true,
                             denyButtonText: 'OK'
@@ -1047,8 +1052,9 @@
     /* Editar Nick */
 
     function editName() {
+        let newNick;
         Swal.fire({
-            title: 'Submit your Github username',
+            title: 'Digite o seu novo username',
             input: 'text',
             inputAttributes: {
                 autocapitalize: 'off'
@@ -1057,26 +1063,29 @@
             confirmButtonText: 'Atualizar',
             showLoaderOnConfirm: true,
             preConfirm: (nick) => {
-                return fetch(`/jogador/editarNome/${nick}`, {
+                return fetch(`/jogador/editarNick/${sessionStorage.IDJOGADOR}&${nick}`, {
                     method: "GET"
                 })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(response.statusText)
                         }
+                        newNick = nick;
                         return response.json()
                     })
                     .catch(error => {
                         Swal.showValidationMessage(
-                            `Erro ao editar o nick: ${error}`
+                            `Erro ao editar o username: ${error}`
                         )
                     })
             },
             allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
             if (result.isConfirmed) {
+                document.getElementById('player-name').innerHTML = newNick.trim();
+                document.getElementById('username').innerHTML = newNick.trim();
                 Swal.fire({
-                    title: `Nick Atualizado`,
+                    title: `Username Atualizado`,
                 })
             }
         })

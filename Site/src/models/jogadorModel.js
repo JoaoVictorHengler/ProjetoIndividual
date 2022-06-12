@@ -140,7 +140,7 @@ function favoritarMapa(idJogador, idMapa, tipo) {
 
 function editarNick(idJogador, nickJogador) {
     let instrucao = `
-    update jogador set nome = '${nickJogador}' where fkJogador = ${idJogador};`;
+    update jogador set nome = '${nickJogador}' where idJogador = ${idJogador};`;
 
     return database.executar(instrucao);
 }

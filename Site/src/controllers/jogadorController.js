@@ -268,7 +268,7 @@ function setarDescricao(request, response) {
 
     try {
       let [users, user] = encontrarArquivoEUsuario(idJogador);
-
+      
       if (user.length == 0) {
         users.push({
           "idJogador": idJogador,
@@ -277,9 +277,12 @@ function setarDescricao(request, response) {
       } else {
         user[0].descricao = dadosDescricao;
       }
-
+      
       writeFileSync(fileLocation, JSON.stringify({ "usuarios": users }));
       console.log('Edição de perfil Concluída.')
+      
+      user = users.filter( userInfo => {return userInfo.idJogador == idJogador});
+      
       response.json({
         'status': true,
         'descricao': user[0].descricao

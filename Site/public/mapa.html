@@ -90,7 +90,6 @@
                         <th>Jogador</th>
                         <th>Combo Máximo</th>
                         <th>Erros</th>
-                        <th>Tempo</th>
                     </tr>
                 </table>
                 <div class="pages-list">
@@ -317,8 +316,7 @@
                         <td class="flag-country"><span>${score.pais}</span></td>
                         <td><a class="title-ranking" href="./perfil.html?id=${score.idJogador}"><span>${score.nome}</span></a></td>
                         <td ${colorCombo}><span>${score.comboMaximo}x</span></td>
-                        <td><span>${score.notasErradas + score.corteRuim}</span></td>
-                        <td><span>${2}d</span></td>`;
+                        <td><span>${score.notasErradas + score.corteRuim}</span></td>`;
         tableElement.appendChild(scoreElement);
     }
 
