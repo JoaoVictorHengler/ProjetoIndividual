@@ -88,13 +88,13 @@ async function verifyAuth() {
                 </div>
                 <i class="fa-solid fa-right-to-bracket" id="logOut" onclick="logOff()"></i>`;
         } else {
-            document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
             document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+            document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
         }
 
     } else {
-        document.getElementsByClassName('nav-bar-item')[4].style.display = 'flex';
         document.getElementsByClassName('nav-bar-item')[5].style.display = 'flex';
+        document.getElementsByClassName('nav-bar-item')[6].style.display = 'flex';
     }
 }
 

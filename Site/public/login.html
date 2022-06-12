@@ -19,8 +19,7 @@
 <body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            <input id="search-user" type="text" placeholder="Pesquisar...">
-            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            
             <ul class="nav-bar">
                 <li class="nav-bar-item"> 
                     <a href="./index.html">
@@ -29,7 +28,7 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html" class="nav-bar-a">
+                    <a href="./mapas.html">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
@@ -41,21 +40,26 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="">
+                    <a href="./ultimosScores.html">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
                     </a>
                 </li>
-                <li class="nav-bar-item here">
-                    
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="login">Login</span>
+                <li class="nav-bar-item">
+                    <a href="./pesquisar.html">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
+                    </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./cadastro.html">
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="cadastro">Cadastro</span>
                     </a>
+                </li>
+                <li class="nav-bar-item here">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
                 </li>
 
             </ul>
@@ -77,7 +81,7 @@
                     <span>Login</span>
                     <div class="login-input-container">
                         <div class="username-password-container">
-                            <label for="user">Email:</label>
+                            <label for="email">Email:</label>
                             <input type="text" id="email" placeholder="Email">
                             <i class="fa-solid fa-user"></i>
                         </div>

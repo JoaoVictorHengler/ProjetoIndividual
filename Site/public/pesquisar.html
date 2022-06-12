@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="./assets/js/funcoes.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Pesquisar</title>
+</head>
+
+<body onload="verifyAuth(), activeKeyPress(), main()">
+    <div id="perfil-menu">
+        <div class="perfil-menu-container">
+
+            <ul class="nav-bar">
+                <li class="nav-bar-item">
+                    <a href="./index.html">
+                        <i class="fa-solid fa-house menu-icon"></i>
+                        <span class="nav-bar-name" id="home">Início</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./mapas.html">
+                        <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="mapas">Mapas</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./ultimosScores.html">
+                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./cadastro.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="user-container">
+        </div>
+
+    </div>
+    <div class="banner">
+        <div class="mapa-banner">
+            <div class="pattern-dots-regular">
+                <div class="container">
+                    <div class="page-title-container">
+                        <span>Pesquisar</span>
+                    </div>
+                    <div class="search-mapa-container">
+                        <input type="text" id="search" placeholder="Pesquisar...">
+                        <i class="fa-solid fa-magnifying-glass search-mapa-icon"></i>
+                    </div>
+                    <div class="page-type-search-container">
+                        <div>
+                            <div class="type-search selected">
+                                Jogador
+                            </div>
+                            <div class="type-search">
+                                Mapas
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pages-list">
+                        <ul class="pages">
+                        </ul>
+                    </div>
+                    <ul id="search-list-container">
+
+                    </ul>
+                    <div class="pages-list">
+                        <ul class="pages">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</body>
+<script>
+    var countryFlags, paginaParam;
+    var pagina = 1;
+
+    function getURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let paginaParam = parseInt(urlParams.get('page'));
+        let typeOfRankingParam = urlParams.get('typeOfRanking');
+        if (typeOfRankingParam != null) {
+            document.getElementById('type-of-ranking').value = typeOfRankingParam;
+        }
+        if (isNaN(paginaParam)) {
+            paginaParam = 1;
+        }
+        return paginaParam;
+    }
+
+    function activeKeyPress() {
+        let searchInput = document.getElementById('search');
+        searchInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter" && searchInput.value != '') {
+
+                event.preventDefault();
+                setTypeOfSearch(searchInput.value);
+
+            }
+        });
+    }
+
+    function setTypeOfSearch(text) {
+        document.getElementById('search-list-container').innerHTML = '';
+        let pagesElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < pagesElement.length; i++) {
+            pagesElement[i].innerHTML = '';
+        }
+
+        let selectedType = document.getElementsByClassName('selected')[0].innerHTML.toLowerCase().trim();
+        console.log(selectedType);
+        if (selectedType == 'jogador') searchJogador(text.replaceAll("'", ""));
+        else searchMapa(text);
+    }
+
+    async function searchJogador(text) {
+        let response = await fetch(`/jogador/procurar/${text}&${pagina}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let json = await response.json();
+            let qtdPaginas = json.qtdPaginas;
+            let jogadores = json.jogadores;
+            appendPlayers(jogadores);
+
+            loadPages(qtdPaginas);
+
+        }
+    }
+
+    function appendPlayers(jogadores) {
+        for (let i = 0; i < jogadores.length; i++) {
+                let liElement = document.createElement('li');
+                liElement.classList.add('player-list-item');
+                liElement.innerHTML = `
+                            <div class="player-info-container">
+                                <img src="./jogador/getImage/${jogadores[i].idJogador}">
+                                <div class="player-info">
+                                    <div class="flag-country">
+                                        ${jogadores[i].pais}
+                                    </div>
+                                    <span>${jogadores[i].nome}</span>
+                                </div>
+                            </div>`;
+                liElement.onclick = () => {window.location = `./perfil.html?id=${jogadores[i].idJogador}`;}
+                document.getElementById('search-list-container').appendChild(liElement);
+            }
+            let flagsCountry = document.getElementsByClassName('flag-country');
+            for (let i = 0; i < flagsCountry.length; i++) {
+                let nameCountry = (flagsCountry[i].innerHTML).trim();
+                flagsCountry[i].innerHTML = '';
+                setPlayerCountry(flagsCountry[i], false, nameCountry, countryFlags);
+            }
+    }
+    async function searchMapa(text) {
+        let response = await fetch(`/mapa/procurar/${text}&${pagina}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let informacao = await response.json();
+            let totalMapas = informacao.mapas;
+            totalPaginas = informacao.qtdPaginas;
+            loadPages(totalPaginas);
+
+
+            for (let i = 0; i < totalMapas.length; i++) {
+                adicionarMapa(totalMapas[i]);
+            }
+        }
+    }
+
+    async function main() {
+        countryFlags = await getCountryFlags();
+        paginaParam = await getURLParams();
+        changeTypeOfSearch();
+    }
+
+    async function getCountryFlags() {
+        let response = await fetch(`/jogador/countryFlag`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let json = await response.json();
+            return json;
+        }
+    }
+
+    function loadPages(totalPaginas) {
+
+        let pagesElement = document.getElementsByClassName('pages');
+        for (let k = 0; k < pagesElement.length; k++) {
+
+            createAntButton(pagesElement[k], totalPaginas);
+
+            printFirstPage(totalPaginas, pagesElement[k]);
+
+            for (let i = paginaParam - 1; i < paginaParam + 2; i++) {
+                if (i >= totalPaginas) break;
+
+                if (i > 1) {
+                    printPage(i, totalPaginas, pagesElement[k]);
+                }
+                if (i == paginaParam + 1) printPage('...', totalPaginas, pagesElement[k]);
+            }
+
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
+            createNextButton(pagesElement[k], totalPaginas);
+        }
+    }
+
+    function printFirstPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (paginaParam == 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas) };
+        }
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (paginaParam == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas) };
+            }
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (paginaParam == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas) };
+        }
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function createAntButton(element, totalPaginas) {
+        let antPage = document.createElement('li');
+        antPage.innerHTML = '<span>Ant</span>';
+        if (paginaParam == 1 || totalPaginas == 0) {
+            antPage.style.opacity = '0.5';
+            antPage.style.cursor = 'default';
+        } else {
+            antPage.onclick = () => { reloadPage(false, totalPaginas) };
+        }
+        element.appendChild(antPage);
+    }
+
+    function createNextButton(element, totalPaginas) {
+        let proxPage = document.createElement('li');
+        proxPage.innerHTML = '<span>Próx</span>';
+        if (paginaParam == totalPaginas || totalPaginas == 0) {
+            proxPage.style.opacity = '0.5';
+            proxPage.style.cursor = 'default';
+        } else {
+            proxPage.onclick = () => { reloadPage(true, totalPaginas) };
+        }
+        element.appendChild(proxPage);
+    }
+
+    function reloadPage(nextPage, totalPaginas) {
+        let paginaElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < paginaElement.length; i++) {
+            paginaElement[i].innerHTML = '';
+        }
+
+        if (!isNaN(parseInt(nextPage))) {
+            paginaParam = nextPage;
+        } else {
+            if (nextPage) {
+                if (paginaParam == totalPaginas && paginaParam >= 1) return;
+                paginaParam += 1;
+            } else {
+                if (paginaParam <= 1) return;
+                paginaParam -= 1;
+            }
+        }
+
+
+        document.getElementById('table-ranking').innerHTML = `<tr>
+                            <th></th>
+                            <th>Precisão Média</th>
+                            <th>Mapas Jogados</th>
+                            <th>Pontuação Total</th>
+                            <th>SS</th>
+                            <th>S</th>
+                            <th>A</th>
+                        </tr>`;
+        getDataBaseCountries();
+        /* window.location.href = `./ranking.html?page=${paginaParam}&typeOfRanking=${typeOfRanking}`;
+        window.focus(); */
+    }
+
+    function adicionarMapa(mapa) {
+        let mesesPtBr = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        let listMapas = document.getElementById('search-list-container');
+        let listItem = document.createElement('li');
+
+        listItem.classList.add('mapa-list-item');
+        listItem.id = `#${mapa.idMapa}`;
+        if (mapa.qtdMapaFavorito == null) mapa.qtdMapaFavorito = 0;
+        if (mapa.qtdScores == null) mapa.qtdScores = 0;
+
+
+        let dataUpload = (new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
+        let mesUpload = mesesPtBr[parseInt(dataUpload.substring(3, 5)) - 1]
+        let diaUpload = dataUpload.substring(0, 2);
+        let anoUpload = dataUpload.substring(6, 10);
+        let diffs = '';
+        for (let i = 0; i < mapa.dificuldades.length; i++) {
+            diffs += `
+                    <li class="diff-mapas ${mapa.dificuldades[i].nomeDificuldade.toLowerCase()}">
+                    </li>
+                `;
+        }
+        listItem.innerHTML += `
+                                <img class="mapa-image" src="/mapa/getImage/${mapa.hashMapa}">
+                                <div class="mapa-info" onclick="mudarPaginaMapa(${mapa.idMapa})" style="background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(/mapa/getImage/${mapa.hashMapa}) repeat scroll 0% 0%;">
+                                    <span class="mapa-name">${mapa.nomeMusica + mapa.subNomeMusica}</span>
+                                    <span class="mapa-artist">por ${mapa.artistaMusica}</span>
+                                    <span class="mapa-creator">mapeado por ${mapa.criadorMapa}</span>
+                                    <div class="mapa-other-infos">
+                                        <i class="fa-regular fa-heart"></i>
+                                        <!-- Full heart<i class="fa-solid fa-heart"></i>  -->
+                                        <span>${mapa.qtdMapaFavorito}</span>
+                                        <i class="fa-solid fa-play"></i>
+                                        <span>${mapa.qtdScores}</span>
+                                        <i class="fa-regular fa-circle-check"></i>
+                                        <span>${diaUpload} de ${mesUpload} de ${anoUpload}</span> 
+                                    </div>
+                                    <ul class="mapa-all-diffs">
+                                        ${diffs}
+                                    </ul>
+
+                                </div>
+                                <div class="mapa-other-options">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <i class="fa-solid fa-heart"></i>
+                                    <a href="https://r2cdn.beatsaver.com/${mapa.hashMapa}.zip"><i class="fa-solid fa-file-arrow-down" ></i></a>
+                                    
+                                </div>`;
+        listMapas.appendChild(listItem);
+
+    }
+
+    function mudarPaginaMapa(idMapa) {
+        window.location.href = `./mapa.html?idmapa=${idMapa}`;
+        window.focus();
+    }
+
+    function changeTypeOfSearch() {
+        let typesSearch = document.getElementsByClassName('type-search');
+        for (let i = 0; i < typesSearch.length; i++) {
+            if (typesSearch[i].classList.contains('selected')) {
+                type = typesSearch[i].innerHTML.toLocaleLowerCase() == 'jogador' ? 'jogador' : 'mapas'
+                typesSearch[i].onclick = () => { };
+            } else {
+                typesSearch[i].onclick = () => {
+                    document.getElementsByClassName('selected')[0].classList.remove('selected');
+                    typesSearch[i].classList.add('selected');
+                    changeTypeOfSearch();
+                    document.getElementById('search-list-container').innerHTML = '';
+                    let pagesElements = document.getElementsByClassName('pages');
+                    for (let i = 0; i < pagesElements.length; i++) {
+                        pagesElements[i].innerHTML = '';
+                    }
+                };
+            }
+
+        }
+    }
+
+</script>
+
+</html>

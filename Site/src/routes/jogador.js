@@ -47,5 +47,13 @@ router.post("/editarImagem", function (req, res) {
     jogadorController.editarImagemPerfil(req, res);
 });
 
+router.get("/procurar/:nomeJogadorServer&:paginaServer", function (req, res) {
+    jogadorController.procurar(req, res);
+});
+
+router.get("/favoritarMapa/:idJogadorServer&:idMapaServer&:tipoServer", function (req, res) {
+    jogadorController.favoritarMapa(req, res);
+});
+
 module.exports = router;
 

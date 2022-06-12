@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
     <title>Mapas</title>
 </head>
@@ -14,8 +15,7 @@
 <body onload="verifyAuth(), verifyPage(), obterMapas()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            <input id="search-user" type="text" placeholder="Pesquisar...">
-            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
@@ -34,21 +34,27 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="">
+                    <a href="./ultimosScores.html">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./login.html">
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="login">Login</span>
+                    <a href="./pesquisar.html">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./cadastro.html">
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
                     </a>
                 </li>
 
@@ -170,13 +176,72 @@
 
                                 </div>
                                 <div class="mapa-other-options">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <i class="fa-solid fa-heart"></i>
+                                    <i class="fa-regular fa-heart" onclick="loveMapa(${mapa.idMapa})"></i>
+                                    <i class="fa-solid fa-heart" onclick="unLoveMapa(${mapa.idMapa})"></i>
                                     <a href="https://r2cdn.beatsaver.com/${mapa.hashMapa}.zip"><i class="fa-solid fa-file-arrow-down" ></i></a>
                                     
                                 </div>`;
+        listItem.id = `#${mapa.idMapa}`;
         listMapas[0].appendChild(listItem);
 
+    }
+
+    async function loveMapa(idMapa) {
+        let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
+        if (userContainerElement == '') {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Você deve estar Logado para curtir',
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        } else {
+            let mapaElement = document.getElementById(`#${idMapa}`);
+            let requestLove = await sendLoveRequest(idMapa, 'love');
+
+            mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'block';
+            mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'none';
+        }
+    }
+
+    function sendLoveRequest(idMapa, type) {
+        let idJogador = sessionStorage.IDJOGADOR;
+
+        let response = await fetch(`/jogador/favoritarMapa/${idJogador}&${idMapa}&${type}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log('Resposta: ', response);
+
+        if (response.ok) {
+            let json = await response.json()
+        }
+
+    }
+
+    function unLoveMapa(idMapa) {
+        let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
+        if (userContainerElement == '') {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Você deve estar Logado para descurtir',
+                icon: 'error',
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: 'OK'
+            });
+            return;
+        } else {
+            let mapaElement = document.getElementById(`#${idMapa}`);
+            let requestLove = await sendLoveRequest(idMapa, 'unlove');
+            mapaElement.getElementsByClassName('fa-solid fa-heart')[0].style.display = 'none';
+            mapaElement.getElementsByClassName('fa-regular fa-heart')[1].style.display = 'block';
+        }
     }
 
     function mudarPaginaMapa(idMapa) {

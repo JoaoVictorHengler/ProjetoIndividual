@@ -12,7 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    <title>Desempenho</title>
+    <title>Últimos Scores</title>
 </head>
 
 <body onload="verifyAuth(), main()">
@@ -32,15 +32,15 @@
                         <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
                 </li>
-                <li class="nav-bar-item here">
-                    <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
-                    <span class="nav-bar-name" id="ranking">Ranking</span>
-                </li>
                 <li class="nav-bar-item">
-                    <a href="ultimosScores.html">
+                    <a href=".ranking.html">
+                        <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="ranking">Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item here">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
-                    </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./pesquisar.html">
@@ -72,7 +72,7 @@
         <div class="pattern-dots-regular" style="color: black;">
             <div class="container" style="color: white;">
                 <div class="page-title-container">
-                    <span>Colocações</span>
+                    <span>Últimos Scores</span>
                 </div>
                 <div class="select-type-ranking-container">
                     <div>
@@ -129,7 +129,6 @@
     async function main() {
         countryFlags = await getCountryFlags();
         paginaParam = await getURLParams();
-        await getDataBaseCountries();
     }
 
     async function getCountryFlags() {
@@ -148,107 +147,8 @@
         }
     }
 
-    function getDataBaseCountries() {
-        fetch('/jogador/listarPaisesCadastrados', {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(function (response) {
-            console.log('Resposta: ', response);
-
-            if (response.ok) {
-                response.json().then(async json => {
-
-                    let selectElement = document.getElementById('type-of-ranking');
-
-                    for (let i = 0; i < json.length; i++) {
-                        let countryName = (countryFlags.filter(country => { return json[i].pais == country.code }))[0];
-                        let countryOptionElement = document.createElement('option');
-                        countryOptionElement.value = countryName.code;
-                        countryOptionElement.innerHTML = countryName.name;
-                        selectElement.appendChild(countryOptionElement);
-                    }
-
-                    
-                    let playersInfo = await getRanking(countryFlags, paginaParam);
-                    console.log('Jogadores: ', playersInfo);
-                    let paginas = playersInfo.qtdPaginas;
-                    let players = playersInfo.jogadores;
-                    loadPages(paginas);
-                    loadPlayers(players);
-                    setCountry();
-                })
-            }
-        })
-    }
-
-    function loadPlayers(players) {
-        let tableElement = document.getElementById('table-ranking');
-        for (let i = 0; i < players.length; i++) {
-            let trElement = document.createElement('tr');
-            trElement.classList.add('mini-ranking-container');
-            if (players[i].S == null) players[i].S = 0
-            if (players[i].A == null) players[i].A = 0
-
-            let playerRank;
-            if (paginaParam != 1) playerRank = i + 1 + (10 * parseInt(paginaParam));
-            else playerRank = i + 1;
-
-            trElement.innerHTML = `<td>
-                <div class="mini-ranking-title-container">
-                    <span style="margin-right: 10px;">#${playerRank}</span>
-                                    <img class="player-img"
-                                        src="/jogador/getImage/${players[i].idJogador}">
-                                    <div class="flag-country"><span>${players[i].pais}</span></div>
-                                    <a class="mini-ranking-title title-ranking" href="./perfil.html?id=${players[i].idJogador}">${players[i].nome}</a>
-                                </div>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].precisaoMedia}%</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].mapasJogados}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].ppTotal} pp</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].SS}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].S}</span>
-                            </td>
-                            <td class="mini-ranking-title">
-                                <span>${players[i].A}</span>
-                            </td>`;
-            tableElement.appendChild(trElement);
-        }
-    }
-
-    async function getRanking(countryFlags, paginaParam) {
-        let typeOfRanking = document.getElementById('type-of-ranking').value;
-
-        let country = countryFlags.filter(country => { return country.name.toLowerCase() == typeOfRanking.toLowerCase() })
-        let countryState = null;
-        let link = '';
-
-        if (typeOfRanking == 'Global') link = `/jogador/listarRankingGlobal/${paginaParam}`;
-        else link = `/jogador/listarRankingNacional/${typeOfRanking}&${paginaParam}`;
-
-
-        let response = await fetch(link, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        console.log(response);
-        if (response.ok) {
-            let json = await response.json();
-            return json;
-        }
-    }
+   
+    
 
     function loadPages(totalPaginas) {
 
@@ -349,38 +249,6 @@
             proxPage.onclick = () => { reloadPage(true, totalPaginas) };
         }
         element.appendChild(proxPage);
-    }
-
-
-    function setCountry() {
-        let flagElements = document.getElementsByClassName('flag-country');
-        for (let i = 0; i < flagElements.length; i++) {
-            let countryName = flagElements[i].getElementsByTagName('span')[0].innerHTML;
-            flagElements[i].innerHTML = '';
-            setPlayerCountry(flagElements[i], false, countryName, countryFlags);
-        }
-    }
-
-    function unloadPlayers() {
-        let tableElement = document.getElementById('table-ranking');
-        tableElement.innerHTML = `<tr>
-                            <th></th>
-                            <th>Precisão Média</th>
-                            <th>Mapas Jogados</th>
-                            <th>Pontuação Total</th>
-                            <th>SS</th>
-                            <th>S</th>
-                            <th>A</th>
-                        </tr>`;
-    }
-
-    async function changeCountry() {
-        unloadPlayers();
-        let playersInfo = await getRanking(countryFlags, paginaParam);
-
-        let players = playersInfo.jogadores;
-        loadPlayers(players);
-        setCountry();
     }
 
     function reloadPage(nextPage, totalPaginas) {

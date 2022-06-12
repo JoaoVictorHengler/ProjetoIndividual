@@ -113,6 +113,32 @@ function obterInfo(idJogador) {
     return database.executar(instrucao);
 }
 
+function procurar(nomeJogador, minValue) {
+  
+    var instrucao = `select idJogador, nome, pais,
+    (select count(*) from Dificuldade 
+    join score on idDificuldade = fkDificuldade and score.fkMapa = dificuldade.fkMapa
+    and Jogador.idJogador = fkJogador group by fkJogador) as 'mapasJogados'
+    from Jogador where nome like '%${nomeJogador.replaceAll(/'/g, "\\'")}%' group by idJogador limit ${minValue}, 20;`;
+  
+    return database.executar(instrucao);
+}
+
+function favoritarMapa(idJogador, idMapa, tipo) {
+    let instrucao;
+    if (tipo == 'love') {
+        instrucao = `
+            update score set scoreFavorito = true where fkJogador = ${idJogador} and fkMapa = ${idMapa};
+        `;
+    } else {
+        instrucao = `
+            update score set scoreFavorito = false where fkJogador = ${idJogador} and fkMapa = ${idMapa};
+        `;
+    }
+
+    return database.executar(instrucao);
+}
+
 module.exports = {
     listarRankingGlobal,
     listarRankingNacional,
@@ -120,5 +146,7 @@ module.exports = {
     verificarNumPaginas,
     listarRankingGlobalSemLimite,
     listarRankingNacionalSemLimite,
-    obterInfo
+    obterInfo,
+    procurar,
+    favoritarMapa
 };

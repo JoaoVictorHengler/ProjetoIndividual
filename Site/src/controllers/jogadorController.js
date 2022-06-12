@@ -20,7 +20,7 @@ function listarRankingGlobal(request, response) {
     if (result.length == 0) {
       response.status(403).send("Não foi possível listar os jogadores.");
     } else {
-      let qtdPaginas = await obterQtdPaginas(response, result);
+      let qtdPaginas = await obterQtdPaginas(response);
       response.json({
         'qtdPaginas': qtdPaginas,
         'jogadores': result
@@ -44,7 +44,7 @@ function listarRankingNacional(request, response) {
       if (result.length == 0) {
         response.status(403).send("Não foi possível listar os jogadores.");
       } else {
-        let qtdPaginas = await obterQtdPaginas(response, result);
+        let qtdPaginas = await obterQtdPaginas(response);
         response.json({
           'qtdPaginas': qtdPaginas,
           'jogadores': result
@@ -59,14 +59,14 @@ function listarRankingNacional(request, response) {
 
 }
 
-async function obterQtdPaginas(response) {
+async function obterQtdPaginas(response, qtdJogadoresAchados) {
   try {
-    let result = await jogadorModel.verificarNumPaginas();
-    if (result.length == 0) {
+    let qtdJogadores;
+    if (qtdJogadoresAchados == undefined) qtdJogadores = (await jogadorModel.verificarNumPaginas())[0].qtdJogadores;
+    else qtdJogadores = qtdJogadoresAchados;
+    if (qtdJogadores.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
-      let qtdJogadores = result[0].qtdJogadores
-
 
       let qtdPaginas = 0;
       while (true) {
@@ -108,7 +108,7 @@ function obterImagem(request, response) {
   if (idJogador == undefined) {
     response.status(403).send("Não foi possível obter a imagem.");
   } else {
-    let fileLocation = path.join(__dirname, `../../public/assets/img/playerImg/${idJogador}.jpg`);
+    let fileLocation = path.join(__dirname, `../../public/assets/img/playerImg/${idJogador}.png`);
     response.sendFile(fileLocation);
   }
 }
@@ -308,6 +308,47 @@ function editarImagemPerfil(request, response) {
   console.log(request.body);
 }
 
+async function procurar(request, response) {
+  let nomeJogador = request.params.nomeJogadorServer;
+  let pagina = request.params.paginaServer;
+
+  if (pagina == undefined) pagina = 1;
+
+  if (nomeJogador == undefined) {
+    response.status(403).send("Nome do Jogador está Undefined.");
+  } else {
+    jogadorModel.procurar(nomeJogador, (pagina * 20) - 20).then(async (result) => {
+
+      if (result.length == 0) {
+        response.status(403).send("Não foi possível listar os jogadores.");
+      } else {
+        let qtdPaginas = await obterQtdPaginas(response, result.length);
+        response.json({
+          'qtdPaginas': qtdPaginas,
+          'jogadores': result
+        });
+      }
+    });
+  }
+}
+
+async function favoritarMapa(request, response) {
+  let idJogador = request.params.idJogadorServer;
+  let idMapa = request.params.idMapaServer;
+  let tipo = request.params.tipoServer;
+
+
+  if (idJogador == undefined) {
+    response.status(403).send("Id do Jogador está Undefined.");
+  }else if (idMapa == undefined) {
+    response.status(403).send("Id do Mapa está Undefined.");
+  }else if (tipo == undefined) {
+    response.status(403).send("Tipo está Undefined.");
+  } else {
+    let resultado = await jogadorModel.favoritarMapa(idJogador, idMapa, tipo)
+  }
+}
+
 module.exports = {
   obterPaises,
   listarRankingGlobal,
@@ -318,5 +359,7 @@ module.exports = {
   verificarEdicao,
   obterDescricao,
   setarDescricao,
-  editarImagemPerfil
+  editarImagemPerfil,
+  procurar,
+  favoritarMapa
 }

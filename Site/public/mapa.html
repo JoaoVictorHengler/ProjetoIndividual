@@ -18,8 +18,7 @@
 <body onload="verifyAuth(), getMapaParams(), obterInformacoesMapa(), getCountryFlags()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            <input id="search-user" type="text" placeholder="Pesquisar...">
-            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+            
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
@@ -28,7 +27,7 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html" class="nav-bar-a">
+                    <a href="./mapas.html">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
@@ -40,21 +39,27 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="">
+                    <a href="./ultimosScores.html">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./login.html">
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="login">Login</span>
+                    <a href="./pesquisar.html">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./cadastro.html">
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
                     </a>
                 </li>
 
@@ -230,12 +235,11 @@
                     for (let i = 0; i < mapa.dificuldades.length; i++) {
                         mapa.dificuldades[i].nomeDificuldade = convertDiffs(mapa.dificuldades[i].nomeDificuldade); // Dificuldade mais dificil
                     }
-
+                    console.log('a', diff);
                     if (diff == null) diff = { 'nomeDificuldade': higherDiff.nomeDificuldade };
                     else {
-                        diff = {
-                            'nomeDificuldade': diff
-                        };
+                        if (diff.nomeDificuldade != null) diff = { 'nomeDificuldade': diff.nomeDificuldade };
+                        else diff = {'nomeDificuldade': diff};
                     }
 
                     getScores(mapa, diff);
@@ -247,6 +251,7 @@
     }
 
     function getScores(mapa, higherDiff) {
+
         fetch(`/score/listarScores/${idMapa}&${higherDiff.nomeDificuldade}&${pagina}`, {
             method: 'GET',
             headers: {
@@ -257,7 +262,7 @@
 
             if (responseScores.ok) {
                 responseScores.json().then(async jsonScores => {
-                    console.log(jsonScores);
+                    /* console.log(jsonScores); */
                     var totalPaginas = 0;
                     let informacao = jsonScores
                     let scores = informacao.scores;
@@ -265,16 +270,20 @@
                     loadMapInfo(mapa.nomeMusica, mapa.artistaMusica, mapa.criadorMapa, mapa.hashMapa,
                         scores.length, mapa.bpmMapa, mapa.duracaoMapa,
                         new Date(mapa.dataUploadMapa.substring(0, 10)).toLocaleDateString());
-
+                    let diffEscolhida;
                     for (let i = 0; i < mapa.dificuldades.length; i++) {
 
-                        if (mapa.dificuldades[i].nomeDificuldade == higherDiff.nomeDificuldade) loadDiffInfo(mapa.dificuldades[i])
+                        if (mapa.dificuldades[i].nomeDificuldade == higherDiff.nomeDificuldade) {
+                            loadDiffInfo(mapa.dificuldades[i]);
+                            diffEscolhida = mapa.dificuldades[i];
+                        }
                         await loadDiffs(mapa.dificuldades[i].nomeDificuldade, higherDiff.nomeDificuldade)
                     }
 
                     loadPages(totalPaginas);
+
                     for (let i = 0; i < scores.length; i++) {
-                        adicionarScores(scores[i], i + 1);
+                        adicionarScores(scores[i], i + 1, diffEscolhida.notas);
                     }
                     let flagElements = document.getElementsByClassName('flag-country');
                     for (let i = 0; i < flagElements.length; i++) {
@@ -293,21 +302,24 @@
 
         let colorPrecisao = '', colorCombo = '';
         if (score.precisao == '100') {
-            colorPrecisao = `style="color: green;"`;
+            colorPrecisao = `style="color: var(--perfect);"`;
         }
+
         if (score.comboMaximo == notes) {
-            colorCombo = `style="color: green;"`;
+            colorCombo = `style="color: var(--perfect);"`;
 
         }
         let metric = getMetrics(score.precisao);
+        if (metric == 'SSS') metric = 'perfect';
+        
         scoreElement.classList.add('mapa-list-scores');
         scoreElement.innerHTML += `
                         <td class="rank"><span>#${lugar}</span></td>
-                        <td class="type"><span>${metric}</span></td>
+                        <td class="type" style="color: var(--${metric.toLocaleLowerCase()})"><span>${metric}</span></td>
                         <td style="font-weight: 600;">${score.pontuacao.toLocaleString("en-US")}<span></span></td>
                         <td ${colorPrecisao}><span>${score.precisao}%</span></td>
                         <td class="flag-country"><span>${score.pais}</span></td>
-                        <td><span>${score.nome}</span></td>
+                        <td><a class="title-ranking" href="./perfil.html?id=${score.idJogador}"><span>${score.nome}</span></a></td>
                         <td ${colorCombo}><span>${score.comboMaximo}x</span></td>
                         <td><span>${score.notasErradas + score.corteRuim}</span></td>
                         <td><span>${2}d</span></td>`;
@@ -414,7 +426,6 @@
         }
         element.appendChild(proxPage);
     }
-
 
     function loadMapInfo(name, artist, creator, hash, qtdScores, bpmMapa, duracaoMapa, uploadMapa) {
         let nameElement = document.getElementById('mapa-name');
@@ -556,7 +567,8 @@
         if (otherDiff != null) {
             diff = otherDiff;
         } else {
-            if (parseInt(nextPage) != NaN) {
+            if (!isNaN(parseInt(nextPage))) {
+                console.log(nextPage)
                 pagina = nextPage;
             } else {
                 if (nextPage) {
@@ -583,6 +595,7 @@
         document.getElementById('types-of-diffs-container').innerHTML = '';
 
         obterInformacoesMapa();
+        
     }
 
     function loadDiffInfo(diff) {
@@ -612,6 +625,7 @@
         else if (accNum >= 20) return 'D';
         else if (accNum >= 0) return 'E';
     }
+
 </script>
 
 </html>

@@ -21,8 +21,7 @@
 <body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            <input id="search-user" type="text" placeholder="Pesquisar...">
-            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
+
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
@@ -31,7 +30,7 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html" class="nav-bar-a">
+                    <a href="./mapas.html">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
@@ -43,21 +42,27 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="">
+                    <a href="./ultimosScores.html">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./login.html">
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="login">Login</span>
+                    <a href="./pesquisar.html">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./cadastro.html">
                         <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="cadastro">Cadastro</span>
+                    </a>
+                </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
                     </a>
                 </li>
 
@@ -86,15 +91,15 @@
                             <i class="fa-solid fa-pen" onclick="editImage('')"></i>
                             <form action="">
                                 <input type="file" id="arquivo-perfil" accept="image/png, image/gif, image/jpeg"
-                                style="display: none; cursor: pointer;" onchange="sendImage(this)">
+                                    style="display: none; cursor: pointer;" onchange="sendImage(this)">
                             </form>
                         </div>
                         <div class="player-name-container">
-                            <div style="position: relative;">
+                            <div>
                                 <span class="player-name" id="player-name"></span>
-                                <i class="fa-solid fa-pen" style="bottom: -25px; right: 0px;"></i>
+                                <i class="fa-solid fa-pen"></i>
                             </div>
-                            <div class="flag-country" style="margin-left: 0px;">
+                            <div class="flag-country">
                             </div>
                         </div>
                         <div class="player-position-info">
@@ -149,8 +154,8 @@
                                 onclick="changeLabelColor(this)">Classificação</a>
                         </li>
                         <li class="player-label">
-                            <a href="#historico_section" class="player-label-name"
-                                onclick="changeLabelColor(this)">Histórico</a>
+                            <a href="#mapas-favoritos-section" class="player-label-name"
+                                onclick="changeLabelColor(this)">Mapas Favoritos</a>
                         </li>
                     </ul>
 
@@ -179,6 +184,21 @@
                                     <li class="type-scores">Top</li>
                                     <li class="type-scores">Recente</li>
                                 </ul>
+                            </div>
+                        </div>
+
+                        <ul id="scores-player-list">
+                        </ul>
+                        <div class="pages-list">
+                            <ul class="pages" style="color: white;">
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="player-label-container" id="mapas-favoritos-section">
+                        <div style="width: 95%; position: relative; display: flex;">
+                            <div class="player-label-title-container">
+                                <h3 class="player-label-title">Mapas Favoritos</h3>
                             </div>
                         </div>
 
@@ -227,6 +247,7 @@
 <script>
 
     var pagina;
+    var paginaFavorito;
     function playerPositionChart(historico) {
         let labels = [];
         let positionsData = [];
@@ -653,6 +674,12 @@
     function setScores(score, element) {
         let liElement = document.createElement('li');
         liElement.onclick = () => { goToMapaPage(score.idMapa, score.nomeDificuldade) };
+
+        let metric = getMetrics(score.precisao);
+        if (metric == 'SSS') metric = 'perfect';
+        console.log(metric);
+
+
         liElement.innerHTML = `<div class="player-score-info-container">
                                     <img src="/mapa/getImage/${score.hashMapa}">
                                     <div class="player-score-info">
@@ -663,11 +690,11 @@
                                             </div>
                                             <div>
                                                 <span>mapeado por ${score.criadorMapa}</span>
-                                                <span style="color: #475b7e">Há x Dias</span>
+                                                <span>Há x Dias</span>
                                             </div>
                                         </div>
                                         <div class="player-score-info-score-info">
-                                            <span>${score.precisao}%</span>
+                                            <span style="color: var(--${metric.toLocaleLowerCase()})">${score.precisao}%</span>
                                         </div>
                                         <div class="player-score-info-score-info ${score.nomeDificuldade.toLowerCase()}">
                                             <span>${score.pontosDePerformace}</span>
@@ -678,27 +705,38 @@
         element.appendChild(liElement);
     }
 
+    function getMetrics(acc) {
+        let accNum = parseFloat(acc);
+        if (accNum >= 100) return 'SSS';
+        else if (accNum >= 90) return 'SS';
+        else if (accNum >= 80) return 'S';
+        else if (accNum >= 65) return 'A';
+        else if (accNum >= 50) return 'B';
+        else if (accNum >= 35) return 'C';
+        else if (accNum >= 20) return 'D';
+        else if (accNum >= 0) return 'E';
+    }
+
     function loadPages(totalPaginas, pagina, idJogador, type) {
 
         let pagesElement = document.getElementsByClassName('pages');
-        for (let k = 0; k < pagesElement.length; k++) {
 
-            createAntButton(pagesElement[k], totalPaginas, idJogador, pagina, type);
 
-            printFirstPage(totalPaginas, pagesElement[k], idJogador, pagina, type);
+            createAntButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
+
+            printFirstPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
 
             for (let i = pagina - 1; i < pagina + 2; i++) {
                 if (i >= totalPaginas) break;
 
                 if (i > 1) {
-                    printPage(i, totalPaginas, pagesElement[k], idJogador, pagina, type);
+                    printPage(i, totalPaginas, pagesElement[0], idJogador, pagina, type);
                 }
-                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[k], idJogador, pagina, type);
+                if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[0], idJogador, pagina, type);
             }
 
-            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k], idJogador, pagina, type);
-            createNextButton(pagesElement[k], totalPaginas, idJogador, pagina, type);
-        }
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
+            createNextButton(pagesElement[0], totalPaginas, idJogador, pagina, type);
     }
 
     function printFirstPage(totalPaginas, pagesElement, idJogador, pagina, type) {
@@ -820,6 +858,128 @@
     function editImage(type) {
         if (type == 'background') document.getElementById('arquivo-background').click();
         else document.getElementById('arquivo-perfil').click();
+    }
+    /* Favoritos */
+    function loadPagesFavoritos(totalPaginas, paginaFavorito, idJogador) {
+
+        let pagesElement = document.getElementsByClassName('pages');
+
+            createAntButton(pagesElement[1], totalPaginas, idJogador, paginaFavorito);
+
+            printFirstPage(totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+
+            for (let i = paginaFavorito - 1; i < paginaFavorito + 2; i++) {
+                if (i >= totalPaginas) break;
+
+                if (i > 1) {
+                    printPage(i, totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+                }
+                if (i == paginaFavorito + 1) printPage('...', totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+            }
+
+            if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[1], idJogador, paginaFavorito);
+            createNextButton(pagesElement[1], totalPaginas, idJogador, paginaFavorito);
+        
+    }
+
+    function printFirstPage(totalPaginas, pagesElement, idJogador, paginaFavorito) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (paginaFavorito == 1) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(1, totalPaginas, idJogador, paginaFavorito) };
+        }
+        pageElement.innerHTML += 1;
+        pageElement.id = `page-#${1}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printPage(num, totalPaginas, pagesElement, idJogador, paginaFavorito) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+        if (num != '...') {
+            if (paginaFavorito == num) {
+                pageElement.classList.add('selected');
+                pageElement.style.cursor = 'default';
+                pageElement.style.opacity = '0.5';
+            } else {
+                pageElement.onclick = () => { reloadPage(num, totalPaginas, idJogador, paginaFavorito) };
+            }
+            pageElement.innerHTML += num;
+            pageElement.id = `page-#${num}`;
+        } else {
+            pageElement.innerHTML = num;
+            pageElement.style.cursor = 'default';
+        }
+
+
+        pagesElement.appendChild(pageElement);
+    }
+
+    function printLastPage(totalPaginas, pagesElement, idJogador, paginaFavorito) {
+        let pageElement = document.createElement('li');
+        pageElement.classList.add("page-num");
+
+        if (paginaFavorito == totalPaginas) {
+            pageElement.classList.add('selected');
+            pageElement.style.cursor = 'default';
+            pageElement.style.opacity = '0.5';
+        } else {
+            pageElement.onclick = () => { reloadPage(totalPaginas, totalPaginas, idJogador, paginaFavorito) };
+        }
+        pageElement.innerHTML += totalPaginas;
+        pageElement.id = `page-#${totalPaginas}`;
+        pagesElement.appendChild(pageElement);
+    }
+
+    function createAntButton(element, totalPaginas, idJogador, paginaFavorito) {
+        let antPage = document.createElement('li');
+        antPage.innerHTML = '<span>Ant</span>';
+        if (paginaFavorito == 1 || totalPaginas == 0) {
+            antPage.style.opacity = '0.5';
+            antPage.style.cursor = 'default';
+        } else {
+            antPage.onclick = () => { reloadPage(false, totalPaginas, idJogador, paginaFavorito) };
+        }
+        element.appendChild(antPage);
+    }
+
+    function createNextButton(element, totalPaginas, idJogador, paginaFavorito) {
+        let proxPage = document.createElement('li');
+        proxPage.innerHTML = '<span>Próx</span>';
+        if (paginaFavorito == totalPaginas || totalPaginas == 0) {
+            proxPage.style.opacity = '0.5';
+            proxPage.style.cursor = 'default';
+        } else {
+            proxPage.onclick = () => { reloadPage(true, totalPaginas, idJogador, paginaFavorito) };
+        }
+        element.appendChild(proxPage);
+    }
+
+    function reloadPage(nextPage, totalPaginas, idJogador, paginaFavorito) {
+        if (!isNaN(parseInt(nextPage))) {
+            paginaFavorito = parseInt(nextPage);
+        } else {
+            if (nextPage) {
+                if (paginaFavorito == totalPaginas && paginaFavorito >= 1) return;
+                paginaFavorito += 1;
+            } else {
+                if (paginaFavorito <= 1) return;
+                paginaFavorito -= 1;
+            }
+        }
+
+        let elementScore = document.getElementById('scores-player-list');
+
+        elementScore.innerHTML = '';
+
+        document.getElementsByClassName('pages')[0].innerHTML = '';
+        getPlayerScores(idJogador, paginaFavorito);
+        /* window.focus(); */
     }
 
 </script>

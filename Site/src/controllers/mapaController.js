@@ -30,7 +30,7 @@ function obterInformacoes(request, response) {
 
 function listarMapas(request, response) {
   let pagina = request.params.paginaServer;
-  mapaModel.listarMapas((pagina * 8) - 8).then(async (result) => {
+  mapaModel.listarMapas((pagina * 20) - 20).then(async (result) => {
     if (result.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
@@ -38,7 +38,7 @@ function listarMapas(request, response) {
         let diffsMapa = await dificuldadeModel.obterTodasDiffs(result[i].idMapa)
         result[i].dificuldades = diffsMapa;
       }
-      let qtdPaginas = await obterQtdPaginas(response, result);
+      let qtdPaginas = await obterQtdPaginas(response);
       response.json({
         'qtdPaginas': qtdPaginas,
         'mapas': result
@@ -51,13 +51,14 @@ function listarMapas(request, response) {
   })
 }
 
-async function obterQtdPaginas(response) {
+async function obterQtdPaginas(response, qtdMapasAchados) {
   try {
-    let result = await mapaModel.verificarNumPaginas();
-    if (result.length == 0) {
+    let qtdMapas;
+    if (qtdMapasAchados == undefined) qtdMapas = (await mapaModel.verificarNumPaginas())[0].qtdmapas;
+    else qtdMapas = qtdMapasAchados;
+    if (qtdMapas.length == 0) {
       response.status(403).send("Não foi possível listar os mapas.");
     } else {
-      let qtdMapas = result[0].qtdmapas
 
       let qtdPagina = 0;
       while (true) {
@@ -85,13 +86,45 @@ function obterImagem(request, response) {
   if (fileHash == undefined) {
     response.status(403).send("Não foi possível obter a imagem.");
   } else {
-    let fileLocation = path.join(__dirname, `../../public/assets/img/mapImg/${fileHash}.jpg`);
+    let fileLocation = path.join(__dirname, `../../public/assets/img/mapImg/${fileHash}.png`);
     response.sendFile(fileLocation);
+  }
+}
+
+async function procurar(request, response) {
+  let nomeMapa = request.params.nomeMapaServer;
+  let pagina = request.params.paginaServer
+
+  if (pagina == undefined) pagina = 1;
+
+  if (nomeMapa == undefined) {
+    response.status(403).send("Nome do Mapa está Undefined.");
+  } else {
+    mapaModel.procurar(nomeMapa, (pagina * 20) - 20).then(async (result) => {
+      
+      if (result.length == 0) {
+        response.json({
+          'qtdPaginas': 0,
+          'mapas': []
+        });
+      } else {
+        for (let i = 0; i < result.length; i++) {
+          let diffsMapa = await dificuldadeModel.obterTodasDiffs(result[i].idMapa)
+          result[i].dificuldades = diffsMapa;
+        }
+        let qtdPaginas = await obterQtdPaginas(response, result.length);
+        response.json({
+          'qtdPaginas': qtdPaginas,
+          'mapas': result
+        });
+      }
+    });
   }
 }
 
 module.exports = {
   obterInformacoes,
   listarMapas,
-  obterImagem
+  obterImagem,
+  procurar
 }

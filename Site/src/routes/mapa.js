@@ -15,6 +15,9 @@ router.get("/getImage/:imgHashServer", function (req, res) {
     mapaController.obterImagem(req, res);
 });
 
+router.get("/procurar/:nomeMapaServer&:paginaServer", function (req, res) {
+    mapaController.procurar(req, res);
+});
 
 module.exports = router;
 

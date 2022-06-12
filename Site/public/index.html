@@ -17,15 +17,13 @@
 <body onload="verifyAuth()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            <input id="search-user" type="text" placeholder="Pesquisar...">
-            <i class="fa-solid fa-magnifying-glass search-icon" id="search"></i>
             <ul class="nav-bar">
                 <li class="nav-bar-item here">
                     <i class="fa-solid fa-house menu-icon"></i>
                     <span class="nav-bar-name" id="home">Início</span>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./mapas.html" class="nav-bar-a">
+                    <a href="./mapas.html">
                         <i class="fa fa-map svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="mapas">Mapas</span>
                     </a>
@@ -37,15 +35,15 @@
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="">
+                    <a href="./ultimosScores.html">
                         <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
                         <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
-                    <a href="./login.html">
-                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="login">Login</span>
+                    <a href="./pesquisar.html">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <span class="nav-bar-name" id="pesquisar">Pesquisar</span>
                     </a>
                 </li>
                 <li class="nav-bar-item">
@@ -54,6 +52,13 @@
                         <span class="nav-bar-name" id="cadastro">Cadastro</span>
                     </a>
                 </li>
+                <li class="nav-bar-item">
+                    <a href="./login.html">
+                        <i class="fa fa-user svelte-1uw9g1y menu-icon"></i>
+                        <span class="nav-bar-name" id="login">Login</span>
+                    </a>
+                </li>
+                
 
             </ul>
         </div>
@@ -63,7 +68,7 @@
 
     </div>
     <div class="banner">
-        <div class="container-index complementar-triple-colors">
+        <div class="container-index">
             <div class="pattern-dots-regular">
                 <div class="background-container">
                     <div class="background-gif-container">
@@ -76,7 +81,7 @@
                 </div>
                 <div class="container-index-title-container">
                     <div class="container-index-title">
-                        <h1 style="font-size: 60px;">Bem vindo ao Gura Saber</h1>
+                        <h1>Bem vindo ao Gura Saber</h1>
                     </div>
                     <div class="paragraph-container">
                         <h4 class="paragraph">Plataforma criada para armazenar os scores dos jogadores de Beat Saber
@@ -91,9 +96,9 @@
             </div>
         </div>
 
-        <div class="container-index " style="background: none; background-color: #656F80;">
-            <div class="pattern-dots-regular" style="color: white;">
-                <div class="container-index-title-container reveal" style="width: 60%">
+        <div class="container-index">
+            <div class="pattern-dots-regular" style="color: var(--cor1);">
+                <div class="container-index-title-container reveal" style="width: 60%; color: var(--cor1);">
                     <div class="container-index-title">
                         <h2 style="font-size: 60px;">Possuímos uma variedade de mapas</h2>
                     </div>
@@ -412,8 +417,8 @@
                 </div>
             </div>
         </div>
-        <div class="container-index " style="background: none; background-color: #C9DFFF;">
-            <div class="pattern-dots-regular" style="flex-direction: row-reverse; color: black;">
+        <div class="container-index">
+            <div class="pattern-dots-regular" style="flex-direction: row-reverse;">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
                         <h2 style="font-size: 60px;">Possuímos uma tela de ranking</h1>
@@ -647,7 +652,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-index " style="background: none; background-color: #648ECC;">
+        <div class="container-index">
             <div class="pattern-dots-regular">
                 <div class="container-index-title-container reveal" style="width: 60%">
                     <div class="container-index-title">
