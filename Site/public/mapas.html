@@ -207,7 +207,7 @@
         }
     }
 
-    function sendLoveRequest(idMapa, type) {
+    async function sendLoveRequest(idMapa, type) {
         let idJogador = sessionStorage.IDJOGADOR;
 
         let response = await fetch(`/jogador/favoritarMapa/${idJogador}&${idMapa}&${type}`, {
@@ -224,7 +224,7 @@
 
     }
 
-    function unLoveMapa(idMapa) {
+    async function unLoveMapa(idMapa) {
         let userContainerElement = document.getElementsByClassName('user-container')[0].innerHTML.trim();
         if (userContainerElement == '') {
             Swal.fire({
