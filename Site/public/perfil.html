@@ -126,6 +126,7 @@
                                 <span>Precisão:</span>
                                 <span>Pontuação Total:</span>
                                 <span>Replays Assistidos por Outros:</span>
+                                <span>Total de Pontos de Performace:</span>
                             </div> <!-- Adicionar muito espaço entre eles, tipo o do osu -->
                             <div class="player-info-label">
 
@@ -133,6 +134,7 @@
                                 <span id="precisaoMedia">0.00%</span>
                                 <span id="pontuacaoTotal">0</span>
                                 <span id="replaysAssistidos">0</span>
+                                <span id="ppTotal">0pp</span>
                             </div>
 
                             <!-- <i class="fa-brands fa-youtube"></i> -->
@@ -142,11 +144,11 @@
                     </div>
                     <ul class="labels-player">
                         <li class="player-label">
-                            <a href="#eu_section" class="player-label-name" onclick="changeLabelColor(this)">eu!</a>
+                            <a href="#eu_section" class="player-label-name" onclick="changeLabelColor(this)">Sobre mim</a>
                         </li>
                         <li class="player-label">
                             <a href="#Classificacao_section" class="player-label-name"
-                                onclick="changeLabelColor(this)">Classificação</a>
+                                onclick="changeLabelColor(this)">Mapas Jogados</a>
                         </li>
                         <li class="player-label">
                             <a href="#mapas-favoritos-section" class="player-label-name"
@@ -158,7 +160,7 @@
                         style="display: flex; align-items: center; flex-direction: column;">
                         <div style="width: 95%;">
                             <div class="player-label-title-container">
-                                <h3 class="player-label-title">eu!</h3>
+                                <h3 class="player-label-title">Sobre mim</h3>
                             </div>
                         </div>
                         <div class="editor-box-container">
@@ -172,12 +174,12 @@
                     <section class="player-label-container" id="Classificacao_section">
                         <div style="width: 95%; position: relative; display: flex;">
                             <div class="player-label-title-container">
-                                <h3 class="player-label-title">Classificação</h3>
+                                <h3 class="player-label-title">Mapas Jogados</h3>
                             </div>
                             <div class="player-select-type-score">
                                 <ul>
-                                    <li class="type-scores">Top</li>
-                                    <li class="type-scores">Recente</li>
+                                    <li class="type-scores">Melhores</li>
+                                    <li class="type-scores">Recentes</li>
                                 </ul>
                             </div>
                         </div>
@@ -372,6 +374,7 @@
             if (response.ok) {
                 response.json().then(json => {
                     console.log('Informação do jogador obtido');
+
                     setPlayerInfo(idJogador, json, countryFlags);
                     playerPositionChart(json.historico);
                 });
@@ -416,6 +419,7 @@
         document.getElementById('precisaoMedia').innerHTML = `${playerInfo.precisaoMedia}%`;
         document.getElementById('pontuacaoTotal').innerHTML = `${playerInfo.pontuacaoTotal}`;
         document.getElementById('replaysAssistidos').innerHTML = `${playerInfo.replaysAssistidos}`;
+        document.getElementById('ppTotal').innerHTML = `${playerInfo.ppTotal}pp`;
 
 
     }
@@ -626,7 +630,7 @@
         let typesScores = document.getElementsByClassName('type-scores');
         for (let i = 0; i < typesScores.length; i++) {
             if (typesScores[i].classList.contains('selected')) {
-                type = typesScores[i].innerHTML.toLocaleLowerCase() == 'top' ? 'top' : 'recent'
+                type = typesScores[i].innerHTML.toLocaleLowerCase() == 'melhores' ? 'top' : 'recent'
                 typesScores[i].onclick = () => { };
             } else {
                 typesScores[i].onclick = () => { changeScores(typesScores[i], idJogador, pagina) };
@@ -748,7 +752,7 @@
             if (i > 1) {
                 printPage(i, totalPaginas, pagesElement[0], idJogador, pagina, type);
             }
-            if (i == pagina + 1) printPage('...', totalPaginas, pagesElement[0], idJogador, pagina, type);
+            if (i == pagina + 1 && i + -1 != parseInt((totalPaginas / 2).toFixed(0))) printPage('...', totalPaginas, pagesElement[0], idJogador, pagina, type);
         }
 
         if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[0], idJogador, pagina, type);
@@ -891,7 +895,7 @@
             if (i > 1) {
                 printPageFavorite(i, totalPaginas, pagesElement[1], idJogador);
             }
-            if (i == paginaFavorito + 1) printPageFavorite('...', totalPaginas, pagesElement[1], idJogador);
+            if (i == paginaFavorito + 1 && i + -1 != parseInt((totalPaginas / 2).toFixed(0))) printPageFavorite('...', totalPaginas, pagesElement[1], idJogador);
         }
 
         if (totalPaginas > 1) printLastPageFavorite(totalPaginas, pagesElement[1], idJogador);

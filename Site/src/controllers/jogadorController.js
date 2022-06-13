@@ -18,7 +18,10 @@ function listarRankingGlobal(request, response) {
   jogadorModel.listarRankingGlobal((pagina * 20) - 20).then(async (result) => {
 
     if (result.length == 0) {
-      response.status(403).send("Não foi possível listar os jogadores.");
+      response.json({
+        'qtdPaginas': 0,
+        'jogadores': []
+      });
     } else {
       let qtdPaginas = await obterQtdPaginas(response);
       response.json({
@@ -42,9 +45,12 @@ function listarRankingNacional(request, response) {
   } else {
     jogadorModel.listarRankingNacional(paisEscolhido, (pagina * 20) - 20).then(async (result) => {
       if (result.length == 0) {
-        response.status(403).send("Não foi possível listar os jogadores.");
+        response.json({
+          'qtdPaginas': 0,
+          'jogadores': []
+        });
       } else {
-        let qtdPaginas = await obterQtdPaginas(response);
+        let qtdPaginas = await obterQtdPaginasRankingNacional(response, paisEscolhido);
         response.json({
           'qtdPaginas': qtdPaginas,
           'jogadores': result
@@ -57,6 +63,34 @@ function listarRankingNacional(request, response) {
     })
   }
 
+}
+
+async function obterQtdPaginasRankingNacional(response, pais) {
+  try {
+    let qtdJogadores;
+    qtdJogadores = (await jogadorModel.verificarNumPaginasNacional(pais))[0].qtdJogadores;
+
+    if (qtdJogadores.length == 0) {
+      response.status(403).send("Não foi possível listar os mapas.");
+    } else {
+
+      let qtdPaginas = 0;
+      while (true) {
+        if (qtdJogadores <= 0) {
+          break;
+        }
+
+        qtdPaginas++;
+        qtdJogadores -= 20;
+
+      }
+      return qtdPaginas;
+    }
+  } catch (err) {
+    console.log(err);
+    console.log("\nHouve um erro ao listar os mapas! Erro: ", err.sqlMessage);
+    response.status(500).json(err.sqlMessage);
+  }
 }
 
 async function obterQtdPaginas(response, qtdJogadoresAchados) {

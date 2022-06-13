@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/funcoes.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -76,7 +77,7 @@
                     <div class="mapa-list-type selected">
                         Ranking Global
                     </div>
-                    <div class="mapa-list-type">
+                    <div class="mapa-list-type" onclick="indisponivel()">
                         Ranking Nacional
                     </div>
                 </div>
@@ -172,6 +173,18 @@
     var idMapa, diff;
     var pagina = 1;
     var countryJson;
+
+    function indisponivel() {
+        Swal.fire({
+                            imageUrl: './assets/img/gura-error.gif',
+                            imageHeight: 150,
+                            text: 'Essa função está indisponível no momento.',
+                            showConfirmButton: false,
+                            showDenyButton: true,
+                            denyButtonText: 'OK'
+                        });
+                        return
+    }
 
     function getCountryFlags() {
         fetch(`/jogador/countryFlag`, {
@@ -584,7 +597,6 @@
                         <th>Jogador</th>
                         <th>Combo Máximo</th>
                         <th>Erros</th>
-                        <th>Tempo</th>
                     </tr>`;
         document.getElementById('types-of-diffs-container').innerHTML = '';
 

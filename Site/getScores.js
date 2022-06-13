@@ -16,7 +16,7 @@ const limitePlayers = 30;
 const limiteScoresPlayer = 30;
 const tipoScore = 'top';
 const country = ['br', 'us', 'jp'];
-const onlyGetPosition = false;
+const onlyGetPosition = true;
 
 
 async function search(link) {

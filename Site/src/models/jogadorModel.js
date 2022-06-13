@@ -75,6 +75,15 @@ function verificarNumPaginas() {
     return database.executar(instrucao);
 }
 
+function verificarNumPaginasNacional(pais) {
+  
+    var instrucao = `
+    select count(*) as 'qtdJogadores' from Jogador where pais = '${pais}';
+    `;
+    
+    return database.executar(instrucao);
+}
+
 function listarRankingGlobalSemLimite() {
 
     var instrucao = `select idJogador, pais, ROW_NUMBER() OVER (order by sum(pontosDePerformace) desc) as 'rankJogador'
@@ -155,5 +164,6 @@ module.exports = {
     obterInfo,
     procurar,
     favoritarMapa,
-    editarNick
+    editarNick,
+    verificarNumPaginasNacional
 };

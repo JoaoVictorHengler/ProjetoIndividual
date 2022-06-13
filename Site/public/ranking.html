@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/2eecc47c4e.js" crossorigin="anonymous"></script>
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./assets/js/funcoes.js"></script>
     <link rel="stylesheet" href="style.css">
     <link
@@ -18,7 +19,7 @@
 <body onload="verifyAuth(), main()">
     <div id="perfil-menu">
         <div class="perfil-menu-container">
-            
+
             <ul class="nav-bar">
                 <li class="nav-bar-item">
                     <a href="./index.html">
@@ -35,12 +36,6 @@
                 <li class="nav-bar-item here">
                     <i class="fa fa-medal svelte-1uw9g1y menu-icon"></i>
                     <span class="nav-bar-name" id="ranking">Ranking</span>
-                </li>
-                <li class="nav-bar-item">
-                    <a href="ultimosScores.html">
-                        <i class="fa fa-rss svelte-1uw9g1y menu-icon"></i>
-                        <span class="nav-bar-name" id="ultimos">Últimos Scores</span>
-                    </a>
                 </li>
                 <li class="nav-bar-item">
                     <a href="./pesquisar.html">
@@ -161,16 +156,18 @@
                 response.json().then(async json => {
 
                     let selectElement = document.getElementById('type-of-ranking');
-
-                    for (let i = 0; i < json.length; i++) {
-                        let countryName = (countryFlags.filter(country => { return json[i].pais == country.code }))[0];
-                        let countryOptionElement = document.createElement('option');
-                        countryOptionElement.value = countryName.code;
-                        countryOptionElement.innerHTML = countryName.name;
-                        selectElement.appendChild(countryOptionElement);
+                    if (selectElement.innerHTML.trim() == `<option value="Global">Todos</option>`) {
+                        for (let i = 0; i < json.length; i++) {
+                            let countryName = (countryFlags.filter(country => { return json[i].pais == country.code }))[0];
+                            let countryOptionElement = document.createElement('option');
+                            countryOptionElement.value = countryName.code;
+                            countryOptionElement.innerHTML = countryName.name;
+                            selectElement.appendChild(countryOptionElement);
+                        }
                     }
 
-                    
+
+
                     let playersInfo = await getRanking(countryFlags, paginaParam);
                     console.log('Jogadores: ', playersInfo);
                     let paginas = playersInfo.qtdPaginas;
@@ -211,7 +208,8 @@
                                 <span>${players[i].mapasJogados}</span>
                             </td>
                             <td class="mini-ranking-title">
-                                <span>${players[i].ppTotal} pp</span>
+                                <span>${players[i].ppTotal}</span>
+                                <span style="color: #5e6bea;">pp</span>
                             </td>
                             <td class="mini-ranking-title">
                                 <span>${players[i].SS}</span>
@@ -246,17 +244,18 @@
         console.log(response);
         if (response.ok) {
             let json = await response.json();
+            console.log(json);
             if (json.qtdPaginas == 0) {
-                        Swal.fire({
-                            imageUrl: './assets/img/gura-error.gif',
-                            imageHeight: 150,
-                            text: 'Não existe nenhum jogador cadastrado.',
-                            showConfirmButton: false,
-                            showDenyButton: true,
-                            denyButtonText: 'OK'
-                        });
-                        return
-                    }
+                Swal.fire({
+                    imageUrl: './assets/img/gura-error.gif',
+                    imageHeight: 150,
+                    text: 'Não existe nenhum jogador nesta página.',
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: 'OK'
+                });
+                return
+            }
             return json;
         }
     }
@@ -273,12 +272,13 @@
             for (let i = paginaParam - 1; i < paginaParam + 2; i++) {
                 if (i >= totalPaginas) break;
 
-                if (i > 1 ) {
+                if (i > 1) {
                     printPage(i, totalPaginas, pagesElement[k]);
                 }
-                if (i == paginaParam + 1) printPage('...', totalPaginas, pagesElement[k]);
+                console.log(parseInt((totalPaginas / 2).toFixed(0)))
+                if (i == paginaParam + 1 && i + -1 != parseInt((totalPaginas / 2).toFixed(0))) printPage('...', totalPaginas, pagesElement[k]);
             }
-                
+
             if (totalPaginas > 1) printLastPage(totalPaginas, pagesElement[k]);
             createNextButton(pagesElement[k], totalPaginas);
         }
@@ -388,7 +388,14 @@
     async function changeCountry() {
         unloadPlayers();
         let playersInfo = await getRanking(countryFlags, paginaParam);
+        let qtdPaginas = playersInfo.qtdPaginas;
 
+        let paginaElement = document.getElementsByClassName('pages');
+        for (let i = 0; i < paginaElement.length; i++) {
+            paginaElement[i].innerHTML = '';
+        }
+
+        loadPages(qtdPaginas)
         let players = playersInfo.jogadores;
         loadPlayers(players);
         setCountry();
@@ -411,8 +418,8 @@
                 paginaParam -= 1;
             }
         }
-        
 
+        
         document.getElementById('table-ranking').innerHTML = `<tr>
                             <th></th>
                             <th>Precisão Média</th>
