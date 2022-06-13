@@ -330,12 +330,12 @@ input {
 .mini-ranking-table td:last-child {
     padding: 5px;
 }
-
+/* https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg */
 .mini-ranking-container {
     width: 100%;
     font-size: 17px;
     font-weight: 600;
-    background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("https://static-cdn.jtvnw.net/jtv_user_pictures/bceb8037-32e8-40d7-823e-4236ffb26d2f-profile_banner-480.jpeg") repeat scroll 0% 0%;
+    background: linear-gradient(.25turn, hsla(200, 10%, 30%, .5), hsla(200, 10%, 30%, 0.8)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url("./assets/img/bsbg.jpg") repeat scroll 0% 0%;
     background-size: cover !important;
     color: #e3ebed;
     text-shadow: 2px 2px 0 #000;
@@ -1654,7 +1654,8 @@ input {
 .player-name-container div:nth-child(1) .fa-pen {
     position: absolute;
     bottom: 15%;
-    right: -29%;
+    right: 0;
+    transform: translateX(32px);
 }
 
 .player-name-container div:nth-child(2) {

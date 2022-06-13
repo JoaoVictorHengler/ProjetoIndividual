@@ -235,7 +235,7 @@ INSERT INTO Mapa (nomeMusica, subNomeMusica, criadorMapa, artistaMusica, hashMap
 INSERT INTO Dificuldade values (1, 'Hard', 18.00, 0.65, 792, 37, 43, 4.22, 721395, 55);
 INSERT INTO Dificuldade values (2, 'Expert', 20.00, 0.27, 1053, 37, 63, 5.61, 961515, 55);
 INSERT INTO Dificuldade values (3, 'ExpertPlus', 22.00, -0.10, 1305, 228, 81, 6.95, 1193355, 55);
-INSERT INTO Jogador values (null, '♥ Shiro ♥', 'Teste@2.com', SHA2('teste', 512), 'BR', '76561198993744552', null, 65);
+INSERT INTO Jogador values (null, '♥ Shiro ♥', 'joao.hengler@email.com', SHA2('teste', 512), 'BR', '76561198993744552', null, 65);
 INSERT INTO Score SELECT 2, idDificuldade, idMapa, 1576615, 2, 2, 588,'2021-04-02 01:25:10', false, 430.82 FROM Dificuldade JOIN Mapa ON hashMapa = '24b997d33544da0e6b21945f7f6bbed681bf5d8e' and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa;
 INSERT INTO Score SELECT 2, idDificuldade, idMapa, 2750736, 2, 10, 1546,'2021-03-05 22:21:03', false, 415.543475 FROM Dificuldade JOIN Mapa ON hashMapa = '23328a868c4c13c72e191a77eb42622d551ef5ac' and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa;
 INSERT INTO Score SELECT 2, idDificuldade, idMapa, 1103092, 0, 1, 803,'2021-03-10 20:38:27', false, 400.278685225 FROM Dificuldade JOIN Mapa ON hashMapa = '16a457c5ceeb408adeeacea53ce31d2ea493647e' and nomeDificuldade = 'ExpertPlus' and idMapa = Dificuldade.fkMapa;
